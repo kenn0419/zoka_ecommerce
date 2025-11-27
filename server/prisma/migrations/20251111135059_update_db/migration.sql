@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Category" ADD COLUMN     "status" TEXT NOT NULL DEFAULT 'INACTIVE';
+
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "status" SET DEFAULT 'INACTIVE';

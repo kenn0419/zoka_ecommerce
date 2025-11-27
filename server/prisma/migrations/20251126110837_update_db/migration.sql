@@ -1,0 +1,11 @@
+-- AlterTable
+ALTER TABLE "Category" ALTER COLUMN "status" SET DEFAULT 'PENDING';
+
+-- AlterTable
+ALTER TABLE "Product" ALTER COLUMN "status" SET DEFAULT 'PENDING';
+
+-- AlterTable
+ALTER TABLE "Shop" ALTER COLUMN "status" SET DEFAULT 'PENDING';
+
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "status" SET DEFAULT 'PENDING';
