@@ -1,0 +1,22 @@
+.container {
+  min-height: 100vh;
+  background: #f6f7fb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.footer {
+  margin-top: 20px;
+  text-align: center;
+
+  a {
+    color: #1677ff;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

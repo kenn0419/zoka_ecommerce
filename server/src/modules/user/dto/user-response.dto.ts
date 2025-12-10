@@ -1,9 +1,7 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import { RoleResponseDto } from 'src/modules/rbac/dto/role-response.dto';
 
 export class UserResponseDto {
-  @Expose()
-  id: string;
-
   @Expose()
   email: string;
 
@@ -24,4 +22,7 @@ export class UserResponseDto {
 
   @Expose()
   status: string;
+
+  @Expose()
+  roles: RoleResponseDto[];
 }

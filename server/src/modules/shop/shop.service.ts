@@ -52,7 +52,8 @@ export class ShopService {
       status: ShopStatus.PENDING,
       logoUrl,
     };
-    return await this.shopRepo.createShop(payload);
+    const newShop = await this.shopRepo.createShop(payload);
+    return newShop;
   }
 
   async adminUpdateShopStatus(shopId: string, dto: UpdateShopStatusDto) {
@@ -61,8 +62,9 @@ export class ShopService {
       { status: dto.status },
     );
 
-    if (dto.status === ShopStatus.ACTIVE) {
-      await this.rbacRepo.ensureRole(shop.ownerId, Role.SHOP);
+    const shopRole = await this.rbacRepo.findRoleUnique({ name: Role.SHOP });
+    if (shopRole && dto.status === ShopStatus.ACTIVE) {
+      await this.rbacRepo.assignRole(shop.ownerId, shopRole?.id);
     }
 
     return shop;

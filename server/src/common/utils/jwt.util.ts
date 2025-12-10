@@ -21,15 +21,15 @@ export class JwtUtil {
 
   static signRefreshToken(
     payload: object,
-    privateKey: string,
-    expiresIn: string | number = '30d',
-    algorithm: jwt.Algorithm = 'RS256',
+    secret: string,
+    algorithm = 'RS256',
+    expiresIn = '30d',
   ) {
     const option: jwt.SignOptions = {
       algorithm: algorithm as jwt.Algorithm,
       expiresIn: expiresIn as ms.StringValue,
     };
-    return jwt.sign(payload, privateKey, option);
+    return jwt.sign(payload, secret, option);
   }
 
   static verifyRefreshToken(

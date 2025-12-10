@@ -7,6 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { RedisService } from 'src/infrastructure/redis/redis.service';
+import { JwtUtil } from '../utils/jwt.util';
 
 @Injectable()
 export class JwtSessionGuard implements CanActivate {
@@ -19,15 +20,15 @@ export class JwtSessionGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const token = request.headers['authorization']?.split(' ')[1];
-
     if (!token) {
       throw new UnauthorizedException('Missing token');
     }
     let payload;
     try {
-      payload = await this.jwt.verifyAsync(token, {
-        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-      });
+      payload = await JwtUtil.verifyAccessToken(
+        token,
+        this.configService.get<string>('JWT_ACCESS_SECRET') as string,
+      );
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
     }

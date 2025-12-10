@@ -5,7 +5,7 @@ import { map, Observable } from 'rxjs';
 @common.Injectable()
 export class TransformResponseInterceptor<T> implements common.NestInterceptor {
   constructor(
-    private readonly dto: common.Type<T> | null, // ✅ Cho phép null
+    private readonly dto: common.Type<T> | null,
     private readonly message: string,
   ) {}
 
@@ -29,7 +29,6 @@ export class TransformResponseInterceptor<T> implements common.NestInterceptor {
           };
         }
 
-        // ✅ Nếu không có dto => không serialize, trả raw data
         if (!this.dto) {
           return {
             statusCode,
@@ -38,7 +37,6 @@ export class TransformResponseInterceptor<T> implements common.NestInterceptor {
           };
         }
 
-        // ✅ Nếu có dto
         let transformedData: any;
         if (Array.isArray(data?.items)) {
           const transformItems = plainToInstance(this.dto, data.items, {

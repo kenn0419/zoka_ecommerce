@@ -12,7 +12,16 @@ export class UserRepository {
   }
 
   findByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { email } });
+    return this.prisma.user.findUnique({
+      where: { email },
+      include: {
+        roles: {
+          include: {
+            role: true,
+          },
+        },
+      },
+    });
   }
 
   findByPhone(phone: string): Promise<User | null> {
@@ -20,7 +29,16 @@ export class UserRepository {
   }
 
   findUnique(where: Prisma.UserWhereUniqueInput): Promise<User | null> {
-    return this.prisma.user.findUnique({ where });
+    return this.prisma.user.findUnique({
+      where,
+      include: {
+        roles: {
+          include: {
+            role: true,
+          },
+        },
+      },
+    });
   }
 
   findAllUsers(

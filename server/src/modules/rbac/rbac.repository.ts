@@ -31,7 +31,9 @@ export class RbacRepository {
   }
 
   assignRole(userId: string, roleId: string) {
-    return this.prisma.userRole.create({ data: { userId, roleId } });
+    return this.prisma.userRole.create({
+      data: { userId, roleId },
+    });
   }
 
   assignPermissionToRole(roleId: string, permissionId: string) {

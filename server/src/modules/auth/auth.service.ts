@@ -18,6 +18,8 @@ import { JwtUtil } from 'src/common/utils/jwt.util';
 import { UserRoleRepository } from '../user/repositories/user-role.repository';
 import { RbacService } from '../rbac/rbac.service';
 import * as jwt from 'jsonwebtoken';
+import { UserSession } from 'generated/prisma';
+import { UserStatus } from 'src/common/enums/user-status.enum';
 
 @Injectable()
 export class AuthService {
@@ -37,6 +39,12 @@ export class AuthService {
   ) {}
 
   async signup(data: SignupDto) {
+    const isMatch = data.password === data.confirmPassword;
+    if (!isMatch) {
+      throw new BadRequestException(
+        'Confirm password must be coincide with password',
+      );
+    }
     const existedUserByEmail = await this.userRepo.findByEmail(data.email);
     if (existedUserByEmail)
       throw new ConflictException('Email already registered!');
@@ -110,12 +118,12 @@ export class AuthService {
     const sessionId = crypto.randomUUID();
     const payload = { userId: existedUser.id, sessionId };
 
-    const refreshTokenExpire =
+    const refreshTokenExpired =
       this.config.get<string>('JWT_REFRESH_EXPIRE_IN') ?? '30d';
     const refreshToken = JwtUtil.signRefreshToken(
       payload,
       privateKey,
-      refreshTokenExpire,
+      refreshTokenExpired,
     );
 
     const session = await this.authRepo.createUserSession({
@@ -167,7 +175,16 @@ export class AuthService {
     );
 
     await this.authRepo.updateSession(session.id, { refreshToken });
-    return { accessToken, refreshToken, sessionId };
+    return { accessToken, refreshToken, sessionId, user: existedUser };
+  }
+
+  async getCurrent(userId: string) {
+    const existUser = await this.userRepo.findUnique({ id: userId });
+    if (!existUser || existUser.status !== UserStatus.ACTIVE) {
+      throw new BadRequestException('User not approved yet.');
+    }
+
+    return existUser;
   }
 
   async refresh(refreshToken: string) {
@@ -175,14 +192,27 @@ export class AuthService {
     if (!decoded?.sessionId) throw new UnauthorizedException('Invalid token');
 
     const sessionId = decoded.sessionId;
+
     let publicKey = await this.redis.get(`session:${sessionId}:publicKey`);
 
+    let session: UserSession | null = null;
+
     if (!publicKey) {
-      const session = await this.authRepo.findById(sessionId);
+      session = await this.authRepo.findById(sessionId);
       if (!session) throw new UnauthorizedException('Session not found');
+      if (session.isRevoked) throw new UnauthorizedException('Session revoked');
+
       publicKey = session.publicKey;
+
       const ttl = Math.floor((session.expiresAt.getTime() - Date.now()) / 1000);
+
       await this.redis.set(`session:${sessionId}:publicKey`, publicKey, ttl);
+    }
+
+    if (!session) {
+      session = await this.authRepo.findById(sessionId);
+      if (!session) throw new UnauthorizedException('Session not found');
+      if (session.isRevoked) throw new UnauthorizedException('Session revoked');
     }
 
     try {
@@ -192,14 +222,42 @@ export class AuthService {
     }
 
     const payload: any = JwtUtil.decode(refreshToken);
+
+    const accessTokenSecret =
+      this.config.get<string>('JWT_ACCESS_SECRET') ?? '';
+    const accessTokenAlgorithm =
+      this.config.get<string>('JWT_ACCESS_ALGORITHM') ?? 'HS256';
     const accessTokenExpireIn =
       this.config.get<string>('JWT_ACCESS_EXPIRE_IN') ?? '15m';
+
     const newAccessToken = JwtUtil.signAccessToken(
       { userId: payload.userId, sessionId },
+      accessTokenSecret,
+      accessTokenAlgorithm,
       accessTokenExpireIn,
     );
 
-    return { accessToken: newAccessToken };
+    const refreshTokenAlgorithm =
+      this.config.get<string>('JWT_REFRESH_ALGORITHM') ?? 'RS256';
+    const refreshTokenExpireIn =
+      this.config.get<string>('JWT_REFRESH_EXPIRE_IN') ?? '30d';
+
+    const newRefreshToken = JwtUtil.signRefreshToken(
+      { userId: payload.userId, sessionId },
+      session.privateKey,
+      refreshTokenAlgorithm,
+      refreshTokenExpireIn,
+    );
+
+    await this.authRepo.updateSession(sessionId, {
+      refreshToken: newRefreshToken,
+      updatedAt: new Date(),
+    });
+
+    return {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    };
   }
 
   async logout(sessionId: string) {
@@ -222,5 +280,7 @@ export class AuthService {
       await this.logout(sid);
     }
     await this.authRepo.revokeAll(userId);
+
+    await this.redis.del(`user:${userId}:sessions`);
   }
 }

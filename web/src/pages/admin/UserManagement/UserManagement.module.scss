@@ -1,0 +1,27 @@
+.container {
+  padding: 24px;
+
+  :global {
+    .ant-pro-table {
+      border-radius: 12px;
+      box-shadow: rgba(0, 0, 0, 0.05) 0px 4px 12px;
+    }
+
+    .ant-modal-content {
+      border-radius: 12px;
+    }
+
+    .ant-btn-primary {
+      border-radius: 6px;
+    }
+  }
+
+  .input {
+    width: 250px;
+    outline: none;
+
+    :hover {
+      border: none;
+    }
+  }
+}
