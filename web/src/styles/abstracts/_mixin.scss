@@ -1,0 +1,15 @@
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+}
+@mixin icon-style($size: 22px, $color: #fff) {
+  font-size: $size;
+  color: $color;
+  cursor: pointer;
+}
+@mixin text-ellipsis($line: 1) {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: $line;
+  -webkit-box-orient: vertical;
+}

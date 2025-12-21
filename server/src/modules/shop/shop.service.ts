@@ -13,6 +13,8 @@ import { UserRepository } from '../user/repositories/user.repository';
 import { UploadService } from 'src/infrastructure/upload/upload.service';
 import { ConfigService } from '@nestjs/config';
 import { Role } from 'src/common/enums/role.enum';
+import { SlugifyUtil } from 'src/common/utils/slugify.util';
+import { da } from '@faker-js/faker';
 
 @Injectable()
 export class ShopService {
@@ -48,6 +50,7 @@ export class ShopService {
     const payload = {
       owner: { connect: { id: existUser.id } },
       name: data.name,
+      slug: SlugifyUtil.createSlug(data.name),
       description: data.description,
       status: ShopStatus.PENDING,
       logoUrl,

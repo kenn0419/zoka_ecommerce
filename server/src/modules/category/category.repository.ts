@@ -34,6 +34,28 @@ export class CategoryRepository {
     });
   }
 
+  async listPagninated(params: {
+    where: Prisma.CategoryWhereInput;
+    page: number;
+    limit: number;
+    orderBy: Prisma.CategoryOrderByWithRelationInput;
+  }) {
+    const { where, page, limit, orderBy } = params;
+    const take = limit;
+    const skip = (page - 1) * take;
+    const [items, totalItems] = await this.prisma.$transaction([
+      this.prisma.category.findMany({
+        skip,
+        take,
+        orderBy,
+        where,
+        include: { children: true },
+      }),
+      this.prisma.category.count({ where }),
+    ]);
+    return { items, totalItems };
+  }
+
   findUnique(where: Prisma.CategoryWhereUniqueInput) {
     return this.prisma.category.findUnique({
       where,

@@ -1,5 +1,4 @@
-// common/constants/permission.group.ts
-import { Permission as P } from 'src/common/enums/permission.enum';
+import { Permission as P } from '../enums/permission.enum';
 
 export const PermissionGroups = {
   PRODUCT: [

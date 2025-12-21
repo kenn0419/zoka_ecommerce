@@ -6,6 +6,11 @@ import { ConfigService } from '@nestjs/config';
 import { UploadService } from 'src/infrastructure/upload/upload.service';
 import slugify from 'slugify';
 import { CategoryStatus } from 'src/common/enums/category-status.enum';
+import { buildCategorySort } from 'src/common/utils/category-sort.util';
+import { CategorySort } from 'src/common/enums/category-sort.enum';
+import { Prisma } from 'generated/prisma';
+import { buildSearchOr } from 'src/common/utils/build-search-or.util';
+import { paginatedQuery } from 'src/common/utils/pagninated-query.util';
 
 @Injectable()
 export class CategoryService {
@@ -36,16 +41,48 @@ export class CategoryService {
     search: string,
     page: number,
     limit: number,
-    sort: string,
+    sort: CategorySort,
   ) {
-    const take = limit;
-    const skip = (page - 1) * take;
-    const sortBy = sort.split(',');
-    return await this.categoryRepository.findAllCategories(
-      search,
-      take,
-      skip,
-      sortBy,
+    const orderBy = buildCategorySort(sort);
+
+    const where: Prisma.CategoryWhereInput = {
+      ...(search && {
+        OR: buildSearchOr(search, ['id', 'name', 'description']),
+      }),
+    };
+
+    return paginatedQuery(
+      {
+        where,
+        page,
+        limit,
+        orderBy: buildCategorySort(sort),
+      },
+      (args) => this.categoryRepository.listPagninated(args),
+    );
+  }
+
+  async findAllActiveCategories(
+    search: string,
+    page: number,
+    limit: number,
+    sort: CategorySort,
+  ) {
+    const where: Prisma.CategoryWhereInput = {
+      status: CategoryStatus.ACTIVE,
+      ...(search && {
+        OR: buildSearchOr(search, ['id', 'name', 'description']),
+      }),
+    };
+
+    return paginatedQuery(
+      {
+        where,
+        page,
+        limit,
+        orderBy: buildCategorySort(sort),
+      },
+      (args) => this.categoryRepository.listPagninated(args),
     );
   }
 

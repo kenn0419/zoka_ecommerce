@@ -37,11 +37,11 @@ export const authStore = create<AuthState>()(
       },
 
       signin: async ({ email, password }: IAuthSignInRequest) => {
-        set({ loading: true });
         try {
+          set({ loading: true });
           const res = await authApi.signin({ email, password });
-
           const { user } = res.data;
+          console.log(user);
           const roles = user.roles.map((r: any) => r.role.name);
 
           set({ user: { ...user, roles } });

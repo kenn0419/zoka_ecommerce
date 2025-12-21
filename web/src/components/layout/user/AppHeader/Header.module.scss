@@ -1,0 +1,32 @@
+@use "../../../../styles/abstracts/variables" as v;
+@use "../../../../styles/abstracts/mixin" as m;
+
+.header {
+  @include m.flex-center;
+  background: v.$primary-color;
+  padding: 0 24px;
+}
+
+.logo {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 600;
+  margin-right: 24px;
+}
+
+.search {
+  flex: 1;
+  max-width: 600px;
+}
+
+.actions {
+  margin-left: auto;
+  display: flex;
+  gap: 20px;
+}
+
+.icon {
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+}

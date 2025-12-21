@@ -1,0 +1,536 @@
+[
+  {
+    "id": "dbe3c7a7-8237-4876-84dd-cc65fdb487b4",
+    "name": "Phones",
+    "slug": "phones",
+    "description": "Category for phones",
+    "thumbnailUrl": "https://picsum.photos/seed/category-phones/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "3ce7a97f-f8d0-4155-b0c0-3a072035ea49",
+    "name": "Toys",
+    "slug": "Clothing",
+    "parentId": "dbe3c7a7-8237-4876-84dd-cc65fdb487b4",
+    "description": "Our rich-inspired Computer brings a taste of luxury to your important lifestyle",
+    "thumbnailUrl": "https://picsum.photos/seed/category-3ce7a97f-f8d0-4155-b0c0-3a072035ea49/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "757b19f5-645f-48a2-b11d-bf241868398e",
+    "name": "Handcrafted",
+    "slug": "Practical",
+    "parentId": "3ce7a97f-f8d0-4155-b0c0-3a072035ea49",
+    "description": "Experience the silver brilliance of our Shoes, perfect for wobbly environments",
+    "thumbnailUrl": "https://picsum.photos/seed/category-757b19f5-645f-48a2-b11d-bf241868398e/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "23bae1a4-0492-4cdb-8b3f-217d13403809",
+    "name": "Elegant",
+    "slug": "Recycled",
+    "parentId": "3ce7a97f-f8d0-4155-b0c0-3a072035ea49",
+    "description": "Introducing the Peru-inspired Shoes, blending classic style with local craftsmanship",
+    "thumbnailUrl": "https://picsum.photos/seed/category-23bae1a4-0492-4cdb-8b3f-217d13403809/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "325c09b4-1494-415c-beb1-ac79ec0ca983",
+    "name": "Intelligent",
+    "slug": "Awesome",
+    "parentId": "3ce7a97f-f8d0-4155-b0c0-3a072035ea49",
+    "description": "Introducing the Togo-inspired Pizza, blending sleepy style with local craftsmanship",
+    "thumbnailUrl": "https://picsum.photos/seed/category-325c09b4-1494-415c-beb1-ac79ec0ca983/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "35ea2c39-6d8f-4838-9b01-bd19d12b97d2",
+    "name": "Home",
+    "slug": "Books",
+    "parentId": "dbe3c7a7-8237-4876-84dd-cc65fdb487b4",
+    "description": "Bespoke Pants designed with Metal for handsome performance",
+    "thumbnailUrl": "https://picsum.photos/seed/category-35ea2c39-6d8f-4838-9b01-bd19d12b97d2/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "2fbdac7a-cd41-4b48-b432-9a62a0100c72",
+    "name": "Handcrafted",
+    "slug": "Soft",
+    "parentId": "35ea2c39-6d8f-4838-9b01-bd19d12b97d2",
+    "description": "Our creamy-inspired Table brings a taste of luxury to your outlying lifestyle",
+    "thumbnailUrl": "https://picsum.photos/seed/category-2fbdac7a-cd41-4b48-b432-9a62a0100c72/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "d0c74ae6-5254-4687-9c99-49d1ac9a5caf",
+    "name": "Fresh",
+    "slug": "Awesome",
+    "parentId": "35ea2c39-6d8f-4838-9b01-bd19d12b97d2",
+    "description": "Savor the tender essence in our Keyboard, designed for pricey culinary adventures",
+    "thumbnailUrl": "https://picsum.photos/seed/category-d0c74ae6-5254-4687-9c99-49d1ac9a5caf/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "96943189-13c8-4c52-a54e-32e79fe3ddbd",
+    "name": "Elegant",
+    "slug": "Modern",
+    "parentId": "35ea2c39-6d8f-4838-9b01-bd19d12b97d2",
+    "description": "The Shad Chicken is the latest in a series of arid products from VonRueden Inc",
+    "thumbnailUrl": "https://picsum.photos/seed/category-96943189-13c8-4c52-a54e-32e79fe3ddbd/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "137cc5ca-54df-48fa-a719-bcfab40489a9",
+    "name": "Shoes",
+    "slug": "shoes",
+    "description": "Category for shoes",
+    "thumbnailUrl": "https://picsum.photos/seed/category-shoes/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "37458523-634b-49d0-a8a8-2f682fe25f9d",
+    "name": "Outdoors",
+    "slug": "Electronics",
+    "parentId": "137cc5ca-54df-48fa-a719-bcfab40489a9",
+    "description": "New purple Towels with ergonomic design for arid comfort",
+    "thumbnailUrl": "https://picsum.photos/seed/category-37458523-634b-49d0-a8a8-2f682fe25f9d/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "916dbcf1-0491-4fe9-9c63-3cefd1d81661",
+    "name": "Incredible",
+    "slug": "Awesome",
+    "parentId": "37458523-634b-49d0-a8a8-2f682fe25f9d",
+    "description": "Professional-grade Gloves perfect for snappy training and recreational use",
+    "thumbnailUrl": "https://picsum.photos/seed/category-916dbcf1-0491-4fe9-9c63-3cefd1d81661/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "0c08cd54-d0ea-4876-ad02-686c03f3f5b6",
+    "name": "Oriental",
+    "slug": "Modern",
+    "parentId": "37458523-634b-49d0-a8a8-2f682fe25f9d",
+    "description": "Discover the koala-like agility of our Computer, perfect for homely users",
+    "thumbnailUrl": "https://picsum.photos/seed/category-0c08cd54-d0ea-4876-ad02-686c03f3f5b6/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "15f1444d-174c-42ac-a657-c1fed0269e8e",
+    "name": "Gorgeous",
+    "slug": "Recycled",
+    "parentId": "37458523-634b-49d0-a8a8-2f682fe25f9d",
+    "description": "Savor the savory essence in our Hat, designed for concrete culinary adventures",
+    "thumbnailUrl": "https://picsum.photos/seed/category-15f1444d-174c-42ac-a657-c1fed0269e8e/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "bb5fb9b5-7c30-42ac-9405-787de16acebd",
+    "name": "Industrial",
+    "slug": "Automotive",
+    "parentId": "137cc5ca-54df-48fa-a719-bcfab40489a9",
+    "description": "Awesome Ball designed with Bamboo for wee performance",
+    "thumbnailUrl": "https://picsum.photos/seed/category-bb5fb9b5-7c30-42ac-9405-787de16acebd/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "cc6253e8-89af-49fc-b2aa-4298968153d8",
+    "name": "Handcrafted",
+    "slug": "Frozen",
+    "parentId": "bb5fb9b5-7c30-42ac-9405-787de16acebd",
+    "description": "Featuring Argon-enhanced technology, our Cheese offers unparalleled mindless performance",
+    "thumbnailUrl": "https://picsum.photos/seed/category-cc6253e8-89af-49fc-b2aa-4298968153d8/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "c6f46551-ef5b-4f6b-95aa-71a6260f8504",
+    "name": "Gorgeous",
+    "slug": "Bespoke",
+    "parentId": "bb5fb9b5-7c30-42ac-9405-787de16acebd",
+    "description": "Innovative Shirt featuring nifty technology and Bronze construction",
+    "thumbnailUrl": "https://picsum.photos/seed/category-c6f46551-ef5b-4f6b-95aa-71a6260f8504/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "95567040-0128-4232-b652-3ff4bbe5258e",
+    "name": "Generic",
+    "slug": "Handmade",
+    "parentId": "bb5fb9b5-7c30-42ac-9405-787de16acebd",
+    "description": "Our polar bear-friendly Table ensures moral comfort for your pets",
+    "thumbnailUrl": "https://picsum.photos/seed/category-95567040-0128-4232-b652-3ff4bbe5258e/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "dc7e0df6-cb39-43e4-95af-8ac15693c60a",
+    "name": "Kids",
+    "slug": "Shoes",
+    "parentId": "137cc5ca-54df-48fa-a719-bcfab40489a9",
+    "description": "Our dolphin-friendly Car ensures growing comfort for your pets",
+    "thumbnailUrl": "https://picsum.photos/seed/category-dc7e0df6-cb39-43e4-95af-8ac15693c60a/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "2e4fdd41-379b-41de-b5d7-68012dee6013",
+    "name": "Oriental",
+    "slug": "Elegant",
+    "parentId": "dc7e0df6-cb39-43e4-95af-8ac15693c60a",
+    "description": "Innovative Salad featuring shy technology and Wooden construction",
+    "thumbnailUrl": "https://picsum.photos/seed/category-2e4fdd41-379b-41de-b5d7-68012dee6013/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "f44b9613-767a-40c2-9476-71632dd6771c",
+    "name": "Luxurious",
+    "slug": "Luxurious",
+    "parentId": "dc7e0df6-cb39-43e4-95af-8ac15693c60a",
+    "description": "Stylish Soap designed to make you stand out with uncommon looks",
+    "thumbnailUrl": "https://picsum.photos/seed/category-f44b9613-767a-40c2-9476-71632dd6771c/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "78b48ed4-d131-4a0f-b382-78339279efcb",
+    "name": "Elegant",
+    "slug": "Luxurious",
+    "parentId": "dc7e0df6-cb39-43e4-95af-8ac15693c60a",
+    "description": "Featuring Rutherfordium-enhanced technology, our Shoes offers unparalleled zany performance",
+    "thumbnailUrl": "https://picsum.photos/seed/category-78b48ed4-d131-4a0f-b382-78339279efcb/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "6218d64c-f3f5-430d-b3d4-91778d8f2a3f",
+    "name": "Clothes",
+    "slug": "clothes",
+    "description": "Category for clothes",
+    "thumbnailUrl": "https://picsum.photos/seed/category-clothes/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "e54cb492-f1bb-4595-9b0a-d3d103e8271e",
+    "name": "Automotive",
+    "slug": "Games",
+    "parentId": "6218d64c-f3f5-430d-b3d4-91778d8f2a3f",
+    "description": "Discover the outlandish new Pants with an exciting mix of Steel ingredients",
+    "thumbnailUrl": "https://picsum.photos/seed/category-e54cb492-f1bb-4595-9b0a-d3d103e8271e/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "c1ae1f24-f9a7-42ee-92c7-e74f1274b52d",
+    "name": "Handmade",
+    "slug": "Awesome",
+    "parentId": "e54cb492-f1bb-4595-9b0a-d3d103e8271e",
+    "description": "Our sweet-inspired Tuna brings a taste of luxury to your weekly lifestyle",
+    "thumbnailUrl": "https://picsum.photos/seed/category-c1ae1f24-f9a7-42ee-92c7-e74f1274b52d/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "3b97975a-0348-43ab-a506-4aa6b0978235",
+    "name": "Elegant",
+    "slug": "Sleek",
+    "parentId": "e54cb492-f1bb-4595-9b0a-d3d103e8271e",
+    "description": "New Shoes model with 84 GB RAM, 413 GB storage, and private features",
+    "thumbnailUrl": "https://picsum.photos/seed/category-3b97975a-0348-43ab-a506-4aa6b0978235/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "387fd392-8beb-43fc-b66f-5cc5f7e3c4fd",
+    "name": "Recycled",
+    "slug": "Luxurious",
+    "parentId": "e54cb492-f1bb-4595-9b0a-d3d103e8271e",
+    "description": "Experience the orange brilliance of our Keyboard, perfect for rapid environments",
+    "thumbnailUrl": "https://picsum.photos/seed/category-387fd392-8beb-43fc-b66f-5cc5f7e3c4fd/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "73a73d0e-707b-4897-8768-17d12529cfa4",
+    "name": "Garden",
+    "slug": "Sports",
+    "parentId": "6218d64c-f3f5-430d-b3d4-91778d8f2a3f",
+    "description": "Our whale-friendly Keyboard ensures rewarding comfort for your pets",
+    "thumbnailUrl": "https://picsum.photos/seed/category-73a73d0e-707b-4897-8768-17d12529cfa4/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "77100392-c5f3-43fa-b935-b328416ca970",
+    "name": "Elegant",
+    "slug": "Refined",
+    "parentId": "73a73d0e-707b-4897-8768-17d12529cfa4",
+    "description": "Discover the wee new Shoes with an exciting mix of Cotton ingredients",
+    "thumbnailUrl": "https://picsum.photos/seed/category-77100392-c5f3-43fa-b935-b328416ca970/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "6f93a468-ba53-460b-b46d-f25f90dbf5b5",
+    "name": "Fantastic",
+    "slug": "Intelligent",
+    "parentId": "73a73d0e-707b-4897-8768-17d12529cfa4",
+    "description": "Ergonomic Hat made with Bamboo for all-day uneven support",
+    "thumbnailUrl": "https://picsum.photos/seed/category-6f93a468-ba53-460b-b46d-f25f90dbf5b5/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "b7fb18dd-2b18-4451-987e-85b9082df855",
+    "name": "Books",
+    "slug": "Outdoors",
+    "parentId": "6218d64c-f3f5-430d-b3d4-91778d8f2a3f",
+    "description": "Savor the delicious essence in our Ball, designed for frank culinary adventures",
+    "thumbnailUrl": "https://picsum.photos/seed/category-b7fb18dd-2b18-4451-987e-85b9082df855/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "693b122c-a5df-48f8-9ee9-9d28110d40ef",
+    "name": "Practical",
+    "slug": "Modern",
+    "parentId": "b7fb18dd-2b18-4451-987e-85b9082df855",
+    "description": "New lavender Hat with ergonomic design for biodegradable comfort",
+    "thumbnailUrl": "https://picsum.photos/seed/category-693b122c-a5df-48f8-9ee9-9d28110d40ef/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "ff5d1a00-85b4-40c4-92d2-66c68bff2f97",
+    "name": "Electronic",
+    "slug": "Ergonomic",
+    "parentId": "b7fb18dd-2b18-4451-987e-85b9082df855",
+    "description": "The sleek and babyish Gloves comes with cyan LED lighting for smart functionality",
+    "thumbnailUrl": "https://picsum.photos/seed/category-ff5d1a00-85b4-40c4-92d2-66c68bff2f97/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "1a8351d9-5159-49f0-8b3c-faf724584a76",
+    "name": "Home",
+    "slug": "home",
+    "description": "Category for home",
+    "thumbnailUrl": "https://picsum.photos/seed/category-home/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "fbfd835e-0ba5-4430-a0d6-ad6971dc7273",
+    "name": "Shoes",
+    "slug": "Shoes",
+    "parentId": "1a8351d9-5159-49f0-8b3c-faf724584a76",
+    "description": "The Raquel Soap is the latest in a series of faraway products from Collier - O'Kon",
+    "thumbnailUrl": "https://picsum.photos/seed/category-fbfd835e-0ba5-4430-a0d6-ad6971dc7273/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "69601915-2013-4c1e-bde2-501f606a62f6",
+    "name": "Incredible",
+    "slug": "Recycled",
+    "parentId": "fbfd835e-0ba5-4430-a0d6-ad6971dc7273",
+    "description": "Professional-grade Mouse perfect for flustered training and recreational use",
+    "thumbnailUrl": "https://picsum.photos/seed/category-69601915-2013-4c1e-bde2-501f606a62f6/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "8466d5f2-0d8e-41bc-b3a6-b8fd3c1f0cc4",
+    "name": "Fantastic",
+    "slug": "Bespoke",
+    "parentId": "fbfd835e-0ba5-4430-a0d6-ad6971dc7273",
+    "description": "Professional-grade Pants perfect for considerate training and recreational use",
+    "thumbnailUrl": "https://picsum.photos/seed/category-8466d5f2-0d8e-41bc-b3a6-b8fd3c1f0cc4/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "83d82bf0-ba17-4726-8fe0-545fbfd6ecf3",
+    "name": "Clothing",
+    "slug": "Music",
+    "parentId": "1a8351d9-5159-49f0-8b3c-faf724584a76",
+    "description": "New salmon Car with ergonomic design for pleased comfort",
+    "thumbnailUrl": "https://picsum.photos/seed/category-83d82bf0-ba17-4726-8fe0-545fbfd6ecf3/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "515d3917-ce83-4ecd-8931-c739a8930ee0",
+    "name": "Tasty",
+    "slug": "Fantastic",
+    "parentId": "83d82bf0-ba17-4726-8fe0-545fbfd6ecf3",
+    "description": "Stylish Gloves designed to make you stand out with repentant looks",
+    "thumbnailUrl": "https://picsum.photos/seed/category-515d3917-ce83-4ecd-8931-c739a8930ee0/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "9e9a1dbb-6343-4550-baae-0689eef08a67",
+    "name": "Fantastic",
+    "slug": "Electronic",
+    "parentId": "83d82bf0-ba17-4726-8fe0-545fbfd6ecf3",
+    "description": "The salmon Pizza combines Western Sahara aesthetics with Thallium-based durability",
+    "thumbnailUrl": "https://picsum.photos/seed/category-9e9a1dbb-6343-4550-baae-0689eef08a67/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "94029295-9033-447c-835b-0727c0d11c3a",
+    "name": "Luxurious",
+    "slug": "Small",
+    "parentId": "83d82bf0-ba17-4726-8fe0-545fbfd6ecf3",
+    "description": "The azure Soap combines New Caledonia aesthetics with Osmium-based durability",
+    "thumbnailUrl": "https://picsum.photos/seed/category-94029295-9033-447c-835b-0727c0d11c3a/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "ba4b14df-00ec-44b4-8e0b-be87c47dfa94",
+    "name": "Tools",
+    "slug": "Clothing",
+    "parentId": "1a8351d9-5159-49f0-8b3c-faf724584a76",
+    "description": "Savor the fresh essence in our Keyboard, designed for overdue culinary adventures",
+    "thumbnailUrl": "https://picsum.photos/seed/category-ba4b14df-00ec-44b4-8e0b-be87c47dfa94/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "aeab2d56-6ebf-4b8f-8da2-26c94df1b6f8",
+    "name": "Refined",
+    "slug": "Handcrafted",
+    "parentId": "ba4b14df-00ec-44b4-8e0b-be87c47dfa94",
+    "description": "The sleek and black-and-white Keyboard comes with yellow LED lighting for smart functionality",
+    "thumbnailUrl": "https://picsum.photos/seed/category-aeab2d56-6ebf-4b8f-8da2-26c94df1b6f8/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "c7b74666-af7c-4259-bcfa-f5c9be039d5a",
+    "name": "Unbranded",
+    "slug": "Practical",
+    "parentId": "ba4b14df-00ec-44b4-8e0b-be87c47dfa94",
+    "description": "Professional-grade Keyboard perfect for shadowy training and recreational use",
+    "thumbnailUrl": "https://picsum.photos/seed/category-c7b74666-af7c-4259-bcfa-f5c9be039d5a/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "a66ce5ba-c335-472c-8531-21db14d3e061",
+    "name": "Generic",
+    "slug": "Practical",
+    "parentId": "ba4b14df-00ec-44b4-8e0b-be87c47dfa94",
+    "description": "The yellow Fish combines Montserrat aesthetics with Hydrogen-based durability",
+    "thumbnailUrl": "https://picsum.photos/seed/category-a66ce5ba-c335-472c-8531-21db14d3e061/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "8e31548f-fbe1-4ffc-8440-8c62a50d2873",
+    "name": "Accessories",
+    "slug": "accessories",
+    "description": "Category for accessories",
+    "thumbnailUrl": "https://picsum.photos/seed/category-accessories/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "c8ab2134-827c-4cdb-9493-4fed0985f7f7",
+    "name": "Electronics",
+    "slug": "Grocery",
+    "parentId": "8e31548f-fbe1-4ffc-8440-8c62a50d2873",
+    "description": "Schowalter Inc's most advanced Mouse technology increases polished capabilities",
+    "thumbnailUrl": "https://picsum.photos/seed/category-c8ab2134-827c-4cdb-9493-4fed0985f7f7/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "999702b9-9c77-444b-955d-e2c444f83010",
+    "name": "Intelligent",
+    "slug": "Handcrafted",
+    "parentId": "c8ab2134-827c-4cdb-9493-4fed0985f7f7",
+    "description": "New Mouse model with 13 GB RAM, 552 GB storage, and metallic features",
+    "thumbnailUrl": "https://picsum.photos/seed/category-999702b9-9c77-444b-955d-e2c444f83010/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "34d1930e-81cd-44be-b035-ae939782d3c2",
+    "name": "Luxurious",
+    "slug": "Incredible",
+    "parentId": "c8ab2134-827c-4cdb-9493-4fed0985f7f7",
+    "description": "Innovative Ball featuring vast technology and Rubber construction",
+    "thumbnailUrl": "https://picsum.photos/seed/category-34d1930e-81cd-44be-b035-ae939782d3c2/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "147514f7-ded4-4e48-b2ab-bf8f3029d54a",
+    "name": "Beauty",
+    "slug": "Garden",
+    "parentId": "8e31548f-fbe1-4ffc-8440-8c62a50d2873",
+    "description": "Heidenreich LLC's most advanced Salad technology increases gray capabilities",
+    "thumbnailUrl": "https://picsum.photos/seed/category-147514f7-ded4-4e48-b2ab-bf8f3029d54a/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "b517e3eb-7eae-492a-80cf-6def32594ce2",
+    "name": "Bespoke",
+    "slug": "Refined",
+    "parentId": "147514f7-ded4-4e48-b2ab-bf8f3029d54a",
+    "description": "Incredible Hat designed with Marble for boiling performance",
+    "thumbnailUrl": "https://picsum.photos/seed/category-b517e3eb-7eae-492a-80cf-6def32594ce2/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "e0f9a4a6-06a2-4343-a91a-27f08e2dc117",
+    "name": "Licensed",
+    "slug": "Small",
+    "parentId": "147514f7-ded4-4e48-b2ab-bf8f3029d54a",
+    "description": "Our fox-friendly Gloves ensures unlucky comfort for your pets",
+    "thumbnailUrl": "https://picsum.photos/seed/category-e0f9a4a6-06a2-4343-a91a-27f08e2dc117/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "690d536a-ba4c-41bd-9cc1-b4f979fdfb4e",
+    "name": "Oriental",
+    "slug": "Electronic",
+    "parentId": "147514f7-ded4-4e48-b2ab-bf8f3029d54a",
+    "description": "Discover the bear-like agility of our Table, perfect for swift users",
+    "thumbnailUrl": "https://picsum.photos/seed/category-690d536a-ba4c-41bd-9cc1-b4f979fdfb4e/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "eade5e0e-fade-4be2-8bf8-9598b9dc9f09",
+    "name": "Sports",
+    "slug": "sports",
+    "description": "Category for sports",
+    "thumbnailUrl": "https://picsum.photos/seed/category-sports/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "b6331682-d6f8-45c8-bc58-502ff713aa74",
+    "name": "Automotive",
+    "slug": "Grocery",
+    "parentId": "eade5e0e-fade-4be2-8bf8-9598b9dc9f09",
+    "description": "Savor the tender essence in our Table, designed for grounded culinary adventures",
+    "thumbnailUrl": "https://picsum.photos/seed/category-b6331682-d6f8-45c8-bc58-502ff713aa74/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "6faca86a-6f61-42f7-8d41-c60be8f6f9f3",
+    "name": "Oriental",
+    "slug": "Oriental",
+    "parentId": "b6331682-d6f8-45c8-bc58-502ff713aa74",
+    "description": "The gold Bike combines Ukraine aesthetics with Selenium-based durability",
+    "thumbnailUrl": "https://picsum.photos/seed/category-6faca86a-6f61-42f7-8d41-c60be8f6f9f3/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "968a17d9-5a62-4e95-b9da-ed0350fed7b6",
+    "name": "Soft",
+    "slug": "Sleek",
+    "parentId": "b6331682-d6f8-45c8-bc58-502ff713aa74",
+    "description": "Experience the salmon brilliance of our Pizza, perfect for mushy environments",
+    "thumbnailUrl": "https://picsum.photos/seed/category-968a17d9-5a62-4e95-b9da-ed0350fed7b6/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "3159badc-68d4-4f09-8052-f620d21f52e0",
+    "name": "Sports",
+    "slug": "Clothing",
+    "parentId": "eade5e0e-fade-4be2-8bf8-9598b9dc9f09",
+    "description": "The indigo Chips combines Myanmar aesthetics with Gadolinium-based durability",
+    "thumbnailUrl": "https://picsum.photos/seed/category-3159badc-68d4-4f09-8052-f620d21f52e0/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "61dbcc84-6a00-4e62-b554-0d1bf83e3c9c",
+    "name": "Elegant",
+    "slug": "Fresh",
+    "parentId": "3159badc-68d4-4f09-8052-f620d21f52e0",
+    "description": "Discover the turtle-like agility of our Ball, perfect for husky users",
+    "thumbnailUrl": "https://picsum.photos/seed/category-61dbcc84-6a00-4e62-b554-0d1bf83e3c9c/640/480",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "3e9fbb40-3da1-4de9-bc0c-ee119a8f4e84",
+    "name": "Generic",
+    "slug": "Luxurious",
+    "parentId": "3159badc-68d4-4f09-8052-f620d21f52e0",
+    "description": "The Self-enabling incremental synergy Bike offers reliable performance and querulous design",
+    "thumbnailUrl": "https://picsum.photos/seed/category-3e9fbb40-3da1-4de9-bc0c-ee119a8f4e84/640/480",
+    "status": "ACTIVE"
+  }
+]

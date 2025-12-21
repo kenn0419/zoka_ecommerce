@@ -10,9 +10,9 @@ interface Props {
 
 export default function ProtectedRoute({ role, children }: Props) {
   const { user } = authStore();
-  console.log(user);
 
-  if (!user) return <Navigate to={`/${PATH.AUTH}/${PATH.SIGNIN}`} replace />;
+  if (!user)
+    return <Navigate to={`/${PATH.ERROR}/${PATH.UNAUTHORIZED}`} replace />;
   if (role && !user.roles.includes(role))
     return <Navigate to={`/${PATH.ERROR}/${PATH.FORBIDDEN}`} replace />;
 

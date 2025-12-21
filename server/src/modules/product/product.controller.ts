@@ -10,6 +10,8 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFiles,
+  DefaultValuePipe,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -19,7 +21,10 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { Serialize } from 'src/common/decorators/serialize.decorator';
-import { ProductResponse } from './dto/product.response';
+import { ProductResponseDto } from './dto/product-response.dto';
+import { RolesPermissionsGuard } from 'src/common/guards/rbac.guard';
+import { PositiveIntPipe } from 'src/common/pipes/positive-int.pipe';
+import { ProductSort } from 'src/common/enums/product-sort.enum';
 
 @Controller('product')
 export class ProductController {
@@ -27,7 +32,7 @@ export class ProductController {
 
   @Post()
   @Roles(Role.SHOP)
-  @UseGuards(JwtSessionGuard)
+  @UseGuards(JwtSessionGuard, RolesPermissionsGuard)
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'thumbnail', maxCount: 1 },
@@ -35,7 +40,7 @@ export class ProductController {
     ]),
   )
   @Serialize(
-    ProductResponse,
+    ProductResponseDto,
     'Create product successfully. Please wait admin for apporving!',
   )
   create(
@@ -56,13 +61,29 @@ export class ProductController {
   }
 
   @Get()
-  findAllProducts() {
-    return this.productService.findAllProduct();
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtSessionGuard, RolesPermissionsGuard)
+  @Serialize(ProductResponseDto, 'Get all products successfully.')
+  findAllProducts(
+    @Query('search', new DefaultValuePipe('')) search: string,
+    @Query('page', new DefaultValuePipe(1), PositiveIntPipe)
+    page: number,
+    @Query('limit', new DefaultValuePipe(20), PositiveIntPipe) limit: number,
+    @Query('sort', new DefaultValuePipe(ProductSort.OLDEST)) sort: ProductSort,
+  ) {
+    return this.productService.findAllProduct(search, page, limit, sort);
   }
 
-  @Get('/active-product')
-  findAllActiveProducts() {
-    return this.productService.findAllActiveProduct();
+  @Get('/active')
+  @Serialize(ProductResponseDto, 'Get all products successfully.')
+  findAllActiveProducts(
+    @Query('search', new DefaultValuePipe('')) search: string,
+    @Query('page', new DefaultValuePipe(1), PositiveIntPipe)
+    page: number,
+    @Query('limit', new DefaultValuePipe(20), PositiveIntPipe) limit: number,
+    @Query('sort', new DefaultValuePipe(ProductSort.OLDEST)) sort: ProductSort,
+  ) {
+    return this.productService.findAllActiveProduct(search, page, limit, sort);
   }
 
   @Get('/:categorySlug')

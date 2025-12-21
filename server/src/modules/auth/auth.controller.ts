@@ -38,9 +38,13 @@ export class AuthController {
   }
 
   @Post('/signin')
-  @Serialize(AuthResponseDto, 'Signin successfully!')
   @HttpCode(HttpStatus.OK)
-  async signin(@Body() data: SigninDto, @Req() req, @Res() res: Response) {
+  @Serialize(AuthResponseDto, 'Signin successfully!')
+  async signin(
+    @Body() data: SigninDto,
+    @Req() req,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const device = req.headers['user-agent'] || 'Unknown';
     const ip = req.ip;
 
@@ -66,7 +70,7 @@ export class AuthController {
       maxAge: 30 * 24 * 60 * 1000,
     });
 
-    return res.json(result);
+    return result;
   }
 
   @Get('/me')
@@ -103,7 +107,7 @@ export class AuthController {
   async refresh(
     @Req() req: Request,
     @Body() data: RefreshTokenDto,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const refreshToken = req.cookies.refreshToken || data.token;
 
@@ -125,7 +129,7 @@ export class AuthController {
       maxAge: 30 * 24 * 60 * 1000,
     });
 
-    return res.json(result);
+    return result;
   }
 
   @Post('logout-all')

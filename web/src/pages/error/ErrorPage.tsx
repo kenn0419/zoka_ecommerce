@@ -11,10 +11,14 @@ export default function ErrorPage({
   status,
   title,
   subTitle,
+  btnText = "Quay về trang chủ",
+  to = PATH.HOME,
 }: {
   status: number;
   title: string;
   subTitle: string;
+  btnText?: string;
+  to?: string;
 }) {
   const navigate = useNavigate();
 
@@ -32,8 +36,8 @@ export default function ErrorPage({
         title={title}
         subTitle={subTitle}
         extra={
-          <Button type="primary" onClick={() => navigate(PATH.HOME)}>
-            Quay về trang chủ
+          <Button type="primary" onClick={() => navigate(to)}>
+            {btnText}
           </Button>
         }
       />

@@ -1,5 +1,10 @@
-.card {
-  &__title {
-    border: 1px solid #333;
-  }
+@use "../../styles/abstracts/variables" as v;
+
+.layout {
+  min-height: 100vh;
+  background: v.$bg-gray;
+}
+
+.content {
+  padding: 24px 40px;
 }

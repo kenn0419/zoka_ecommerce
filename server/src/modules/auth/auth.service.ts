@@ -98,7 +98,7 @@ export class AuthService {
     });
 
     await this.rbacService.assignRole(newUser.id, 'user');
-    await await this.redis.del(key);
+    await this.redis.del(key);
     return newUser;
   }
 
@@ -118,12 +118,15 @@ export class AuthService {
     const sessionId = crypto.randomUUID();
     const payload = { userId: existedUser.id, sessionId };
 
-    const refreshTokenExpired =
+    const refreshTokenAlgorithm =
+      this.config.get<string>('JWT_REFRESH_ALGORITHM') ?? 'RS256';
+    const refreshTokenExpireIn =
       this.config.get<string>('JWT_REFRESH_EXPIRE_IN') ?? '30d';
     const refreshToken = JwtUtil.signRefreshToken(
       payload,
       privateKey,
-      refreshTokenExpired,
+      refreshTokenAlgorithm,
+      refreshTokenExpireIn,
     );
 
     const session = await this.authRepo.createUserSession({

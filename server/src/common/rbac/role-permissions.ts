@@ -1,6 +1,6 @@
 import { PermissionGroups as PG } from './permission.group';
-import { Permission as P } from 'src/common/enums/permission.enum';
-import { Role } from 'src/common/enums/role.enum';
+import { Permission as P } from '../enums/permission.enum';
+import { Role } from '../enums/role.enum';
 
 export const ROLE_PERMISSIONS = {
   [Role.ADMIN]: [

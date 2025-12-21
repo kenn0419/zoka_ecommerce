@@ -44,14 +44,36 @@ export class ProductRepository {
     });
   }
 
-  list(tx: Prisma.TransactionClient | null, where: Prisma.ProductWhereInput) {
-    tx = tx !== null ? tx : this.prisma;
-    return tx.product.findMany({
-      where,
-      include: {
-        variants: true,
-      },
-    });
+  async listPaginated(params: {
+    where: Prisma.ProductWhereInput;
+    page: number;
+    limit: number;
+    orderBy?: Prisma.ProductOrderByWithRelationInput;
+  }) {
+    const { where, page, limit, orderBy } = params;
+
+    const skip = (page - 1) * limit;
+
+    const [items, totalItems] = await this.prisma.$transaction([
+      this.prisma.product.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy,
+        include: {
+          variants: {
+            include: {
+              images: true,
+            },
+          },
+          category: true,
+          shop: true,
+        },
+      }),
+      this.prisma.product.count({ where }),
+    ]);
+
+    return { items, totalItems };
   }
 
   remove(

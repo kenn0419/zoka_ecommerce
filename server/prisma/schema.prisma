@@ -45,9 +45,10 @@ model UserSession {
   publicKey    String
   privateKey   String
   expiresAt    DateTime
+  isRevoked    Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  isRevoked    Boolean  @default(false)
+  
   user         User     @relation(fields: [userId], references: [id])
 }
 
@@ -56,6 +57,9 @@ model Role {
   id          String           @id @default(uuid())
   name        String           @unique
   description String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
   users       UserRole[]
   permissions RolePermission[]
 }
@@ -64,26 +68,31 @@ model Permission {
   id          String           @id @default(uuid())
   name        String           @unique
   description String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
   roles       RolePermission[]
 }
 
 model UserRole {
   userId String
   roleId String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id])
   role Role @relation(fields: [roleId], references: [id])
-
   @@id([userId, roleId])
 }
 
 model RolePermission {
   roleId       String
   permissionId String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   role       Role       @relation(fields: [roleId], references: [id])
   permission Permission @relation(fields: [permissionId], references: [id])
-
   @@id([roleId, permissionId])
 }
 
@@ -93,6 +102,7 @@ model Shop {
   id          String   @id @default(uuid())
   ownerId     String
   name        String
+  slug        String   @unique
   description String?
   logoUrl     String?
   status      String   @default("PENDING")
@@ -111,6 +121,8 @@ model ShopCategory {
   shopId      String
   name        String
   description String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   shop Shop @relation(fields: [shopId], references: [id])
 }
@@ -125,6 +137,8 @@ model Category {
   description  String?
   thumbnailUrl String
   status       String  @default("PENDING")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   parent   Category?  @relation("CategoryParent", fields: [parentId], references: [id])
   children Category[] @relation("CategoryParent")
@@ -162,6 +176,8 @@ model ProductVariant {
   additionalPrice Decimal?
   stock           Int
   images          VariantImage[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   product   Product    @relation(fields: [productId], references: [id])
   cartItems CartItem[]
@@ -171,6 +187,8 @@ model VariantImage {
   id        String @id @default(uuid())
   variantId String
   imageUrl  String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   variant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
 }
@@ -210,7 +228,8 @@ model FlashSale {
   startTime DateTime
   endTime   DateTime
   status    String   @default("PENDING")
-  createdAt DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   shop  Shop            @relation(fields: [shopId], references: [id])
   items FlashSaleItem[]
@@ -221,6 +240,8 @@ model FlashSaleItem {
   productId   String
   salePrice   Decimal
   quantity    Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   flashSale FlashSale @relation(fields: [flashSaleId], references: [id])
   product   Product   @relation(fields: [productId], references: [id])
@@ -271,6 +292,8 @@ model OrderItem {
   productId String
   quantity  Int
   price     Decimal
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   order   Order   @relation(fields: [orderId], references: [id])
   product Product @relation(fields: [productId], references: [id])
@@ -286,7 +309,8 @@ model ProductReview {
   buyerId   String
   rating    Int
   comment   String?
-  createdAt DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   product Product @relation(fields: [productId], references: [id])
   buyer   User    @relation(fields: [buyerId], references: [id])
@@ -299,6 +323,7 @@ model Conversation {
   buyerId   String
   sellerId  String
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   buyer    User      @relation("BuyerConversations", fields: [buyerId], references: [id])
   seller   User      @relation("SellerConversations", fields: [sellerId], references: [id])
@@ -311,6 +336,7 @@ model Message {
   senderId       String
   content        String
   createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   conversation Conversation @relation(fields: [conversationId], references: [id])
   sender       User         @relation(fields: [senderId], references: [id])

@@ -7,7 +7,7 @@ const UnauthorizedPage = lazy(() => import("../pages/error/Unauthorized"));
 const ForbiddenPage = lazy(() => import("../pages/error/Forbidden"));
 const InternalErrorPage = lazy(() => import("../pages/error/InternalError"));
 
-export const AuthRoutes: RouteObject = {
+export const ErrorRoutes: RouteObject = {
   path: PATH.ERROR,
   element: <Outlet />,
   children: [

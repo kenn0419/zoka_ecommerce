@@ -1,0 +1,38 @@
+@use "../../../styles/abstracts/variables" as v;
+@use "../../../styles/abstracts/mixin" as m;
+
+.categorySection {
+  background: #fff;
+  padding: 16px;
+  border-radius: v.$border-radius;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.categoryItem {
+  @include m.flex-center;
+  flex-direction: column;
+  padding: 5px;
+  border-radius: v.$border-radius;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-right: 1px solid #f0f0f0;
+  &:hover {
+    background: #fafafa;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  span {
+    font-size: 13px;
+    text-align: center;
+  }
+}

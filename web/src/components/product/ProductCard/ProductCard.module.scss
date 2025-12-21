@@ -1,0 +1,22 @@
+@use "../../../styles/abstracts/variables" as v;
+@use "../../../styles/abstracts/mixin" as m;
+
+.card {
+  border-radius: v.$border-radius;
+  transition: transform 0.2s;
+  height: 300px;
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
+
+.name {
+  font-size: 14px;
+  margin-bottom: 8px;
+  @include m.text-ellipsis(2);
+}
+
+.price {
+  color: v.$primary-color;
+  font-weight: 600;
+}

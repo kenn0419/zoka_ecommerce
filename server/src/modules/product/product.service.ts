@@ -18,6 +18,10 @@ import { ProductVariantRepository } from './repositories/product-variant.reposit
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { SlugifyUtil } from 'src/common/utils/slugify.util';
 import { ProductStatus } from 'src/common/enums/product-status.enum';
+import { ProductSort } from 'src/common/enums/product-sort.enum';
+import { buildProductSort } from 'src/common/utils/product-sort.util';
+import { buildSearchOr } from 'src/common/utils/build-search-or.util';
+import { paginatedQuery } from 'src/common/utils/pagninated-query.util';
 
 @Injectable()
 export class ProductService {
@@ -125,12 +129,54 @@ export class ProductService {
     return result;
   }
 
-  findAllActiveProduct() {
-    return this.productRepo.list(null, { status: ProductStatus.ACTIVE });
+  async findAllActiveProduct(
+    search: string,
+    page: number,
+    limit: number,
+    sort: ProductSort,
+  ) {
+    const where: Prisma.ProductWhereInput = {
+      status: ProductStatus.ACTIVE,
+      category: {
+        status: CategoryStatus.ACTIVE,
+      },
+      ...(search && {
+        OR: buildSearchOr(search, ['name', 'description']),
+      }),
+    };
+
+    return paginatedQuery(
+      {
+        where,
+        page,
+        limit,
+        orderBy: buildProductSort(sort),
+      },
+      (args) => this.productRepo.listPaginated(args),
+    );
   }
 
-  findAllProduct() {
-    return this.productRepo.list(null, {});
+  findAllProduct(
+    search: string,
+    page: number,
+    limit: number,
+    sort: ProductSort,
+  ) {
+    const where: Prisma.ProductWhereInput = {
+      ...(search && {
+        OR: buildSearchOr(search, ['name', 'description']),
+      }),
+    };
+
+    return paginatedQuery(
+      {
+        where,
+        page,
+        limit,
+        orderBy: buildProductSort(sort),
+      },
+      (args) => this.productRepo.listPaginated(args),
+    );
   }
 
   async findAllProductByCategory(categorySlug: string) {
@@ -141,12 +187,12 @@ export class ProductService {
       throw new NotFoundException('Category not found');
     }
 
-    const products = await this.productRepo.list(null, {
-      categoryId: existCategory.id,
-      status: ProductStatus.ACTIVE,
-    });
+    // const products = await this.productRepo.list(null, {
+    //   categoryId: existCategory.id,
+    //   status: ProductStatus.ACTIVE,
+    // });
 
-    return products;
+    return null;
   }
 
   findOne(slug: string) {

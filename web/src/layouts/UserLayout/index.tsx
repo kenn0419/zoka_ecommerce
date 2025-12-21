@@ -1,17 +1,19 @@
 import { Outlet } from "react-router-dom";
-import Header from "../../components/layout/Header";
 import styles from "./MainLayout.module.scss";
-import Footer from "../../components/layout/Footer";
+import Footer from "../../components/layout/user/Footer";
+import { Content } from "antd/es/layout/layout";
+import AppHeader from "../../components/layout/user/AppHeader";
+import { Layout } from "antd";
 
 const MainLayout = () => {
   return (
-    <div className={styles.main}>
-      <Header />
-      <main>
+    <Layout className={styles.layout}>
+      <AppHeader />
+      <Content className={styles.content}>
         <Outlet />
-      </main>
+      </Content>
       <Footer />
-    </div>
+    </Layout>
   );
 };
 

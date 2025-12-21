@@ -12,7 +12,6 @@ import { JwtGlobalModule } from './config/jwt.module';
 import { ProductModule } from './modules/product/product.module';
 import { ShopModule } from './modules/shop/shop.module';
 import { RbacModule } from './modules/rbac/rbac.module';
-import { SeederModule } from './infrastructure/seeder/seeder.module';
 import { CartModule } from './modules/cart/cart.module';
 import { CouponModule } from './modules/coupon/coupon.module';
 import { OrderModule } from './modules/order/order.module';
@@ -35,7 +34,6 @@ import { OrderModule } from './modules/order/order.module';
     ProductModule,
     ShopModule,
     RbacModule,
-    SeederModule,
     CartModule,
     CouponModule,
     OrderModule,
