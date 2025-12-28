@@ -1,11 +1,13 @@
 import { Row, Col, Empty } from "antd";
 import styles from "./ProductList.module.scss";
-import type { IProductResponse } from "../../../types/product.type";
 import ProductSkeletonCard from "../ProductSkeletonCard";
 import ProductCard from "../ProductCard";
+import { useNavigate } from "react-router-dom";
+import { PATH } from "../../../utils/path.util";
+import type { IProductListItemResponse } from "../../../types/product.type";
 
 interface ProductListProps {
-  products: IProductResponse[];
+  products: IProductListItemResponse[];
   loading?: boolean;
   title?: string;
   skeletonCount?: number;
@@ -17,6 +19,11 @@ export default function ProductList({
   title,
   skeletonCount = 12,
 }: ProductListProps) {
+  const navigate = useNavigate();
+
+  const handleClickProduct = (slug: string) => {
+    navigate(`/${PATH.PRODUCTS}/${slug}`);
+  };
   if (!loading && products.length === 0) {
     return <Empty description="Không có sản phẩm" />;
   }
@@ -33,7 +40,14 @@ export default function ProductList({
               </Col>
             ))
           : products.map((product) => (
-              <Col key={product.id} xs={12} sm={8} md={6} lg={4}>
+              <Col
+                key={product.id}
+                xs={12}
+                sm={8}
+                md={6}
+                lg={4}
+                onClick={() => handleClickProduct(product.slug)}
+              >
                 <ProductCard product={product} />
               </Col>
             ))}

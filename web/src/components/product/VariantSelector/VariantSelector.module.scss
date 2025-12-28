@@ -1,0 +1,33 @@
+.variant {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  color: #757575;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.option {
+  padding: 6px 14px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #ee4d2d;
+    color: #ee4d2d;
+  }
+}
+
+.active {
+  border-color: #ee4d2d;
+  color: #ee4d2d;
+}

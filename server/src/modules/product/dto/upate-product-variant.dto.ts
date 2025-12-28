@@ -22,7 +22,7 @@ export class UpdateVariantDto {
 
   @IsNumber()
   @IsOptional()
-  additionalPrice?: number;
+  price?: number;
 
   @IsArray()
   @IsString({ each: true })

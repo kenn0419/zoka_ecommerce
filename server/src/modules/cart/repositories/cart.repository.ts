@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from 'generated/prisma';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
+import { CreateCartItemDto } from '../dto/create-cart-item.dto';
+import { da } from '@faker-js/faker';
 
 @Injectable()
 export class CartRepository {
@@ -17,29 +20,7 @@ export class CartRepository {
   async createCart(userId: string) {
     return this.prisma.cart.create({
       data: { userId },
-    });
-  }
-
-  async addItem(
-    cartId: string,
-    productId: string,
-    variantId: string | null,
-    quantity: number,
-  ) {
-    // Nếu item đã tồn tại trong cart → update quantity
-    const existingItem = await this.prisma.cartItem.findFirst({
-      where: { cartId, productId, variantId },
-    });
-
-    if (existingItem) {
-      return this.prisma.cartItem.update({
-        where: { id: existingItem.id },
-        data: { quantity: existingItem.quantity + quantity },
-      });
-    }
-
-    return this.prisma.cartItem.create({
-      data: { cartId, productId, variantId, quantity },
+      include: { items: { include: { product: true, variant: true } } },
     });
   }
 

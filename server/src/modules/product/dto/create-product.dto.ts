@@ -27,12 +27,6 @@ export class CreateProductDto {
   @IsOptional()
   description?: string;
 
-  @IsNumber()
-  price: number;
-
-  @IsInt()
-  stock: number;
-
   @IsArray()
   @ArrayMinSize(1, { message: 'Product must have at least 1 variant' })
   @ValidateNested({ each: true })

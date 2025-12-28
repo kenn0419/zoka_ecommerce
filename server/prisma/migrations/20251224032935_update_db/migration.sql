@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Product" ALTER COLUMN "maxPrice" DROP NOT NULL,
+ALTER COLUMN "minPrice" DROP NOT NULL;

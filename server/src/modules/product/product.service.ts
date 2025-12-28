@@ -69,21 +69,19 @@ export class ProductService {
       ...variantUploadPromises,
     ]);
 
-    let totalStock = 0;
     const productId = crypto.randomUUID();
     const variantRows: Prisma.ProductVariantCreateManyInput[] = [];
     const variantImageRows: Prisma.VariantImageCreateManyInput[] = [];
 
     for (const variant of data.variants) {
       const variantId = crypto.randomUUID();
-      totalStock += variant.stock;
 
       variantRows.push({
         id: variantId,
         productId,
         name: variant.name,
         stock: variant.stock,
-        additionalPrice: new Prisma.Decimal(variant.additionalPrice || 0),
+        price: new Prisma.Decimal(variant.price || 0),
       });
 
       for (const i of variant.images || []) {
@@ -107,9 +105,7 @@ export class ProductService {
         name: data.name,
         slug: SlugifyUtil.createSlug(data.name),
         description: data.description,
-        price: new Prisma.Decimal(data.price),
         thumbnail: thumbnail.url,
-        stock: totalStock,
         status: ProductStatus.PENDING,
       });
 
@@ -152,7 +148,7 @@ export class ProductService {
         limit,
         orderBy: buildProductSort(sort),
       },
-      (args) => this.productRepo.listPaginated(args),
+      (args) => this.productRepo.listPaginatedForPublic(args),
     );
   }
 
@@ -179,7 +175,13 @@ export class ProductService {
     );
   }
 
-  async findAllProductByCategory(categorySlug: string) {
+  async findAllProductByCategory(
+    categorySlug: string,
+    search: string,
+    page: number,
+    limit: number,
+    sort: ProductSort,
+  ) {
     const existCategory = await this.categoryRepo.findUnique({
       slug: categorySlug,
     });
@@ -187,16 +189,28 @@ export class ProductService {
       throw new NotFoundException('Category not found');
     }
 
-    // const products = await this.productRepo.list(null, {
-    //   categoryId: existCategory.id,
-    //   status: ProductStatus.ACTIVE,
-    // });
+    const where: Prisma.ProductWhereInput = {
+      categoryId: existCategory.id,
+      ...(search && {
+        OR: buildSearchOr(search, ['name', 'description']),
+      }),
+    };
 
-    return null;
+    return paginatedQuery(
+      {
+        where,
+        page,
+        limit,
+        orderBy: buildProductSort(sort),
+      },
+      (args) => this.productRepo.listPaginatedForPublic(args),
+    );
   }
 
-  findOne(slug: string) {
-    return this.productRepo.findUnique(null, { slug });
+  async findOne(slug: string) {
+    const product = await this.productRepo.findPublicDetail({ slug });
+    if (!product) throw new NotFoundException('Product not found');
+    return product;
   }
 
   update(
@@ -206,9 +220,8 @@ export class ProductService {
     variantFiles?: Express.Multer.File[],
   ) {
     return this.prisma.$transaction(async (tx) => {
-      const product = await this.productRepo.findUnique(tx, { slug });
-      if (!product) throw new NotFoundException('Product not found');
-      let thumbnail = product.thumbnail;
+      const existProduct = await this.productRepo.findUnique({ slug });
+      let thumbnail = existProduct?.thumbnail;
 
       if (thumbnailFile) {
         thumbnail = (
@@ -228,18 +241,22 @@ export class ProductService {
             name: data.name,
             description: data.description,
             thumbnail,
-            price: data.price ? new Prisma.Decimal(data.price) : undefined,
             category: data.categoryId
               ? { connect: { id: data.categoryId } }
               : undefined,
           },
         );
-        return { productId: product.id };
+        return { productId: existProduct?.id };
       }
 
-      await this.productVariantRepo.deleteByProductId(tx, product.id);
-      await this.variantImageRepo.deleteAllByProductId(tx, product.id);
-
+      await this.productVariantRepo.deleteByProductId(
+        tx,
+        existProduct?.id ?? '',
+      );
+      await this.variantImageRepo.deleteAllByProductId(
+        tx,
+        existProduct?.id ?? '',
+      );
       const variantRows: Prisma.ProductVariantCreateManyInput[] = [];
       const variantImageRows: Prisma.VariantImageCreateManyInput[] = [];
 
@@ -249,10 +266,10 @@ export class ProductService {
         /** 1. Tạo variant row */
         variantRows.push({
           id: variantId,
-          productId: product.id,
+          productId: existProduct?.id ?? '',
           name: variant.name,
           stock: variant.stock,
-          additionalPrice: new Prisma.Decimal(variant.additionalPrice || 0),
+          price: new Prisma.Decimal(variant.price || 0),
         });
 
         /** 2. Xử lý URL images */
@@ -300,15 +317,13 @@ export class ProductService {
           name: data.name,
           description: data.description,
           thumbnail,
-          price: new Prisma.Decimal(data.price ?? 0),
           category: data.categoryId
             ? { connect: { id: data.categoryId } }
             : undefined,
-          stock: data.variants.reduce((s, v) => s + v.stock, 0),
         },
       );
 
-      return { productId: product.id };
+      return { productId: existProduct?.id };
     });
   }
 

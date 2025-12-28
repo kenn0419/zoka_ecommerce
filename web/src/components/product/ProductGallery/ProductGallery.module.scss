@@ -1,0 +1,30 @@
+.gallery {
+  display: flex;
+  flex-direction: column;
+}
+
+.mainImage {
+  width: 100%;
+  border: 1px solid #eee;
+}
+
+.thumbList {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+
+  img {
+    width: 60px;
+    height: 60px;
+    border: 2px solid transparent;
+    cursor: pointer;
+
+    &:hover {
+      border-color: #ee4d2d;
+    }
+  }
+}
+
+.active {
+  border-color: #ee4d2d !important;
+}

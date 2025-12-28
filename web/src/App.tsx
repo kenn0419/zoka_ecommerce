@@ -1,6 +1,6 @@
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes";
-import { authStore } from "./store/auth.store";
+import { useAuthStore } from "./store/auth.store";
 import { Suspense, useEffect } from "react";
 import LoadingFallback from "./components/common/LoadingFallback";
 import { PATH } from "./utils/path.util";
@@ -13,7 +13,7 @@ const AUTH_PATHS = [
 ];
 
 function App() {
-  const { init } = authStore();
+  const { init } = useAuthStore();
 
   useEffect(() => {
     const path = window.location.pathname;

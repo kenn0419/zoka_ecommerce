@@ -10,9 +10,8 @@ export class CreateProductVariantDto {
   @IsString()
   name: string;
 
-  @IsOptional()
   @IsNumber()
-  additionalPrice?: number;
+  price: number;
 
   @IsInt()
   stock: number;

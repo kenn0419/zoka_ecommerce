@@ -9,7 +9,7 @@ export class ProductVariantResponseDto {
   name: string;
 
   @Expose()
-  additionalPrice?: number;
+  price?: number;
 
   @Expose()
   stock: number;

@@ -23,7 +23,7 @@ interface ProductVariant {
   id: string;
   productId: string;
   name: string;
-  additionalPrice: number;
+  price: number;
   stock: number;
   images: string[];
 }
@@ -33,9 +33,9 @@ interface Product {
   shopId: string;
   categoryId: string;
   name: string;
-  price: number;
-  stock: number;
   thumbnail: string;
+  minPrice: number;
+  maxPrice: number;
   images: string[];
   variants: ProductVariant[];
 }
@@ -112,10 +112,6 @@ for (const sector of sectors) {
     for (let p = 0; p < productsPerShop; p++) {
       const productId = crypto.randomUUID();
       const productName = faker.commerce.productName();
-      const price = parseFloat(
-        faker.commerce.price({ min: 10, max: 1000, dec: 2 }),
-      );
-      const stock = faker.number.int({ min: 0, max: 100 });
 
       // Chọn category random từ sector
       const sectorCategories = categories.filter((c) => {
@@ -136,8 +132,8 @@ for (const sector of sectors) {
           id: variantId,
           productId,
           name: `${productName} ${faker.color.human()}`,
-          additionalPrice: parseFloat(
-            faker.commerce.price({ min: 10, max: 1000, dec: 2 }),
+          price: parseFloat(
+            faker.commerce.price({ min: 10000, max: 10000000, dec: 2 }),
           ),
           stock: faker.number.int({ min: 0, max: 50 }),
           images: Array.from({ length: 3 }, (_, i) =>
@@ -146,14 +142,17 @@ for (const sector of sectors) {
         });
       }
 
+      let minPrice = Math.min(...variants.map((v) => v.price));
+      let maxPrice = Math.max(...variants.map((v) => v.price));
+
       products.push({
         id: productId,
         shopId,
         categoryId,
         name: productName,
-        price,
-        stock,
         thumbnail: variants[0].images[0],
+        minPrice,
+        maxPrice,
         images: variants.flatMap((v) => v.images),
         variants,
       });

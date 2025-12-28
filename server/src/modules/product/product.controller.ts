@@ -12,6 +12,8 @@ import {
   UploadedFiles,
   DefaultValuePipe,
   Query,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -21,10 +23,10 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { Serialize } from 'src/common/decorators/serialize.decorator';
-import { ProductResponseDto } from './dto/product-response.dto';
 import { RolesPermissionsGuard } from 'src/common/guards/rbac.guard';
-import { PositiveIntPipe } from 'src/common/pipes/positive-int.pipe';
-import { ProductSort } from 'src/common/enums/product-sort.enum';
+import { ProductListQueryDto } from './dto/product-query.dto';
+import { ProductListResponseDto } from './dto/product-list-item-response.dto';
+import { ProductDetailResponseDto } from './dto/product-detail-response.dto';
 
 @Controller('product')
 export class ProductController {
@@ -40,9 +42,10 @@ export class ProductController {
     ]),
   )
   @Serialize(
-    ProductResponseDto,
+    ProductListResponseDto,
     'Create product successfully. Please wait admin for apporving!',
   )
+  @HttpCode(HttpStatus.CREATED)
   create(
     @Req() req,
     @UploadedFiles()
@@ -63,40 +66,48 @@ export class ProductController {
   @Get()
   @Roles(Role.ADMIN)
   @UseGuards(JwtSessionGuard, RolesPermissionsGuard)
-  @Serialize(ProductResponseDto, 'Get all products successfully.')
-  findAllProducts(
-    @Query('search', new DefaultValuePipe('')) search: string,
-    @Query('page', new DefaultValuePipe(1), PositiveIntPipe)
-    page: number,
-    @Query('limit', new DefaultValuePipe(20), PositiveIntPipe) limit: number,
-    @Query('sort', new DefaultValuePipe(ProductSort.OLDEST)) sort: ProductSort,
-  ) {
+  @Serialize(ProductListResponseDto, 'Get all products successfully.')
+  @HttpCode(HttpStatus.OK)
+  findAllProducts(@Query() { search, page, limit, sort }: ProductListQueryDto) {
     return this.productService.findAllProduct(search, page, limit, sort);
   }
 
   @Get('/active')
-  @Serialize(ProductResponseDto, 'Get all products successfully.')
+  @Serialize(ProductListResponseDto, 'Get all products successfully.')
+  @HttpCode(HttpStatus.OK)
   findAllActiveProducts(
-    @Query('search', new DefaultValuePipe('')) search: string,
-    @Query('page', new DefaultValuePipe(1), PositiveIntPipe)
-    page: number,
-    @Query('limit', new DefaultValuePipe(20), PositiveIntPipe) limit: number,
-    @Query('sort', new DefaultValuePipe(ProductSort.OLDEST)) sort: ProductSort,
+    @Query() { search, page, limit, sort }: ProductListQueryDto,
   ) {
     return this.productService.findAllActiveProduct(search, page, limit, sort);
   }
 
-  @Get('/:categorySlug')
-  findAllProductsByCategory(@Param('categorySlug') slug: string) {
-    return this.productService.findAllProductByCategory(slug);
+  @Get('/category/:categorySlug')
+  @HttpCode(HttpStatus.OK)
+  @Serialize(
+    ProductListResponseDto,
+    'Get all products by category successfully.',
+  )
+  findAllProductsByCategory(
+    @Param('categorySlug') slug: string,
+    @Query() { search, page, limit, sort }: ProductListQueryDto,
+  ) {
+    return this.productService.findAllProductByCategory(
+      slug,
+      search,
+      page,
+      limit,
+      sort,
+    );
   }
 
-  @Get(':slug')
+  @Get('/detail/:slug')
+  @Serialize(ProductDetailResponseDto, 'Get product detail successfully.')
+  @HttpCode(HttpStatus.OK)
   findProducDetail(@Param('slug') slug: string) {
     return this.productService.findOne(slug);
   }
 
-  @Patch(':slug')
+  @Patch('/:slug')
   @Roles(Role.SHOP)
   @UseGuards(JwtSessionGuard)
   @UseInterceptors(
@@ -105,6 +116,7 @@ export class ProductController {
       { name: 'variantImages', maxCount: 20 },
     ]),
   )
+  @HttpCode(HttpStatus.ACCEPTED)
   update(
     @Param('slug') slug: string,
     @Body() data: UpdateProductDto,
@@ -122,9 +134,10 @@ export class ProductController {
     );
   }
 
-  @Delete(':slug')
+  @Delete('/:slug')
   @Roles(Role.SHOP)
   @UseGuards(JwtSessionGuard)
+  @HttpCode(HttpStatus.ACCEPTED)
   remove(@Param('slug') slug: string) {
     return this.productService.remove(slug);
   }

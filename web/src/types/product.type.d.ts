@@ -2,20 +2,28 @@ import type { ICategoryResponse } from "./category.type";
 import type { IProductVariant } from "./product-variant.type";
 import type { IShopResponse } from "./shop.type";
 
-export interface IProductResponse {
+export interface IProductListItemResponse {
   id: string;
-  shopId: string;
+  name: string;
+  slug: string;
+  thumbnail: string;
+  avgRating: number;
+  minPrice: number;
+  maxPrice: number;
+  hasStock: boolean;
+}
+
+export interface IProductDetailResponse {
+  id: string;
   name: string;
   slug: string;
   description: string;
-  price: Float;
-  stock: number;
-  status: string;
   thumbnail: string;
-  avgRating: Float;
-  createdAt: DateTime;
-  updatedAt: DateTime;
+  avgRating: number;
+  minPrice: number;
+  maxPrice: number;
+  hasStock: boolean;
+  variants: IProductVariant[];
   category: ICategoryResponse;
   shop: IShopResponse;
-  variants: IProductVariant[];
 }

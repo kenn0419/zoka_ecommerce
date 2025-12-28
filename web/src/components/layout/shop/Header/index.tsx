@@ -1,10 +1,10 @@
 import { Layout, Avatar, Dropdown } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import styles from "./header.module.scss";
-import { authStore } from "../../../../store/auth.store";
+import { useAuthStore } from "../../../../store/auth.store";
 
 export default function Header() {
-  const { user, logout } = authStore();
+  const { user, logout } = useAuthStore();
 
   const items = [{ key: "logout", label: "Đăng xuất", onClick: logout }];
 

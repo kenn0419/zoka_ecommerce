@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "./VerifyAccount.module.scss";
 import { Button, Input, message, Typography, type InputRef } from "antd";
-import { authStore } from "../../../store/auth.store";
+import { useAuthStore } from "../../../store/auth.store";
 import { useNavigate } from "react-router-dom";
 import { PATH } from "../../../utils/path.util";
 const { Title } = Typography;
@@ -10,7 +10,7 @@ export default function VerifyAccount() {
   const navigate = useNavigate();
   const [codes, setCodes] = useState(Array(8).fill(""));
   const inputsRef = useRef<(InputRef | null)[]>([]);
-  const { verifyAccount, loading, canVerify } = authStore();
+  const { verifyAccount, loading, canVerify } = useAuthStore();
 
   useEffect(() => {
     if (!canVerify) {

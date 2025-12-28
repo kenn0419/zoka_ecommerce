@@ -20,4 +20,7 @@ export const PATH = {
   FORBIDDEN: "forbidden",
   BAD_REQUEST: "bad-request",
   INTERNAL_ERROR: "internal-error",
+  PRODUCTS: "products",
+  PRODUCT_DETAIL: "products/:productSlug",
+  CART: "cart",
 };

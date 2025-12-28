@@ -1,18 +1,24 @@
-import * as common from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+  Type,
+} from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { map, Observable } from 'rxjs';
 import convertDecimalDeep from 'src/common/utils/convert-decimal-deep.util';
 
-@common.Injectable()
-export class TransformResponseInterceptor<T> implements common.NestInterceptor {
+@Injectable()
+export class TransformResponseInterceptor<T> implements NestInterceptor {
   constructor(
-    private readonly dto: common.Type<T> | null,
+    private readonly dto: Type<T> | null,
     private readonly message: string,
   ) {}
 
   intercept(
-    context: common.ExecutionContext,
-    next: common.CallHandler<any>,
+    context: ExecutionContext,
+    next: CallHandler<any>,
   ): Observable<any> {
     const ctx = context.switchToHttp();
     const response = ctx.getResponse();

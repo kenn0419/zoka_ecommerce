@@ -4,10 +4,10 @@ import CategorySection from "../../../components/common/CategorySection";
 import FlashSale from "../../../components/common/FlashSale";
 import { useEffect } from "react";
 import ProductList from "../../../components/product/ProductList";
-import { productStore } from "../../../store/product.store";
+import { useProductStore } from "../../../store/product.store";
 
 const Home = () => {
-  const { products, fetchActiveProducts, loading } = productStore();
+  const { products, fetchActiveProducts, loading } = useProductStore();
 
   useEffect(() => {
     fetchActiveProducts();

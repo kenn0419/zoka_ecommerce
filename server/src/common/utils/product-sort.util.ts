@@ -6,8 +6,8 @@ const productSortMap: Record<
   ProductSort,
   Prisma.ProductOrderByWithRelationInput
 > = {
-  [ProductSort.PRICE_ASC]: { price: 'asc' },
-  [ProductSort.PRICE_DESC]: { price: 'desc' },
+  [ProductSort.PRICE_ASC]: { minPrice: 'asc' },
+  [ProductSort.PRICE_DESC]: { maxPrice: 'desc' },
   [ProductSort.RATING_DESC]: { avgRating: 'desc' },
   [ProductSort.OLDEST]: { createdAt: 'asc' },
   [ProductSort.NEWEST]: { createdAt: 'desc' },

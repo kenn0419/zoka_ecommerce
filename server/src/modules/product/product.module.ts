@@ -19,6 +19,7 @@ import { VariantImageRepository } from './repositories/variant-image.repository'
     ConfigModule,
     ShopModule,
   ],
+  exports: [ProductVariantRepository],
   controllers: [ProductController],
   providers: [
     ProductService,

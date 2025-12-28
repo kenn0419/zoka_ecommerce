@@ -1,7 +1,7 @@
 import { Form, Input, Button, Typography, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { PATH } from "../../../utils/path.util";
-import { authStore } from "../../../store/auth.store";
+import { useAuthStore } from "../../../store/auth.store";
 import { Role } from "../../../utils/role.util";
 import AuthCard from "../../../components/auth/AuthCard";
 import PageHeader from "../../../components/auth/PageHeader";
@@ -11,7 +11,7 @@ const { Text } = Typography;
 
 export default function Signin() {
   const navigate = useNavigate();
-  const { signin, loading, user } = authStore();
+  const { signin, loading, user } = useAuthStore();
 
   const onFinish = async (values: any) => {
     const { success, error } = await signin({

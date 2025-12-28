@@ -1,0 +1,24 @@
+.action {
+  // display: flex;
+  gap: 12px;
+}
+
+.cart,
+.buy {
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.cart {
+  flex: 1;
+  border-color: #ee4d2d;
+  color: #ee4d2d;
+  margin-right: 20px;
+}
+
+.buy {
+  flex: 1;
+  background: #ee4d2d;
+}

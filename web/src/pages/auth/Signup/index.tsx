@@ -2,7 +2,7 @@ import { Form, Button, Typography, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import layout from "./../../../layouts/AuthLayout/AuthLayout.module.scss";
 import { PATH } from "../../../utils/path.util";
-import { authStore } from "../../../store/auth.store";
+import { useAuthStore } from "../../../store/auth.store";
 import FormInput, {
   type FieldProps,
 } from "../../../components/common/FormInput";
@@ -55,7 +55,7 @@ const fields = [
 
 export default function Signup() {
   const navigate = useNavigate();
-  const { loading, signup } = authStore();
+  const { loading, signup } = useAuthStore();
 
   const onFinish = async (values: IAuthSignupRequest) => {
     const result = await signup(values);

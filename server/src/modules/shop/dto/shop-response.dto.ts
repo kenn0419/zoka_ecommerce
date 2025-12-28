@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 
-export class ShopResponse {
+export class ShopResponseDto {
   @Expose()
   id: string;
 

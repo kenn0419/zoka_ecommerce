@@ -34,4 +34,11 @@ export class ProductVariantRepository {
     tx = tx !== null ? tx : this.prisma;
     return tx.productVariant.deleteMany({ where: { productId } });
   }
+
+  findUnique(where: Prisma.ProductVariantWhereUniqueInput) {
+    return this.prisma.productVariant.findUnique({
+      where,
+      include: { product: true, images: true },
+    });
+  }
 }

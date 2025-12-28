@@ -24,12 +24,8 @@ export class ProductRepository {
     return tx.product.update({ where, data });
   }
 
-  findUnique(
-    tx: Prisma.TransactionClient | null = this.prisma,
-    where: Prisma.ProductWhereUniqueInput,
-  ) {
-    tx = tx !== null ? tx : this.prisma;
-    return tx.product.findUnique({
+  findUnique(where: Prisma.ProductWhereUniqueInput) {
+    return this.prisma.product.findUnique({
       where,
       include: {
         category: true,
@@ -74,6 +70,65 @@ export class ProductRepository {
     ]);
 
     return { items, totalItems };
+  }
+
+  async listPaginatedForPublic(params: {
+    where: Prisma.ProductWhereInput;
+    limit: number;
+    page: number;
+    orderBy?: Prisma.ProductOrderByWithRelationInput;
+  }) {
+    const { where, limit, page, orderBy } = params;
+
+    const skip = (page - 1) * limit;
+    const [items, totalItems] = await this.prisma.$transaction([
+      this.prisma.product.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy,
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          thumbnail: true,
+          avgRating: true,
+          minPrice: true,
+          maxPrice: true,
+          hasStock: true,
+        },
+      }),
+      this.prisma.product.count({ where }),
+    ]);
+
+    return { items, totalItems };
+  }
+
+  async findPublicDetail(where: Prisma.ProductWhereUniqueInput) {
+    return this.prisma.product.findUnique({
+      where,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        avgRating: true,
+        minPrice: true,
+        maxPrice: true,
+        hasStock: true,
+        variants: {
+          where: { stock: { gt: 0 } },
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            stock: true,
+            images: { select: { imageUrl: true } },
+          },
+        },
+        category: { select: { id: true, name: true, slug: true } },
+        shop: { select: { id: true, name: true, slug: true, logoUrl: true } },
+      },
+    });
   }
 
   remove(

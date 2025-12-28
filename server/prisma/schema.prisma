@@ -48,51 +48,53 @@ model UserSession {
   isRevoked    Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  
-  user         User     @relation(fields: [userId], references: [id])
+
+  user User @relation(fields: [userId], references: [id])
 }
 
 // Roles & Permissions
 model Role {
-  id          String           @id @default(uuid())
-  name        String           @unique
+  id          String   @id @default(uuid())
+  name        String   @unique
   description String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   users       UserRole[]
   permissions RolePermission[]
 }
 
 model Permission {
-  id          String           @id @default(uuid())
-  name        String           @unique
+  id          String   @id @default(uuid())
+  name        String   @unique
   description String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  roles       RolePermission[]
+  roles RolePermission[]
 }
 
 model UserRole {
-  userId String
-  roleId String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id])
   role Role @relation(fields: [roleId], references: [id])
+
   @@id([userId, roleId])
 }
 
 model RolePermission {
   roleId       String
   permissionId String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   role       Role       @relation(fields: [roleId], references: [id])
   permission Permission @relation(fields: [permissionId], references: [id])
+
   @@id([roleId, permissionId])
 }
 
@@ -117,12 +119,12 @@ model Shop {
 }
 
 model ShopCategory {
-  id          String  @id @default(uuid())
+  id          String   @id @default(uuid())
   shopId      String
   name        String
   description String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   shop Shop @relation(fields: [shopId], references: [id])
 }
@@ -130,15 +132,15 @@ model ShopCategory {
 // ===================== PRODUCT =====================
 
 model Category {
-  id           String  @id @default(uuid())
+  id           String   @id @default(uuid())
   name         String
-  slug         String  @unique
+  slug         String   @unique
   parentId     String?
   description  String?
   thumbnailUrl String
-  status       String  @default("PENDING")
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  status       String   @default("PENDING")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   parent   Category?  @relation("CategoryParent", fields: [parentId], references: [id])
   children Category[] @relation("CategoryParent")
@@ -152,11 +154,12 @@ model Product {
   name        String
   slug        String   @unique
   description String?
-  price       Decimal
-  stock       Int
   status      String   @default("PENDING")
   thumbnail   String
+  minPrice    Decimal?
+  maxPrice    Decimal?
   avgRating   Float?   @default(0)
+  hasStock    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -170,25 +173,25 @@ model Product {
 }
 
 model ProductVariant {
-  id              String         @id @default(uuid())
-  productId       String
-  name            String
-  additionalPrice Decimal?
-  stock           Int
-  images          VariantImage[]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id        String         @id @default(uuid())
+  productId String
+  name      String
+  price     Decimal
+  stock     Int
+  images    VariantImage[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
   product   Product    @relation(fields: [productId], references: [id])
   cartItems CartItem[]
 }
 
 model VariantImage {
-  id        String @id @default(uuid())
+  id        String   @id @default(uuid())
   variantId String
   imageUrl  String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   variant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
 }
@@ -206,13 +209,18 @@ model Cart {
 }
 
 model CartItem {
-  id        String   @id @default(uuid())
-  cartId    String
-  productId String
-  variantId String? // Nếu product có variants
-  quantity  Int      @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(uuid())
+  cartId        String
+  productId     String
+  variantId     String
+  productName   String
+  variantName   String
+  imageUrl      String
+  priceSnapshot Decimal
+  stockSnapshot Int
+  quantity      Int      @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   cart    Cart            @relation(fields: [cartId], references: [id])
   product Product         @relation(fields: [productId], references: [id])
@@ -228,8 +236,8 @@ model FlashSale {
   startTime DateTime
   endTime   DateTime
   status    String   @default("PENDING")
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   shop  Shop            @relation(fields: [shopId], references: [id])
   items FlashSaleItem[]
@@ -240,8 +248,8 @@ model FlashSaleItem {
   productId   String
   salePrice   Decimal
   quantity    Int
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   flashSale FlashSale @relation(fields: [flashSaleId], references: [id])
   product   Product   @relation(fields: [productId], references: [id])
@@ -292,8 +300,8 @@ model OrderItem {
   productId String
   quantity  Int
   price     Decimal
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   order   Order   @relation(fields: [orderId], references: [id])
   product Product @relation(fields: [productId], references: [id])
@@ -309,8 +317,8 @@ model ProductReview {
   buyerId   String
   rating    Int
   comment   String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   product Product @relation(fields: [productId], references: [id])
   buyer   User    @relation(fields: [buyerId], references: [id])

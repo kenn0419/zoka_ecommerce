@@ -5,8 +5,10 @@ import { AdminRoutes } from "./AdminRouter";
 import { AuthRoutes } from "./AuthRouter";
 import NotFound from "../pages/error/NotFound";
 import { ErrorRoutes } from "./ErrorRouter";
+import { ProductRoutes } from "./ProductRouter";
 
 export const router = createBrowserRouter([
+  ProductRoutes,
   UserRoutes,
   ShopRoutes,
   AdminRoutes,

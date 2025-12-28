@@ -89,10 +89,10 @@ export async function seedCatalog(prisma: PrismaClient) {
         categoryId: categoryMap[product.categoryId],
         name: product.name,
         slug: SlugifyUtil.createSlug(product.name),
-        price: product.price,
-        stock: product.stock,
         thumbnail: product.thumbnail,
         status: 'ACTIVE',
+        minPrice: product.minPrice,
+        maxPrice: product.maxPrice,
       },
     });
 
@@ -104,7 +104,7 @@ export async function seedCatalog(prisma: PrismaClient) {
           productId: newProduct.id,
           name: variant.name,
           stock: variant.stock,
-          additionalPrice: variant.additionalPrice,
+          price: variant.price,
         },
       });
 
