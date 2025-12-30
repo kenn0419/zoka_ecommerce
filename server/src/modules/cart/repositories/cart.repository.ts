@@ -8,19 +8,33 @@ import { da } from '@faker-js/faker';
 export class CartRepository {
   constructor(private prisma: PrismaService) {}
 
-  async getCartByUser(userId: string) {
-    return this.prisma.cart.findUnique({
+  async getOrCreateCartByUser(userId: string) {
+    return this.prisma.cart.upsert({
       where: { userId },
+      update: {},
+      create: { userId },
       include: {
-        items: { include: { product: true, variant: true } },
+        items: {
+          orderBy: { createdAt: 'desc' },
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+            variant: {
+              select: {
+                id: true,
+                name: true,
+                price: true,
+                stock: true,
+              },
+            },
+          },
+        },
       },
-    });
-  }
-
-  async createCart(userId: string) {
-    return this.prisma.cart.create({
-      data: { userId },
-      include: { items: { include: { product: true, variant: true } } },
     });
   }
 

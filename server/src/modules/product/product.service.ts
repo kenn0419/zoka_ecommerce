@@ -152,6 +152,40 @@ export class ProductService {
     );
   }
 
+  findSuggestProducts(keyword: string) {
+    if (!keyword || keyword.trim().length < 2) {
+      return {
+        items: [],
+        meta: {
+          page: 0,
+          limit: 0,
+          totalItems: 0,
+          totalPages: 0,
+        },
+      };
+    }
+
+    const where: Prisma.ProductWhereInput = {
+      status: ProductStatus.ACTIVE,
+      category: {
+        status: CategoryStatus.ACTIVE,
+      },
+      ...(keyword && {
+        OR: buildSearchOr(keyword, ['name', 'description']),
+      }),
+    };
+
+    return paginatedQuery(
+      {
+        where,
+        page: 1,
+        limit: 4,
+        orderBy: buildProductSort(ProductSort.OLDEST),
+      },
+      (args) => this.productRepo.listPaginatedForPublic(args),
+    );
+  }
+
   findAllProduct(
     search: string,
     page: number,

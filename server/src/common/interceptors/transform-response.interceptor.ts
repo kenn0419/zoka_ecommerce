@@ -36,6 +36,7 @@ export class TransformResponseInterceptor<T> implements NestInterceptor {
         }
 
         const decimalConvertedData = convertDecimalDeep(data);
+
         if (!this.dto) {
           return {
             statusCode,
@@ -44,21 +45,13 @@ export class TransformResponseInterceptor<T> implements NestInterceptor {
           };
         }
 
-        let transformedData: any;
-        if (Array.isArray(decimalConvertedData?.items)) {
-          const transformItems = plainToInstance(
-            this.dto,
-            decimalConvertedData.items,
-            {
-              excludeExtraneousValues: true,
-            },
-          );
-          transformedData = { ...decimalConvertedData, items: transformItems };
-        } else {
-          transformedData = plainToInstance(this.dto, decimalConvertedData, {
+        const transformedData = plainToInstance(
+          this.dto,
+          decimalConvertedData,
+          {
             excludeExtraneousValues: true,
-          });
-        }
+          },
+        );
 
         return {
           statusCode,

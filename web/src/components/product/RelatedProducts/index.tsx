@@ -1,23 +1,20 @@
-import { useEffect } from "react";
 import styles from "./RelatedProducts.module.scss";
-import { useProductStore } from "../../../store/product.store";
 import ProductList from "../ProductList";
+import { useRelatedProductsQuery } from "../../../queries/product.query";
 
 export default function RelatedProducts({
   categorySlug,
 }: {
   categorySlug: string;
 }) {
-  const { relatedProducts, fetchRelatedProducts } = useProductStore();
+  const { data, isLoading } = useRelatedProductsQuery(categorySlug);
 
-  useEffect(() => {
-    fetchRelatedProducts(categorySlug);
-  }, [categorySlug]);
+  if (isLoading) return <div>Đang tải sản phẩm liên quan...</div>;
 
   return (
     <div className={styles.related}>
       <h3>Sản phẩm liên quan</h3>
-      <ProductList products={relatedProducts} />
+      <ProductList products={data?.items ?? []} />
     </div>
   );
 }

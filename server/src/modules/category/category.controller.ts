@@ -16,7 +16,10 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Serialize } from 'src/common/decorators/serialize.decorator';
+import {
+  Serialize,
+  SerializePaginated,
+} from 'src/common/decorators/serialize.decorator';
 import { CategoryResponseDto } from './dto/category-response.dto';
 import { PositiveIntPipe } from 'src/common/pipes/positive-int.pipe';
 import { JwtSessionGuard } from 'src/common/guards/jwt-session.guard';
@@ -43,7 +46,7 @@ export class CategoryController {
   @Get()
   @Roles(Role.ADMIN)
   @UseGuards(JwtSessionGuard)
-  @Serialize(CategoryResponseDto, `Find all categories successfully!`)
+  @SerializePaginated(CategoryResponseDto, `Find all categories successfully!`)
   findAllCategories(
     @Query('search', new DefaultValuePipe('')) search: string,
     @Query('page', new DefaultValuePipe(1), PositiveIntPipe)
@@ -56,7 +59,10 @@ export class CategoryController {
   }
 
   @Get('active')
-  @Serialize(CategoryResponseDto, `Find all active categories successfully!`)
+  @SerializePaginated(
+    CategoryResponseDto,
+    `Find all active categories successfully!`,
+  )
   findAllActiveCategories(
     @Query('search', new DefaultValuePipe('')) search: string,
     @Query('page', new DefaultValuePipe(1), PositiveIntPipe)

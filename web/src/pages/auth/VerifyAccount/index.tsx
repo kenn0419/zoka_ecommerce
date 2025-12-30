@@ -4,13 +4,14 @@ import { Button, Input, message, Typography, type InputRef } from "antd";
 import { useAuthStore } from "../../../store/auth.store";
 import { useNavigate } from "react-router-dom";
 import { PATH } from "../../../utils/path.util";
+import { authService } from "../../../services/auth.service";
 const { Title } = Typography;
 
 export default function VerifyAccount() {
   const navigate = useNavigate();
   const [codes, setCodes] = useState(Array(8).fill(""));
   const inputsRef = useRef<(InputRef | null)[]>([]);
-  const { verifyAccount, loading, canVerify } = useAuthStore();
+  const { loading, canVerify } = useAuthStore();
 
   useEffect(() => {
     if (!canVerify) {
@@ -46,17 +47,17 @@ export default function VerifyAccount() {
       return message.warning("Vui lòng nhập đủ 8 số!");
     }
 
-    const result = await verifyAccount(code);
+    const result = await authService.verifyAccount(code);
     if (result) {
       message.success("Xác thực tài khoản thành công");
-      navigate(`/${PATH.SIGNIN}`);
+      navigate(`/${PATH.AUTH}/${PATH.SIGNIN}`);
     } else {
       message.error("Đã xảy ra lỗi. Vui lòng thử lại!");
     }
   };
 
   return (
-    <>
+    <div>
       <Title level={2} className={styles.title}>
         Xác thực tài khoản
       </Title>
@@ -89,6 +90,6 @@ export default function VerifyAccount() {
       >
         Xác nhận
       </Button>
-    </>
+    </div>
   );
 }

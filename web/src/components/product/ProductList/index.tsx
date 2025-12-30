@@ -24,7 +24,7 @@ export default function ProductList({
   const handleClickProduct = (slug: string) => {
     navigate(`/${PATH.PRODUCTS}/${slug}`);
   };
-  if (!loading && products.length === 0) {
+  if (!loading && products?.length === 0) {
     return <Empty description="Không có sản phẩm" />;
   }
 

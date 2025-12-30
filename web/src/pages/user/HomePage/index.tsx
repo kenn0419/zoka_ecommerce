@@ -2,16 +2,11 @@ import styles from "./HomePage.module.scss";
 import BannerCarousel from "../../../components/layout/user/BannerCarousel";
 import CategorySection from "../../../components/common/CategorySection";
 import FlashSale from "../../../components/common/FlashSale";
-import { useEffect } from "react";
 import ProductList from "../../../components/product/ProductList";
-import { useProductStore } from "../../../store/product.store";
+import { useActiveProductsQuery } from "../../../queries/product.query";
 
 const Home = () => {
-  const { products, fetchActiveProducts, loading } = useProductStore();
-
-  useEffect(() => {
-    fetchActiveProducts();
-  }, []);
+  const { data, isLoading } = useActiveProductsQuery({ page: 1, limit: 12 });
 
   return (
     <div className={styles.home}>
@@ -20,8 +15,8 @@ const Home = () => {
       <FlashSale />
       <ProductList
         title="Gợi ý hôm nay"
-        products={products}
-        loading={loading}
+        products={data?.items ?? []}
+        loading={isLoading}
         skeletonCount={12}
       />
     </div>

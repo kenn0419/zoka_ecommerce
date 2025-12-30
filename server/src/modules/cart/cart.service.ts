@@ -3,6 +3,7 @@ import { AddCartDto } from './dto/add-cart.dto';
 import { CartRepository } from './repositories/cart.repository';
 import { ProductVariantRepository } from '../product/repositories/product-variant.repository';
 import { CartItemRepository } from './repositories/cart-item.repository';
+import { CartMapper } from 'src/common/mapper/cart.mapper';
 
 @Injectable()
 export class CartService {
@@ -12,12 +13,20 @@ export class CartService {
     private productVariantRepo: ProductVariantRepository,
   ) {}
 
+  private async getOrCreateCartEntity(userId: string) {
+    const cart = await this.cartRepo.getOrCreateCartByUser(userId);
+    return cart;
+  }
+
   async getUserCart(userId: string) {
-    let cart = await this.cartRepo.getCartByUser(userId);
-    if (!cart) {
-      cart = await this.cartRepo.createCart(userId);
-    }
-    return this.buildCartResponse(cart);
+    const cart = await this.getOrCreateCartEntity(userId);
+    return CartMapper.toCartResponse(cart);
+  }
+
+  async getUserCartSummary(userId: string) {
+    const cart = await this.getOrCreateCartEntity(userId);
+    const cartItems = await CartMapper.toCartItemResponses(cart);
+    return CartMapper.toCartSummaryResponse(cartItems);
   }
 
   async addToCart(userId: string, data: AddCartDto) {
@@ -27,7 +36,8 @@ export class CartService {
     if (!existVariant) {
       throw new NotFoundException('Product not found');
     }
-    let cart = await this.getUserCart(userId);
+
+    const cart = await this.getOrCreateCartEntity(userId);
 
     const existItem = cart?.items.find(
       (item) =>
@@ -45,25 +55,24 @@ export class CartService {
       await this.cartItemRepo.updateQuantity(existItem.id, {
         quantity: newQuantity,
       });
+    } else {
+      const payload = {
+        cartId: cart.id,
+        productId: existVariant.productId,
+        variantId: data.variantId,
+        productName: existVariant.product.name,
+        variantName: existVariant.name,
+        imageUrl: existVariant.images[0].imageUrl,
+        priceSnapshot: existVariant.price,
+        quantity: data.quantity,
+        stockSnapshot: existVariant.stock,
+      };
+
+      await this.cartItemRepo.addItem(payload);
     }
 
-    const payload = {
-      cartId: cart.id,
-      productId: existVariant.productId,
-      variantId: data.variantId,
-      productName: existVariant.product.name,
-      variantName: existVariant.name,
-      imageUrl: existVariant.images[0].imageUrl,
-      priceSnapshot: existVariant.price,
-      quantity: data.quantity,
-      stockSnapshot: existVariant.stock,
-    };
-
-    await this.cartItemRepo.addItem(payload);
-
-    cart = await this.getUserCart(userId);
-
-    return this.buildCartResponse(cart);
+    const updatedCart = await this.getOrCreateCartEntity(userId);
+    return CartMapper.toCartResponse(updatedCart);
   }
 
   async removeFromCart(cartItemId: string) {
@@ -71,43 +80,10 @@ export class CartService {
   }
 
   async clearUserCart(userId: string) {
-    const cart = await this.getUserCart(userId);
+    const cart = await this.getOrCreateCartEntity(userId);
     if (!cart) {
       throw new NotFoundException('Cart not found');
     }
     return this.cartRepo.clearCart(cart.id);
-  }
-
-  private buildCartResponse(cart: any) {
-    const items = cart.items.map((item) => {
-      const subtotal = Number(item.priceSnapshot) * item.quantity;
-      return {
-        id: item.id,
-        productId: item.productId,
-        variantId: item.variantId,
-        productName: item.productName,
-        variantName: item.variantName,
-        imageUrl: item.imageUrl,
-        priceSnapshot: Number(item.priceSnapshot),
-        quantity: item.quantity,
-        stockSnapshot: item.stockSnapshot,
-        subtotal,
-        isAvailable: item.stockSnapshot > 0,
-      };
-    });
-
-    const summary = {
-      totalItems: items.length,
-      totalQuantity: items.reduce((sum, i) => sum + i.quantity, 0),
-      subtotal: items.reduce((sum, i) => sum + i.subtotal, 0),
-    };
-
-    return {
-      id: cart.id,
-      userId: cart.userId,
-      items,
-      summary,
-      updatedAt: cart.updatedAt,
-    };
   }
 }

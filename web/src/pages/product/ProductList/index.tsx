@@ -1,16 +1,16 @@
 import { Row, Col } from "antd";
 import { useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
-import { useProductStore } from "../../../store/product.store";
-import styles from "./ProductList.module.scss";
 import ProductFilter from "../../../components/product/ProductFilter";
 import ProductSort from "../../../components/product/ProductSort";
 import ProductList from "../../../components/product/ProductList";
+import styles from "./ProductList.module.scss";
+import {
+  useActiveProductsQuery,
+  useProductsByCategoryQuery,
+} from "../../../queries/product.query";
 
 const ProductListPage = () => {
   const [searchParams] = useSearchParams();
-  const { products, fetchActiveProducts, fetchProductsByCategory } =
-    useProductStore();
 
   const category = searchParams.get("category");
   const keyword = searchParams.get("keyword");
@@ -18,13 +18,30 @@ const ProductListPage = () => {
   const page = Number(searchParams.get("page") || 1);
   const limit = Number(searchParams.get("limit") || 20);
 
-  useEffect(() => {
-    if (keyword) {
-      fetchActiveProducts(page, limit, keyword, sort);
-    } else {
-      fetchProductsByCategory(category ?? "", page, limit, undefined, sort);
+  const isSearch = Boolean(keyword);
+  const isCategory = Boolean(category && !keyword);
+
+  const activeProductsQuery = useActiveProductsQuery(
+    {
+      page,
+      limit,
+      search: keyword ?? undefined,
+      sort,
+    },
+    {
+      enabled: isSearch || !category,
     }
-  }, [category, keyword, sort, page]);
+  );
+
+  const categoryProductsQuery = useProductsByCategoryQuery(
+    category ?? "",
+    { page, limit, sort },
+    {
+      enabled: isCategory,
+    }
+  );
+
+  const query = isCategory ? categoryProductsQuery : activeProductsQuery;
 
   return (
     <div className={styles.wrapper}>
@@ -34,7 +51,10 @@ const ProductListPage = () => {
         </Col>
         <Col span={19}>
           <ProductSort />
-          <ProductList products={products} />
+          <ProductList
+            products={query.data?.items ?? []}
+            loading={query.isLoading}
+          />
         </Col>
       </Row>
     </div>

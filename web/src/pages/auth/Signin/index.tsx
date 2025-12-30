@@ -6,15 +6,16 @@ import { Role } from "../../../utils/role.util";
 import AuthCard from "../../../components/auth/AuthCard";
 import PageHeader from "../../../components/auth/PageHeader";
 import layout from "./../../../layouts/AuthLayout/AuthLayout.module.scss";
+import { authService } from "../../../services/auth.service";
 
 const { Text } = Typography;
 
 export default function Signin() {
   const navigate = useNavigate();
-  const { signin, loading, user } = useAuthStore();
+  const { loading, user } = useAuthStore();
 
   const onFinish = async (values: any) => {
-    const { success, error } = await signin({
+    const { success, error } = await authService.signin({
       email: values.email,
       password: values.password,
     });

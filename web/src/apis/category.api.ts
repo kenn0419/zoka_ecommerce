@@ -6,7 +6,7 @@ import type {
 import instance from "./axios-customize";
 
 export const categoryApi = {
-  fetchCategories: async ({
+  fetchActiveCategories: async ({
     page = 1,
     limit = 12,
     search,

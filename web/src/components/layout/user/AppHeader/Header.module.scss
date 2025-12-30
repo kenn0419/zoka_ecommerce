@@ -4,7 +4,9 @@
 .header {
   @include m.flex-center;
   background: v.$primary-color;
-  padding: 0 24px;
+  height: 100px;
+  padding: 30px 60px;
+  justify-content: space-between;
 }
 
 .logo {
@@ -14,14 +16,19 @@
   margin-right: 24px;
 }
 
+.logo img {
+  width: 200px;
+  height: 200px;
+}
+
 .search {
   flex: 1;
   max-width: 600px;
 }
 
 .actions {
-  margin-left: auto;
   display: flex;
+  align-items: end;
   gap: 20px;
 }
 
@@ -29,4 +36,13 @@
   font-size: 22px;
   color: white;
   cursor: pointer;
+}
+
+.authLink {
+  color: #fff;
+  font-size: 16px;
+
+  &:hover {
+    color: #3f3f3f;
+  }
 }

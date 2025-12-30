@@ -22,7 +22,10 @@ import { JwtSessionGuard } from 'src/common/guards/jwt-session.guard';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/common/enums/role.enum';
-import { Serialize } from 'src/common/decorators/serialize.decorator';
+import {
+  Serialize,
+  SerializePaginated,
+} from 'src/common/decorators/serialize.decorator';
 import { RolesPermissionsGuard } from 'src/common/guards/rbac.guard';
 import { ProductListQueryDto } from './dto/product-query.dto';
 import { ProductListResponseDto } from './dto/product-list-item-response.dto';
@@ -66,14 +69,14 @@ export class ProductController {
   @Get()
   @Roles(Role.ADMIN)
   @UseGuards(JwtSessionGuard, RolesPermissionsGuard)
-  @Serialize(ProductListResponseDto, 'Get all products successfully.')
+  @SerializePaginated(ProductListResponseDto, 'Get all products successfully.')
   @HttpCode(HttpStatus.OK)
   findAllProducts(@Query() { search, page, limit, sort }: ProductListQueryDto) {
     return this.productService.findAllProduct(search, page, limit, sort);
   }
 
   @Get('/active')
-  @Serialize(ProductListResponseDto, 'Get all products successfully.')
+  @SerializePaginated(ProductListResponseDto, 'Get all products successfully.')
   @HttpCode(HttpStatus.OK)
   findAllActiveProducts(
     @Query() { search, page, limit, sort }: ProductListQueryDto,
@@ -81,9 +84,19 @@ export class ProductController {
     return this.productService.findAllActiveProduct(search, page, limit, sort);
   }
 
+  @Get('/suggest')
+  @SerializePaginated(
+    ProductListResponseDto,
+    'Get suggest products successfully.',
+  )
+  @HttpCode(HttpStatus.OK)
+  findAllSuggestProducts(@Query('keyword') keyword: string) {
+    return this.productService.findSuggestProducts(keyword);
+  }
+
   @Get('/category/:categorySlug')
   @HttpCode(HttpStatus.OK)
-  @Serialize(
+  @SerializePaginated(
     ProductListResponseDto,
     'Get all products by category successfully.',
   )

@@ -8,6 +8,7 @@ import FormInput, {
 } from "../../../components/common/FormInput";
 import AuthCard from "../../../components/auth/AuthCard";
 import PageHeader from "../../../components/auth/PageHeader";
+import { authService } from "../../../services/auth.service";
 
 const { Text } = Typography;
 
@@ -55,13 +56,13 @@ const fields = [
 
 export default function Signup() {
   const navigate = useNavigate();
-  const { loading, signup } = useAuthStore();
+  const { loading } = useAuthStore();
 
   const onFinish = async (values: IAuthSignupRequest) => {
-    const result = await signup(values);
+    const result = await authService.signup(values);
     if (result) {
       message.success("Đăng ký thành công. Vui lòng xác thực tài khoản!");
-      navigate(`/${PATH.VERIFY_ACCOUNT}`);
+      navigate(`/${PATH.AUTH}/${PATH.VERIFY_ACCOUNT}`);
     } else {
       message.error("Đã xảy ra lỗi. Vui lòng thử lại!");
     }

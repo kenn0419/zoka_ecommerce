@@ -1,9 +1,10 @@
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes";
-import { useAuthStore } from "./store/auth.store";
 import { Suspense, useEffect } from "react";
 import LoadingFallback from "./components/common/LoadingFallback";
 import { PATH } from "./utils/path.util";
+import { cartService } from "./services/cart.service";
+import { authService } from "./services/auth.service";
 
 const AUTH_PATHS = [
   `/${PATH.AUTH}/${PATH.SIGNIN}`,
@@ -13,14 +14,13 @@ const AUTH_PATHS = [
 ];
 
 function App() {
-  const { init } = useAuthStore();
-
   useEffect(() => {
     const path = window.location.pathname;
     const isExist = AUTH_PATHS.some((item) => path.startsWith(item));
 
     if (!isExist) {
-      init();
+      authService.init();
+      cartService.getUserCart();
     }
   }, [location.pathname]);
 

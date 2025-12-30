@@ -17,7 +17,7 @@ export const productApi = {
   }: IPaginationQueries): Promise<
     IApiResponse<IPaginatedResponse<IProductListItemResponse>>
   > => {
-    return await instance.get("/product/active", {
+    return await instance.get(`/product/active`, {
       params: { page, limit, search, sort },
     });
   },
@@ -40,5 +40,11 @@ export const productApi = {
     productSlug: string
   ): Promise<IApiResponse<IProductDetailResponse>> => {
     return await instance.get(`/product/detail/${productSlug}`);
+  },
+
+  fetchSuggestProducts: async (
+    keyword: string
+  ): Promise<IApiResponse<IPaginatedResponse<IProductListItemResponse>>> => {
+    return await instance.get(`/product/suggest`, { params: { keyword } });
   },
 };
