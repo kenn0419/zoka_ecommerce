@@ -15,10 +15,14 @@ export const authApi = {
     return await instance.post("/auth/signup", data);
   },
 
-  verifyAccount: async (data: {
-    token: string;
-  }): Promise<IApiResponse<IAuthResponse>> => {
+  verifyAccount: async (
+    data: IAuthVerifyEmailRequest
+  ): Promise<IApiResponse<IAuthResponse>> => {
     return await instance.post("/auth/verify-email", data);
+  },
+
+  resendVerifyEmail: async (email: string) => {
+    await instance.post("/auth/resend-email", { email });
   },
 
   me: async (): Promise<IApiResponse<IUserResponse>> => {

@@ -1,7 +1,17 @@
-import React from "react";
+import LowStockProducts from "./components/LowStockProducts";
+import StatCards from "./components/StatCards";
+import TodayOrders from "./components/TodayOrders";
+import styles from "./Dashboard.module.scss";
 
-const Dashboard = () => {
-  return <div>Dashboard</div>;
-};
+export default function DashboardPage() {
+  return (
+    <div className={styles.dashboard}>
+      <StatCards />
 
-export default Dashboard;
+      <div className={styles.grid}>
+        <TodayOrders />
+        <LowStockProducts />
+      </div>
+    </div>
+  );
+}

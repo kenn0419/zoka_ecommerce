@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -16,9 +16,6 @@ export class CreateProductDto {
   @IsString()
   name: string;
 
-  @IsString()
-  slug: string;
-
   @IsNotEmpty()
   @IsUUID()
   categoryId: string;
@@ -26,6 +23,10 @@ export class CreateProductDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @IsNotEmpty()
+  @IsUUID()
+  shopId: string;
 
   @IsArray()
   @ArrayMinSize(1, { message: 'Product must have at least 1 variant' })

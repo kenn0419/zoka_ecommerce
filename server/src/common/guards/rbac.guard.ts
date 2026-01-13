@@ -26,13 +26,11 @@ export class RolesPermissionsGuard implements CanActivate {
 
     const req = context.switchToHttp().getRequest();
     const user = req.user;
-
     if (!user) throw new ForbiddenException('User not authenticated');
     const userRoles: string[] = Array.isArray(user.roles) ? user.roles : [];
     const userPermissions: string[] = Array.isArray(user.permissions)
       ? user.permissions
       : [];
-
     if (requiredRoles?.length) {
       const hasRole = requiredRoles.some((role) => userRoles?.includes(role));
       if (!hasRole)

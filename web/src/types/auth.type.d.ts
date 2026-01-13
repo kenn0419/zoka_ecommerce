@@ -12,6 +12,11 @@ interface IAuthSignupRequest {
   address: string;
 }
 
+interface IAuthVerifyEmailRequest {
+  email: string;
+  token: string;
+}
+
 interface IAuthResponse {
   accessToken: string;
   refreshToken: string;

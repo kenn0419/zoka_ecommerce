@@ -19,7 +19,11 @@ export class JwtSessionGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const token = request.headers['authorization']?.split(' ')[1];
+    let token = request.headers['authorization']?.split(' ')[1];
+
+    if (!token && request.cookies?.accessToken) {
+      token = request.cookies.accessToken;
+    }
     if (!token) {
       throw new UnauthorizedException('Missing token');
     }

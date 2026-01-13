@@ -1,8 +1,4 @@
-import type { ICategoryResponse } from "./category.type";
-import type { IProductVariant } from "./product-variant.type";
-import type { IShopResponse } from "./shop.type";
-
-export interface IProductListItemResponse {
+interface IProductListItemResponse {
   id: string;
   name: string;
   slug: string;
@@ -13,7 +9,7 @@ export interface IProductListItemResponse {
   hasStock: boolean;
 }
 
-export interface IProductDetailResponse {
+interface IProductDetailResponse {
   id: string;
   name: string;
   slug: string;
@@ -23,7 +19,32 @@ export interface IProductDetailResponse {
   minPrice: number;
   maxPrice: number;
   hasStock: boolean;
-  variants: IProductVariant[];
+  variants: IProductVariantResponse[];
   category: ICategoryResponse;
   shop: IShopResponse;
+}
+
+interface IProductFilterRequest extends IPaginationQueries {
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  rating?: number;
+}
+
+interface IProductCreationRequest {
+  name: string;
+  categoryId: string;
+  description?: string;
+  shopId: string;
+  thumbnail: File | null;
+  variantFiles: File[] | null;
+  variants: IProductVariantCreaionRequest[];
+}
+
+interface IProductVariantCreaionRequest {
+  id?: string;
+  name: string;
+  price: number;
+  stock: number;
+  images: string[];
 }

@@ -19,6 +19,9 @@ import { SigninDto } from './dto/signin.dto';
 import { JwtSessionGuard } from '../../common/guards/jwt-session.guard';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import type { Request, Response } from 'express';
+import { sendTokenToCookie } from 'src/common/utils/send-token-to-cookie.util';
+import ms from 'ms';
+import { ResendDto } from './dto/resend.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -35,6 +38,13 @@ export class AuthController {
   @Serialize(UserResponseDto, 'Verify account successfully!')
   verifyAccount(@Body() data: VerifyEmailDto) {
     return this.authService.verifyAccount(data);
+  }
+
+  @Post('/resend-email')
+  @HttpCode(HttpStatus.OK)
+  @Serialize(null, 'Resend verify email successfully!')
+  resendVerifyEmail(@Body() data: ResendDto) {
+    return this.authService.resendVerificationEmail(data.email);
   }
 
   @Post('/signin')
@@ -54,22 +64,27 @@ export class AuthController {
       device,
       ip,
     );
-    res.cookie('accessToken', result.accessToken, {
-      httpOnly: false,
-      secure: true,
-      sameSite: 'strict',
-      path: '/',
-      maxAge: 15 * 60 * 1000,
-    });
+    const accessTokenExpire = (process.env.JWT_ACCESS_EXPIRE_IN ??
+      '30d') as ms.StringValue;
+    sendTokenToCookie(
+      res,
+      'accessToken',
+      result.accessToken,
+      '/',
+      accessTokenExpire,
+      true,
+    );
 
-    res.cookie('refreshToken', result.refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      path: '/api/v1/auth/refresh',
-      maxAge: 30 * 24 * 60 * 1000,
-    });
-
+    const refreshTokenExpire = process.env
+      .JWT_REFRESH_EXPIRE_IN as ms.StringValue;
+    sendTokenToCookie(
+      res,
+      'refreshToken',
+      result.refreshToken,
+      '/api/v1/auth/refresh',
+      refreshTokenExpire,
+      true,
+    );
     return result;
   }
 
@@ -113,21 +128,27 @@ export class AuthController {
 
     const result = await this.authService.refresh(refreshToken);
 
-    res.cookie('accessToken', result.accessToken, {
-      httpOnly: false,
-      secure: true,
-      sameSite: 'strict',
-      path: '/',
-      maxAge: 15 * 60 * 1000,
-    });
+    const accessTokenExpire = (process.env.JWT_ACCESS_EXPIRE_IN ??
+      '30d') as ms.StringValue;
+    sendTokenToCookie(
+      res,
+      'accessToken',
+      result.accessToken,
+      '/',
+      accessTokenExpire,
+      true,
+    );
 
-    res.cookie('refreshToken', result.refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      path: '/api/v1/auth/refresh',
-      maxAge: 30 * 24 * 60 * 1000,
-    });
+    const refreshTokenExpire = process.env
+      .JWT_REFRESH_EXPIRE_IN as ms.StringValue;
+    sendTokenToCookie(
+      res,
+      'refreshToken',
+      result.refreshToken,
+      '/api/v1/auth/refresh',
+      refreshTokenExpire,
+      true,
+    );
 
     return result;
   }

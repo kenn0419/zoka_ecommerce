@@ -3,10 +3,6 @@ import axios, {
   type AxiosResponse,
   type InternalAxiosRequestConfig,
 } from "axios";
-import {
-  getAccessTokenFromCookie,
-  setAccessTokenCookie,
-} from "../helper/accessToken.helper";
 import { Mutex } from "async-mutex";
 
 const NO_RETRY_HEADER = "x-no-retry";
@@ -22,18 +18,12 @@ const handleRefreshToken = async () => {
     try {
       const urlRequest = import.meta.env.VITE_API_URL + "/auth/refresh";
       const res = await axios.post(urlRequest, {}, { withCredentials: true });
+      const isSuccess = res.status;
 
-      const newAccessToken = res.data.accessToken;
-      if (!newAccessToken) {
-        throw new Error("No access token received");
-      }
-
-      setAccessTokenCookie(newAccessToken);
-
-      return newAccessToken;
+      return isSuccess;
     } catch (error) {
-      console.error("Refresh token failed: ", error);
-      throw error;
+      console.error("Refresh token failed:", error);
+      return false;
     }
   });
 };
@@ -43,12 +33,6 @@ instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     config.headers.Accept = "application/json";
     config.headers["Content-Type"] = "application/json; charset=utf-8";
   }
-
-  const accessToken = getAccessTokenFromCookie();
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
-
   return config;
 });
 
@@ -63,11 +47,12 @@ instance.interceptors.response.use(
       !originalRequest.headers[NO_RETRY_HEADER]
     ) {
       originalRequest.headers[NO_RETRY_HEADER] = "true";
-      const newToken = await handleRefreshToken();
 
-      originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
+      const result = await handleRefreshToken();
 
-      return instance(originalRequest);
+      if (result) {
+        return instance.request(originalRequest);
+      }
     }
 
     return Promise.reject(error);

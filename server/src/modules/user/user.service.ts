@@ -11,22 +11,31 @@ import slugify from 'slugify';
 import { UploadService } from 'src/infrastructure/upload/upload.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserStatus } from 'src/common/enums/user-status.enum';
+import { Prisma } from 'generated/prisma';
+import { buildSearchOr } from 'src/common/utils/build-search-or.util';
+import { paginatedResult } from 'src/common/utils/pagninated-result.util';
+import { buildUserSort } from 'src/common/utils/user-sort.util';
+import { PaginatedSort } from 'src/common/enums/paginated-sort.enum';
 
 @Injectable()
 export class UserService {
   constructor(
     private configService: ConfigService,
     private uploadService: UploadService,
-    private userRepository: UserRepository,
+    private userRepo: UserRepository,
   ) {}
 
   async createUser(data: CreateUserDto, file?: Express.Multer.File) {
-    const existUserByEmail = await this.userRepository.findByEmail(data.email);
+    const existUserByEmail = await this.userRepo.findUnique({
+      email: data.email,
+    });
     if (existUserByEmail) {
       throw new ConflictException(`Exist user with this email`);
     }
 
-    const existUserByPhone = await this.userRepository.findByPhone(data.phone);
+    const existUserByPhone = await this.userRepo.findUnique({
+      phone: data.phone,
+    });
     if (existUserByPhone) {
       throw new ConflictException(`Exist user with this phone`);
     }
@@ -45,7 +54,7 @@ export class UserService {
       avatarUrl = upload.url;
     }
 
-    const newUser = await this.userRepository.create({
+    const newUser = await this.userRepo.create({
       email: data.email,
       hashedPassword,
       phone: data.phone,
@@ -62,54 +71,63 @@ export class UserService {
     search: string,
     page: number,
     limit: number,
-    sort: string,
+    sort: PaginatedSort,
   ) {
-    const take = limit;
-    const skip = (page - 1) * take;
-    const sortBy = sort.split(',');
-    const users = await this.userRepository.findAllUsers(
-      search,
-      take,
-      skip,
-      sortBy,
+    const where: Prisma.UserWhereInput = {
+      ...(search && {
+        OR: buildSearchOr(search, ['name', 'address']),
+      }),
+    };
+
+    return paginatedResult(
+      {
+        where,
+        page,
+        limit,
+        orderBy: buildUserSort(sort),
+      },
+      (args) => this.userRepo.listPaginatedUsers(args),
     );
-    return users;
   }
 
-  async findUser(slug: string) {
-    const existUserBySlug = await this.userRepository.findUnique({ slug });
-    if (!existUserBySlug) {
+  async findUser(id: string) {
+    const existUser = await this.userRepo.findUnique({ id });
+    if (!existUser) {
       throw new NotFoundException(`User not found`);
     }
 
-    return existUserBySlug;
+    return existUser;
   }
 
-  async updateUser(slug: string, data: UpdateUserDto) {
-    const existUserBySlug = await this.findUser(slug);
-    const existUserByEmail = await this.userRepository.findByEmail(data.email);
-    if (existUserByEmail && existUserByEmail.slug !== existUserBySlug.slug) {
+  async updateUser(id: string, data: UpdateUserDto) {
+    const existUser = await this.findUser(id);
+    const existUserByEmail = await this.userRepo.findUnique({
+      email: data.email,
+    });
+    if (existUserByEmail && existUserByEmail.id !== existUser.id) {
       throw new ConflictException(`Exist user with this email`);
     }
 
-    const existUserByPhone = await this.userRepository.findByPhone(data.phone);
+    const existUserByPhone = await this.userRepo.findUnique({
+      phone: data.phone,
+    });
     if (existUserByPhone) {
       throw new ConflictException(`Exist user with this phone`);
     }
 
-    return await this.userRepository.updateUser({ slug }, data);
+    return await this.userRepo.updateUser({ id }, data);
   }
 
-  async activeUser(slug: string) {
-    return this.userRepository.changeUserStatus({ slug }, UserStatus.ACTIVE);
+  async activeUser(id: string) {
+    return this.userRepo.changeUserStatus({ id }, UserStatus.ACTIVE);
   }
 
-  async deactive(slug: string) {
-    return this.userRepository.changeUserStatus({ slug }, UserStatus.INACTIVE);
+  async deactive(id: string) {
+    return this.userRepo.changeUserStatus({ id }, UserStatus.INACTIVE);
   }
 
-  async deleteUser(slug: string) {
-    const existUser = await this.findUser(slug);
+  async deleteUser(id: string) {
+    const existUser = await this.findUser(id);
     const avatarUrl = existUser?.avatarUrl;
 
     if (avatarUrl) {
@@ -120,6 +138,6 @@ export class UserService {
       }
     }
 
-    return await this.userRepository.deleteUser({ slug });
+    return await this.userRepo.deleteUser({ id });
   }
 }

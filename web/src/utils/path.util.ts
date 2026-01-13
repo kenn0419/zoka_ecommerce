@@ -9,6 +9,8 @@ export const PATH = {
   MANAGE_ROLE: "manage-roles",
   MANAGE_ORDER: "manage-orders",
   MANAGE_FINANCE: "manage-finances",
+  MANAGE_SHOP: "manage-shops",
+  MANAGE_REVIEW: "manage-reviews",
   AUTH: "auth",
   SIGNIN: "signin",
   SIGNUP: "signup",
@@ -23,4 +25,8 @@ export const PATH = {
   PRODUCTS: "products",
   PRODUCT_DETAIL: "products/:productSlug",
   CART: "cart",
+  SELLER: "seller",
+  REGISTER_SHOP: "register-shop",
+  CREATE_PRODUCT: "create-product",
+  EDIT_PRODUCT: "edit-product",
 };

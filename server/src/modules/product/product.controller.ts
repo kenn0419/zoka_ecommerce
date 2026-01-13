@@ -10,10 +10,10 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFiles,
-  DefaultValuePipe,
   Query,
   HttpCode,
   HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -30,8 +30,11 @@ import { RolesPermissionsGuard } from 'src/common/guards/rbac.guard';
 import { ProductListQueryDto } from './dto/product-query.dto';
 import { ProductListResponseDto } from './dto/product-list-item-response.dto';
 import { ProductDetailResponseDto } from './dto/product-detail-response.dto';
+import { ParseJsonPipe } from 'src/common/pipes/parse-json.pipe';
+import { plainToInstance } from 'class-transformer';
+import { validateSync } from 'class-validator';
 
-@Controller('product')
+@Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
@@ -56,8 +59,19 @@ export class ProductController {
       thumbnail?: Express.Multer.File[];
       variantImages?: Express.Multer.File[];
     },
-    @Body() data: CreateProductDto,
+    @Body('data') dataRaw: string,
   ) {
+    const data = plainToInstance(CreateProductDto, JSON.parse(dataRaw), {
+      enableImplicitConversion: true,
+    });
+
+    const errors = validateSync(data, {
+      whitelist: true,
+    });
+
+    if (errors.length) {
+      throw new BadRequestException(errors);
+    }
     return this.productService.create(
       req.user.userId,
       data,
@@ -71,17 +85,53 @@ export class ProductController {
   @UseGuards(JwtSessionGuard, RolesPermissionsGuard)
   @SerializePaginated(ProductListResponseDto, 'Get all products successfully.')
   @HttpCode(HttpStatus.OK)
-  findAllProducts(@Query() { search, page, limit, sort }: ProductListQueryDto) {
-    return this.productService.findAllProduct(search, page, limit, sort);
+  findAllProducts(
+    @Query()
+    {
+      search,
+      page,
+      limit,
+      sort,
+      minPrice,
+      maxPrice,
+      rating,
+    }: ProductListQueryDto,
+  ) {
+    return this.productService.findAllProduct(
+      search,
+      page,
+      limit,
+      sort,
+      minPrice,
+      maxPrice,
+      rating,
+    );
   }
 
   @Get('/active')
   @SerializePaginated(ProductListResponseDto, 'Get all products successfully.')
   @HttpCode(HttpStatus.OK)
   findAllActiveProducts(
-    @Query() { search, page, limit, sort }: ProductListQueryDto,
+    @Query()
+    {
+      search,
+      page,
+      limit,
+      sort,
+      minPrice,
+      maxPrice,
+      rating,
+    }: ProductListQueryDto,
   ) {
-    return this.productService.findAllActiveProduct(search, page, limit, sort);
+    return this.productService.findAllActiveProduct(
+      search,
+      page,
+      limit,
+      sort,
+      minPrice,
+      maxPrice,
+      rating,
+    );
   }
 
   @Get('/suggest')
@@ -90,8 +140,8 @@ export class ProductController {
     'Get suggest products successfully.',
   )
   @HttpCode(HttpStatus.OK)
-  findAllSuggestProducts(@Query('keyword') keyword: string) {
-    return this.productService.findSuggestProducts(keyword);
+  findAllSuggestProducts(@Query('search') search: string) {
+    return this.productService.findSuggestProducts(search);
   }
 
   @Get('/category/:categorySlug')
@@ -102,7 +152,16 @@ export class ProductController {
   )
   findAllProductsByCategory(
     @Param('categorySlug') slug: string,
-    @Query() { search, page, limit, sort }: ProductListQueryDto,
+    @Query()
+    {
+      search,
+      page,
+      limit,
+      sort,
+      minPrice,
+      maxPrice,
+      rating,
+    }: ProductListQueryDto,
   ) {
     return this.productService.findAllProductByCategory(
       slug,
@@ -110,17 +169,62 @@ export class ProductController {
       page,
       limit,
       sort,
+      minPrice,
+      maxPrice,
+      rating,
     );
   }
 
-  @Get('/detail/:slug')
-  @Serialize(ProductDetailResponseDto, 'Get product detail successfully.')
+  @Get('/shop/:shopId')
+  @Roles(Role.SHOP)
+  @UseGuards(JwtSessionGuard, RolesPermissionsGuard)
+  @SerializePaginated(
+    ProductListResponseDto,
+    'Get products by shop successfully.',
+  )
   @HttpCode(HttpStatus.OK)
-  findProducDetail(@Param('slug') slug: string) {
-    return this.productService.findOne(slug);
+  findProductsByShop(
+    @Req() req,
+    @Param('shopId') shopId,
+    @Query()
+    { search, page, limit, sort }: ProductListQueryDto,
+  ) {
+    return this.productService.findProductsByShop(
+      shopId,
+      req.user.userId,
+      search,
+      page,
+      limit,
+      sort,
+    );
   }
 
-  @Patch('/:slug')
+  @Get('/public/detail/:slug')
+  @Serialize(ProductDetailResponseDto, 'Get product detail successfully.')
+  @HttpCode(HttpStatus.OK)
+  findProductDetailBySlug(@Param('slug') slug: string) {
+    return this.productService.findBySlug(slug);
+  }
+
+  @Get('/internal/detail/:id')
+  @UseGuards(JwtSessionGuard, RolesPermissionsGuard)
+  @Roles(Role.ADMIN, Role.SHOP)
+  @Serialize(ProductDetailResponseDto, 'Get product detail successfully.')
+  @HttpCode(HttpStatus.OK)
+  async findProductDetailById(@Req() req, @Param('id') id: string) {
+    const product = await this.productService.findById(id);
+    const userId = req.user.userId;
+    console.log(product.shop.owner);
+    const isAccess =
+      req.user.roles.includes(Role.SHOP) && product.shop.owner.id === userId;
+
+    if (!isAccess) {
+      throw new BadRequestException('Access denied.');
+    }
+    return product;
+  }
+
+  @Patch('/:id')
   @Roles(Role.SHOP)
   @UseGuards(JwtSessionGuard)
   @UseInterceptors(
@@ -131,7 +235,7 @@ export class ProductController {
   )
   @HttpCode(HttpStatus.ACCEPTED)
   update(
-    @Param('slug') slug: string,
+    @Param('id') id: string,
     @Body() data: UpdateProductDto,
     @UploadedFiles()
     files: {
@@ -140,7 +244,7 @@ export class ProductController {
     },
   ) {
     return this.productService.update(
-      slug,
+      id,
       data,
       files.thumbnail?.[0],
       files.variantImages,

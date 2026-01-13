@@ -6,18 +6,21 @@ import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 export class ShopRepository {
   constructor(private prisma: PrismaService) {}
 
+  countShopsByOwnerId(ownerId: string) {
+    return this.prisma.shop.count({ where: { ownerId } });
+  }
+
   createShop(data: Prisma.ShopCreateInput) {
     return this.prisma.shop.create({ data });
   }
 
-  getShopByOwner(userId: string) {
-    return this.prisma.shop.findFirst({
+  findShopsByOwner(userId: string) {
+    return this.prisma.shop.findMany({
       where: { ownerId: userId },
       include: { owner: true },
     });
   }
-
-  findShopById(where: Prisma.ShopWhereUniqueInput) {
+  findOne(where: Prisma.ShopWhereUniqueInput) {
     return this.prisma.shop.findUnique({ where });
   }
 

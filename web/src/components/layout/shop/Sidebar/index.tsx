@@ -7,34 +7,38 @@ import {
   BarChartOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
+import styles from "./Sidebar.module.scss";
+import { PATH } from "../../../../utils/path.util";
+import { useSellerStore } from "../../../../store/seller.store";
 
 export default function Sidebar() {
+  const { currentShopId } = useSellerStore();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   const items = [
     {
-      key: "/shop",
+      key: `/${PATH.SELLER}/${currentShopId}`,
       icon: <BarChartOutlined />,
       label: "Tổng quan",
     },
     {
-      key: "/shop/products",
+      key: `/${PATH.SELLER}/${currentShopId}/${PATH.MANAGE_PRODUCT}`,
       icon: <AppstoreOutlined />,
       label: "Sản phẩm",
     },
     {
-      key: "/shop/orders",
+      key: `/${PATH.SELLER}/${currentShopId}/${PATH.MANAGE_ORDER}`,
       icon: <ShoppingCartOutlined />,
       label: "Đơn hàng",
     },
     {
-      key: "/shop/finance",
+      key: `/${PATH.SELLER}/${currentShopId}/${PATH.MANAGE_FINANCE}`,
       icon: <DollarOutlined />,
       label: "Tài chính",
     },
     {
-      key: "/shop/settings",
+      key: `/${PATH.SELLER}/${currentShopId}/${PATH.MANAGE_SHOP}`,
       icon: <ShopOutlined />,
       label: "Cài đặt Shop",
     },
@@ -45,6 +49,7 @@ export default function Sidebar() {
       mode="inline"
       selectedKeys={[pathname]}
       items={items}
+      className={styles.menu}
       onClick={(e) => navigate(e.key)}
     />
   );

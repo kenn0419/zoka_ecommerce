@@ -1,0 +1,18 @@
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.card {
+  position: relative;
+  height: 110px;
+}
+
+.icon {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 28px;
+  color: #e5e5e5;
+}

@@ -1,32 +1,17 @@
 import { productApi } from "../apis/product.api";
-import type {
-  IPaginatedResponse,
-  IPaginationQueries,
-} from "../types/pagination.type";
-import type {
-  IProductDetailResponse,
-  IProductListItemResponse,
-} from "../types/product.type";
 
 export const productService = {
   async fetchActiveProducts(
-    params: IPaginationQueries = {}
+    params: IProductFilterRequest
   ): Promise<IPaginatedResponse<IProductListItemResponse>> {
-    const { page = 1, limit = 12, search, sort = "oldest" } = params;
-
-    const res = await productApi.fetchActiveProducts({
-      page,
-      limit,
-      search,
-      sort,
-    });
+    const res = await productApi.fetchActiveProducts({ ...params });
 
     return res.data;
   },
 
-  async fetchProductsByCategory(
+  async fetchActiveProductsByCategory(
     categorySlug: string,
-    params: IPaginationQueries
+    params: IProductFilterRequest
   ): Promise<IPaginatedResponse<IProductListItemResponse>> {
     const res = await productApi.fetchProductsByCategory({
       categorySlug,
@@ -36,10 +21,17 @@ export const productService = {
     return res.data;
   },
 
-  async fetchProductDetail(
+  async fetchProductDetailBySlug(
     productSlug: string
   ): Promise<IProductDetailResponse> {
-    const res = await productApi.fetchProductDetail(productSlug);
+    const res = await productApi.fetchProductDetailBySlug(productSlug);
+    return res.data;
+  },
+
+  async fetchProductDetailById(
+    productId: string
+  ): Promise<IProductDetailResponse> {
+    const res = await productApi.fetchProductDetailById(productId);
     return res.data;
   },
 
@@ -56,9 +48,56 @@ export const productService = {
   },
 
   async suggestProducts(
-    keyword: string
+    search: string
   ): Promise<IPaginatedResponse<IProductListItemResponse>> {
-    const res = await productApi.fetchSuggestProducts(keyword);
+    const res = await productApi.fetchSuggestProducts(search);
+    return res.data;
+  },
+
+  async fetchProductsByShop(
+    shopId: string,
+    params: IProductFilterRequest
+  ): Promise<IPaginatedResponse<IProductListItemResponse>> {
+    const res = await productApi.fetchProductsByShop({
+      shopId,
+      ...params,
+    });
+
+    return res.data;
+  },
+
+  async createProduct(
+    data: IProductCreationRequest
+  ): Promise<IProductListItemResponse> {
+    const formData = new FormData();
+
+    const payload = {
+      name: data.name,
+      categoryId: data.categoryId,
+      shopId: data.shopId,
+      description: data.description ?? "",
+      variants: data.variants.map((item) => ({
+        name: item.name,
+        stock: item.stock,
+        price: item.price,
+        images: item.images,
+      })),
+    };
+
+    formData.append("data", JSON.stringify(payload));
+
+    if (data.thumbnail) {
+      formData.append("thumbnail", data.thumbnail);
+    }
+
+    if (data.variantFiles) {
+      data.variantFiles.forEach((file) => {
+        formData.append("variantImages", file);
+      });
+    }
+
+    const res = await productApi.createProduct(formData);
+
     return res.data;
   },
 };

@@ -9,5 +9,5 @@ export default function AppBreadcrumb() {
     title: p.charAt(0).toUpperCase() + p.slice(1),
   }));
 
-  return <Breadcrumb items={items} />;
+  return <Breadcrumb style={{ marginBottom: 16 }} items={items} />;
 }

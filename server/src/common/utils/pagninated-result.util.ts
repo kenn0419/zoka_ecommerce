@@ -1,4 +1,4 @@
-export async function paginatedQuery<TWhere, TOrderBy, TResult>(
+export async function paginatedResult<TWhere, TOrderBy, TResult>(
   options: {
     where: TWhere;
     page: number;

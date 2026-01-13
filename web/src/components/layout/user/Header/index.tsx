@@ -1,21 +1,46 @@
-import { Layout, Badge } from "antd";
+import { Layout, Badge, Dropdown, message } from "antd";
 import { UserOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import styles from "./Header.module.scss";
 import { useAuthStore } from "../../../../store/auth.store";
 import { useCartStore } from "../../../../store/cart.store";
 import logo from "../../../../assets/images/logo-zoka-ecommerce.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PATH } from "../../../../utils/path.util";
 import SearchBar from "../../../common/SearchBar";
+import { useLogoutMutation } from "../../../../queries/auth.query";
 
-const { Header } = Layout;
-
-export default function AppHeader() {
+export default function Header() {
   const { user } = useAuthStore();
   const { summary } = useCartStore();
 
+  const navigate = useNavigate();
+  const logoutMutation = useLogoutMutation();
+
+  const handleMenuClick = ({ key }: { key: string }) => {
+    if (key === "logout") {
+      logoutMutation.mutate(undefined, {
+        onSuccess: () => {
+          message.success("Đã đăng xuất");
+          navigate(`/${PATH.USER}`);
+        },
+        onError: () => {
+          message.error("Đăng xuất thất bại");
+        },
+      });
+    }
+
+    if (key === "profile") {
+      navigate(`/${PATH.USER}/profile`);
+    }
+  };
+
+  const items = [
+    { key: "profile", label: "Tài khoản" },
+    { key: "logout", label: "Đăng xuất" },
+  ];
+
   return (
-    <Header className={styles.header}>
+    <Layout.Header className={styles.header}>
       <Link to={`/${PATH.USER}`} className={styles.logo}>
         <img src={logo} />
       </Link>
@@ -30,7 +55,14 @@ export default function AppHeader() {
                 <ShoppingCartOutlined className={styles.icon} />
               </Link>
             </Badge>
-            <UserOutlined className={styles.icon} />
+            <Dropdown
+              menu={{
+                items,
+                onClick: handleMenuClick,
+              }}
+            >
+              <UserOutlined className={styles.icon} />
+            </Dropdown>
           </>
         ) : (
           <>
@@ -49,6 +81,6 @@ export default function AppHeader() {
           </>
         )}
       </div>
-    </Header>
+    </Layout.Header>
   );
 }

@@ -1,4 +1,4 @@
-export interface IVariantImage {
+interface IVariantImage {
   id: string;
   imageUrl: string;
   createdAt: Date;

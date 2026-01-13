@@ -2,7 +2,7 @@ import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
 import { PATH } from "../utils/path.util";
 import AuthLayout from "../layouts/AuthLayout";
-import GuestRoute from "./GuestRoute";
+import AuthorizeEntry from "./AuthorizeEntry";
 
 const SigninPage = lazy(() => import("../pages/auth/Signin"));
 const SignupPage = lazy(() => import("../pages/auth/Signup"));
@@ -11,9 +11,9 @@ const VerifyAccountPage = lazy(() => import("../pages/auth/VerifyAccount"));
 export const AuthRoutes: RouteObject = {
   path: PATH.AUTH,
   element: (
-    <GuestRoute>
+    <AuthorizeEntry>
       <AuthLayout />
-    </GuestRoute>
+    </AuthorizeEntry>
   ),
   children: [
     { path: PATH.SIGNIN, element: <SigninPage /> },

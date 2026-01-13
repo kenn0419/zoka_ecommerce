@@ -1,0 +1,23 @@
+.card {
+  border-radius: 12px;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 14px;
+  color: #8c8c8c;
+  margin-bottom: 4px;
+}
+
+.icon {
+  font-size: 32px;
+  color: #fa541c;
+  background: rgba(250, 84, 28, 0.12);
+  padding: 5px 15px;
+  border-radius: 50%;
+}

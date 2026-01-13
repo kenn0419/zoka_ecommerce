@@ -1,4 +1,4 @@
-import { Form, Input, Button, Typography, message } from "antd";
+import { Form, Input, Button, Typography } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { PATH } from "../../../utils/path.util";
 import { useAuthStore } from "../../../store/auth.store";
@@ -6,35 +6,37 @@ import { Role } from "../../../utils/role.util";
 import AuthCard from "../../../components/auth/AuthCard";
 import PageHeader from "../../../components/auth/PageHeader";
 import layout from "./../../../layouts/AuthLayout/AuthLayout.module.scss";
-import { authService } from "../../../services/auth.service";
+import { useSigninMutation } from "../../../queries/auth.query";
+import { useEffect } from "react";
 
 const { Text } = Typography;
 
 export default function Signin() {
   const navigate = useNavigate();
-  const { loading, user } = useAuthStore();
+  const { user } = useAuthStore();
+  const signinMutation = useSigninMutation();
+
+  const handleNavigate = (role: string) => {
+    return user?.roles.some((item: any) => item.name === role);
+  };
 
   const onFinish = async (values: any) => {
-    const { success, error } = await authService.signin({
+    signinMutation.mutate({
       email: values.email,
       password: values.password,
     });
-
-    if (success) {
-      message.success("Sign in successfully!");
-    } else {
-      message.error(error.data.message);
-      return;
-    }
-
-    if (user?.roles.includes(Role.ADMIN)) {
-      navigate(`/${PATH.ADMIN}`);
-    } else if (user?.roles.includes(Role.SHOP)) {
-      navigate(`/${PATH.SHOP}`);
-    } else {
-      navigate(`/${PATH.USER}`);
-    }
   };
+
+  useEffect(() => {
+    if (!user) return;
+    if (handleNavigate(Role.ADMIN)) {
+      navigate(`/${PATH.ADMIN}`, { replace: true });
+    } else if (handleNavigate(Role.SHOP)) {
+      navigate(`/${PATH.SELLER}`, { replace: true });
+    } else {
+      navigate(`/${PATH.USER}`, { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <AuthCard>
@@ -58,7 +60,7 @@ export default function Signin() {
           htmlType="submit"
           block
           size="large"
-          loading={loading}
+          loading={signinMutation.isPending}
         >
           Đăng nhập
         </Button>
@@ -66,7 +68,7 @@ export default function Signin() {
 
       <div className={layout.footer}>
         <Text>Chưa có tài khoản? </Text>
-        <Link to="/auth/signup">Đăng ký ngay</Link>
+        <Link to={`/${PATH.AUTH}/${PATH.SIGNUP}`}>Đăng ký ngay</Link>
       </div>
     </AuthCard>
   );

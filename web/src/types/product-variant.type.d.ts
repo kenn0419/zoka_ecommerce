@@ -1,6 +1,4 @@
-import type { IVariantImage } from "./variant-image.type";
-
-export interface IProductVariant {
+interface IProductVariantResponse {
   id: string;
   productId: string;
   name: string;

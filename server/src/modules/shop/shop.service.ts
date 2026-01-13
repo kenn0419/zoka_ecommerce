@@ -14,7 +14,6 @@ import { UploadService } from 'src/infrastructure/upload/upload.service';
 import { ConfigService } from '@nestjs/config';
 import { Role } from 'src/common/enums/role.enum';
 import { SlugifyUtil } from 'src/common/utils/slugify.util';
-import { da } from '@faker-js/faker';
 
 @Injectable()
 export class ShopService {
@@ -31,13 +30,16 @@ export class ShopService {
     data: CreateShopDto,
     file?: Express.Multer.File,
   ) {
+    const maxShopCount = Number(
+      this.configService.get<string>('MAX_SHOP_COUNT'),
+    );
+    const shopCount = await this.shopRepo.countShopsByOwnerId(userId);
+    if (shopCount >= maxShopCount) {
+      throw new BadRequestException('You can only create maximum 3 shops.');
+    }
     const existUser = await this.userRepo.findUnique({ id: userId });
     if (!existUser) {
       throw new NotFoundException('User not found');
-    }
-    const existedShop = await this.shopRepo.getShopByOwner(existUser.id);
-    if (existedShop) {
-      throw new ForbiddenException('User already has a shop');
     }
     let logoUrl: string | null = null;
     if (file) {
@@ -73,10 +75,15 @@ export class ShopService {
     return shop;
   }
 
-  async lockShop(ownerId: string) {
-    const existShop = await this.shopRepo.getShopByOwner(ownerId);
+  async lockShop(ownerId: string, shopId: string) {
+    const existShop = await this.shopRepo.findOne({ id: shopId });
     if (!existShop) {
-      throw new NotFoundException('Shop not found');
+      throw new NotFoundException('Shop not found.');
+    }
+
+    const isOwner = existShop.ownerId === ownerId;
+    if (!isOwner) {
+      throw new BadRequestException('You must be shop owner.');
     }
 
     const isStatus = existShop.status;
@@ -86,14 +93,19 @@ export class ShopService {
 
     await this.shopRepo.update(
       { id: existShop.id },
-      { status: ShopStatus.INACTIVE },
+      { status: ShopStatus.SUSPENDED },
     );
   }
 
-  async activeShop(ownerId: string) {
-    const existShop = await this.shopRepo.getShopByOwner(ownerId);
+  async activeShop(ownerId: string, shopId: string) {
+    const existShop = await this.shopRepo.findOne({ id: shopId });
     if (!existShop) {
       throw new NotFoundException('Shop not found');
+    }
+
+    const isOwner = existShop.ownerId === ownerId;
+    if (!isOwner) {
+      throw new BadRequestException('You must be shop owner.');
     }
 
     const isStatus = existShop.status;
@@ -105,5 +117,13 @@ export class ShopService {
       { id: existShop.id },
       { status: ShopStatus.ACTIVE },
     );
+  }
+
+  async getAllShops() {
+    return [];
+  }
+
+  async getAllMyShops(ownerId: string) {
+    return await this.shopRepo.findShopsByOwner(ownerId);
   }
 }

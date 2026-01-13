@@ -1,9 +1,7 @@
-import type {
-  IPaginatedResponse,
-  IPaginationQueries,
-} from "../types/pagination.type";
+import type { IPaginatedResponse } from "../types/pagination.type";
 import type {
   IProductDetailResponse,
+  IProductFilterRequest,
   IProductListItemResponse,
 } from "../types/product.type";
 import instance from "./axios-customize";
@@ -14,11 +12,14 @@ export const productApi = {
     limit = 12,
     search,
     sort = "oldest",
-  }: IPaginationQueries): Promise<
+    minPrice,
+    maxPrice,
+    rating,
+  }: IProductFilterRequest): Promise<
     IApiResponse<IPaginatedResponse<IProductListItemResponse>>
   > => {
-    return await instance.get(`/product/active`, {
-      params: { page, limit, search, sort },
+    return await instance.get(`/products/active`, {
+      params: { page, limit, search, sort, minPrice, maxPrice, rating },
     });
   },
 
@@ -28,23 +29,52 @@ export const productApi = {
     limit = 12,
     search,
     sort = "oldest",
-  }: IPaginationQueries & { categorySlug: string }): Promise<
+    minPrice,
+    maxPrice,
+    rating,
+  }: IProductFilterRequest & { categorySlug: string }): Promise<
     IApiResponse<IPaginatedResponse<IProductListItemResponse>>
   > => {
-    return await instance.get(`/product/category/${categorySlug}`, {
+    return await instance.get(`/products/category/${categorySlug}`, {
+      params: { page, limit, search, sort, minPrice, maxPrice, rating },
+    });
+  },
+
+  fetchProductDetailBySlug: async (
+    productSlug: string
+  ): Promise<IApiResponse<IProductDetailResponse>> => {
+    return await instance.get(`/products/public/detail/${productSlug}`);
+  },
+
+  fetchProductDetailById: async (
+    productSlug: string
+  ): Promise<IApiResponse<IProductDetailResponse>> => {
+    return await instance.get(`/products/internal/detail/${productSlug}`);
+  },
+
+  fetchSuggestProducts: async (
+    search: string
+  ): Promise<IApiResponse<IPaginatedResponse<IProductListItemResponse>>> => {
+    return await instance.get(`/products/suggest`, { params: { search } });
+  },
+
+  fetchProductsByShop: async ({
+    shopId,
+    page = 1,
+    limit = 12,
+    search,
+    sort = "oldest",
+  }: IProductFilterRequest & { shopId: string }) => {
+    return await instance.get(`/products/shop/${shopId}`, {
       params: { page, limit, search, sort },
     });
   },
 
-  fetchProductDetail: async (
-    productSlug: string
-  ): Promise<IApiResponse<IProductDetailResponse>> => {
-    return await instance.get(`/product/detail/${productSlug}`);
-  },
-
-  fetchSuggestProducts: async (
-    keyword: string
-  ): Promise<IApiResponse<IPaginatedResponse<IProductListItemResponse>>> => {
-    return await instance.get(`/product/suggest`, { params: { keyword } });
+  createProduct: async (
+    data: FormData
+  ): Promise<IApiResponse<IProductListItemResponse>> => {
+    return await instance.post("/products", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
   },
 };

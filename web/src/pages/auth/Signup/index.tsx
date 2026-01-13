@@ -2,13 +2,12 @@ import { Form, Button, Typography, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import layout from "./../../../layouts/AuthLayout/AuthLayout.module.scss";
 import { PATH } from "../../../utils/path.util";
-import { useAuthStore } from "../../../store/auth.store";
 import FormInput, {
   type FieldProps,
 } from "../../../components/common/FormInput";
 import AuthCard from "../../../components/auth/AuthCard";
 import PageHeader from "../../../components/auth/PageHeader";
-import { authService } from "../../../services/auth.service";
+import { useSignupMutation } from "../../../queries/auth.query";
 
 const { Text } = Typography;
 
@@ -56,16 +55,20 @@ const fields = [
 
 export default function Signup() {
   const navigate = useNavigate();
-  const { loading } = useAuthStore();
+  const signupMutation = useSignupMutation();
 
-  const onFinish = async (values: IAuthSignupRequest) => {
-    const result = await authService.signup(values);
-    if (result) {
-      message.success("Đăng ký thành công. Vui lòng xác thực tài khoản!");
-      navigate(`/${PATH.AUTH}/${PATH.VERIFY_ACCOUNT}`);
-    } else {
-      message.error("Đã xảy ra lỗi. Vui lòng thử lại!");
-    }
+  const onFinish = (values: IAuthSignupRequest) => {
+    signupMutation.mutate(values, {
+      onSuccess: () => {
+        message.success("Đăng ký thành công. Vui lòng xác thực tài khoản!");
+        navigate(`/${PATH.AUTH}/${PATH.VERIFY_ACCOUNT}?email=${values.email}`);
+      },
+      onError: (err: any) => {
+        message.error(
+          err.response?.data?.message || "Đã xảy ra lỗi. Vui lòng thử lại!"
+        );
+      },
+    });
   };
 
   return (
@@ -82,7 +85,7 @@ export default function Signup() {
           block
           size="large"
           htmlType="submit"
-          loading={loading}
+          loading={signupMutation.isPending}
         >
           Đăng ký
         </Button>

@@ -1,0 +1,13 @@
+.bar {
+  position: fixed;
+  bottom: 0;
+  left: 230px; // đúng width sidebar
+  right: 0;
+  background: #fff;
+  border-top: 1px solid #eee;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  z-index: 10;
+}

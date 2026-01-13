@@ -1,10 +1,10 @@
-export interface ICartSumary {
+interface ICartSumary {
   totalQuantity: number;
   totalItems: number;
   subtotal: number;
 }
 
-export interface ICartItemResponse {
+interface ICartItemResponse {
   id: string;
   productId: string;
   variantId: string;
@@ -18,14 +18,14 @@ export interface ICartItemResponse {
   isAvailable: boolean;
 }
 
-export interface ICartResponse {
+interface ICartResponse {
   id: string;
   userId: string;
   items: ICartItemResponse[];
   summary: ICartSumary;
 }
 
-export interface IAddCartRequest {
+interface IAddCartRequest {
   variantId: string;
   quantity: number;
 }

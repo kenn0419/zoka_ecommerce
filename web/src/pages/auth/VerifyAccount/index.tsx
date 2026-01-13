@@ -1,95 +1,87 @@
-import { useState, useRef, useEffect } from "react";
-import styles from "./VerifyAccount.module.scss";
-import { Button, Input, message, Typography, type InputRef } from "antd";
-import { useAuthStore } from "../../../store/auth.store";
-import { useNavigate } from "react-router-dom";
+import { Button, Input, message, Typography } from "antd";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  useResendVerifyMutation,
+  useVerifyAccountMutation,
+} from "../../../queries/auth.query";
 import { PATH } from "../../../utils/path.util";
-import { authService } from "../../../services/auth.service";
-const { Title } = Typography;
+import styles from "./VerifyAccount.module.scss";
 
-export default function VerifyAccount() {
+const { Title, Text } = Typography;
+
+const VerifyAccount = () => {
   const navigate = useNavigate();
-  const [codes, setCodes] = useState(Array(8).fill(""));
-  const inputsRef = useRef<(InputRef | null)[]>([]);
-  const { loading, canVerify } = useAuthStore();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email") ?? "";
+
+  const [otp, setOtp] = useState("");
+
+  const verifyMutation = useVerifyAccountMutation();
+  const resendMutation = useResendVerifyMutation();
 
   useEffect(() => {
-    if (!canVerify) {
+    if (!email) {
       navigate(`/${PATH.AUTH}/${PATH.SIGNIN}`);
     }
-  }, [canVerify]);
+  }, [email, navigate]);
 
-  const handleChange = (value: string, index: number) => {
-    if (!/^\d*$/.test(value)) return;
-
-    const newCodes = [...codes];
-    newCodes[index] = value;
-    setCodes(newCodes);
-    if (value && index < 7) {
-      inputsRef.current[index + 1]?.focus();
-    }
-    if (index === 7) {
-      onSubmit(newCodes);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
-    if (e.key === "Backspace" && !codes[index] && index > 0) {
-      inputsRef.current[index - 1]?.focus();
-    }
-  };
-
-  const onSubmit = async (codeArray?: string[]) => {
-    const finalCodes = codeArray ?? codes;
-    const code = finalCodes.join("");
-
-    if (code.length !== 8) {
-      return message.warning("Vui lòng nhập đủ 8 số!");
+  const handleSubmit = () => {
+    if (otp.length !== 8) {
+      return message.warning("Vui lòng nhập đủ 8 số");
     }
 
-    const result = await authService.verifyAccount(code);
-    if (result) {
-      message.success("Xác thực tài khoản thành công");
-      navigate(`/${PATH.AUTH}/${PATH.SIGNIN}`);
-    } else {
-      message.error("Đã xảy ra lỗi. Vui lòng thử lại!");
-    }
+    verifyMutation.mutate(
+      { email: email!, token: otp },
+      {
+        onSuccess: () => {
+          message.success("Xác thực thành công");
+          navigate(`/${PATH.AUTH}/${PATH.SIGNIN}`);
+        },
+        onError: (err: any) => {
+          message.error(err.response?.data?.message || "OTP không hợp lệ");
+        },
+      }
+    );
   };
 
   return (
-    <div>
-      <Title level={2} className={styles.title}>
-        Xác thực tài khoản
-      </Title>
-      <p>Nhập mã OTP gồm 8 số vừa được gửi đến email của bạn</p>
-
-      <div className={styles.otpContainer}>
-        {codes.map((digit, index) => (
-          <Input
-            key={index}
-            type="text"
-            maxLength={1}
-            value={digit}
-            ref={(el) => {
-              inputsRef.current[index] = el;
-            }}
-            className={styles.otpInput}
-            onChange={(e) => handleChange(e.target.value, index)}
-            onKeyDown={(e) => handleKeyDown(e, index)}
-          />
-        ))}
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <Title level={3}>Xác thực tài khoản</Title>
+        <Text type="secondary">
+          Nhập mã OTP đã gửi đến <b>{email}</b>
+        </Text>
       </div>
+
+      <Input.OTP
+        length={8}
+        value={otp}
+        onChange={setOtp}
+        size="large"
+        className={styles.otp}
+      />
 
       <Button
         type="primary"
+        size="large"
         block
-        onClick={() => onSubmit(codes)}
-        loading={loading}
-        disabled={loading}
-        style={{ marginTop: 20 }}
+        loading={verifyMutation.isPending}
+        onClick={handleSubmit}
       >
         Xác nhận
       </Button>
+
+      <Button
+        type="link"
+        block
+        disabled={resendMutation.isPending}
+        onClick={() => resendMutation.mutate(email)}
+      >
+        Gửi lại mã
+      </Button>
     </div>
   );
-}
+};
+
+export default VerifyAccount;

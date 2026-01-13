@@ -20,6 +20,7 @@ import { RbacService } from '../rbac/rbac.service';
 import * as jwt from 'jsonwebtoken';
 import { UserSession } from 'generated/prisma';
 import { UserStatus } from 'src/common/enums/user-status.enum';
+import { UserMapper } from 'src/common/mapper/user.mapper';
 
 @Injectable()
 export class AuthService {
@@ -45,11 +46,15 @@ export class AuthService {
         'Confirm password must be coincide with password',
       );
     }
-    const existedUserByEmail = await this.userRepo.findByEmail(data.email);
+    const existedUserByEmail = await this.userRepo.findUnique({
+      email: data.email,
+    });
     if (existedUserByEmail)
       throw new ConflictException('Email already registered!');
 
-    const existedUserByPhone = await this.userRepo.findByPhone(data.phone);
+    const existedUserByPhone = await this.userRepo.findUnique({
+      phone: data.phone,
+    });
     if (existedUserByPhone)
       throw new ConflictException('Phone already registered!');
 
@@ -59,8 +64,8 @@ export class AuthService {
     const hashedPassword = await bcrypt.hashSync(data.password, saltRounds);
 
     const token = CryptoUtil.randomNumber(8);
-    const key = `email-verification:${token}`;
-    const payload = { ...data, hashedPassword };
+    const key = `email-verification:${data.email}`;
+    const payload = { ...data, hashedPassword, token };
 
     await this.redis.set(key, JSON.stringify(payload), this.TTL);
 
@@ -71,14 +76,19 @@ export class AuthService {
     );
   }
 
-  async verifyAccount({ token }: VerifyEmailDto) {
-    const key = `email-verification:${token}`;
+  async verifyAccount({ email, token }: VerifyEmailDto) {
+    const key = `email-verification:${email}`;
     const data = await this.redis.get(key);
     if (!data)
       throw new BadRequestException('Token is invalid. Please try again later');
 
     const parsedData = JSON.parse(data);
-    const existedUser = await this.userRepo.findByEmail(parsedData.email);
+
+    if (parsedData.token !== token) {
+      throw new BadRequestException('OTP is incorrect.');
+    }
+
+    const existedUser = await this.userRepo.findUnique(parsedData.email);
     if (existedUser) {
       await this.redis.del(key);
       throw new ConflictException('Email already existed');
@@ -102,17 +112,43 @@ export class AuthService {
     return newUser;
   }
 
+  async resendVerificationEmail(email: string) {
+    const key = `email-verification:${email}`;
+    const data = await this.redis.get(key);
+
+    if (!data) {
+      throw new BadRequestException('No pending verification.');
+    }
+
+    const parsedData = JSON.parse(data);
+    const newToken = CryptoUtil.randomNumber(8).toString();
+    parsedData.token = newToken;
+
+    await this.redis.set(key, JSON.stringify(parsedData), this.TTL);
+
+    await this.mailService.sendVerificationEmail(
+      email,
+      'Resend verify your email',
+      newToken,
+    );
+  }
+
   async signin(
     email: string,
     password: string,
     device: string,
     ipAddress: string,
   ) {
-    const existedUser = await this.userRepo.findByEmail(email);
+    const existedUser = await this.userRepo.findUnique({ email });
     if (!existedUser) throw new UnauthorizedException('Unauthentication!');
-
     const isMatch = await bcrypt.compare(password, existedUser.hashedPassword);
     if (!isMatch) throw new UnauthorizedException('Unauthentication!');
+
+    const isStatus = existedUser.status;
+
+    if (isStatus !== UserStatus.ACTIVE) {
+      throw new BadRequestException('You are not approved yet.');
+    }
 
     const { publicKey, privateKey } = CryptoUtil.generateKeyPair();
     const sessionId = crypto.randomUUID();
@@ -178,7 +214,12 @@ export class AuthService {
     );
 
     await this.authRepo.updateSession(session.id, { refreshToken });
-    return { accessToken, refreshToken, sessionId, user: existedUser };
+    return {
+      accessToken,
+      refreshToken,
+      sessionId,
+      user: UserMapper.toUserResponse(existedUser),
+    };
   }
 
   async getCurrent(userId: string) {
@@ -187,7 +228,7 @@ export class AuthService {
       throw new BadRequestException('User not approved yet.');
     }
 
-    return existUser;
+    return UserMapper.toUserResponse(existUser);
   }
 
   async refresh(refreshToken: string) {
@@ -233,8 +274,16 @@ export class AuthService {
     const accessTokenExpireIn =
       this.config.get<string>('JWT_ACCESS_EXPIRE_IN') ?? '15m';
 
+    const { roleNames, perrmissionNames } =
+      await this.userRoleRepo.getUserRolesPermissions(payload.userId);
+
     const newAccessToken = JwtUtil.signAccessToken(
-      { userId: payload.userId, sessionId },
+      {
+        userId: payload.userId,
+        sessionId,
+        roles: roleNames,
+        permissions: perrmissionNames,
+      },
       accessTokenSecret,
       accessTokenAlgorithm,
       accessTokenExpireIn,

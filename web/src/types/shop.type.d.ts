@@ -1,4 +1,4 @@
-export interface IShopResponse {
+interface IShopResponse {
   id: string;
   onwer: IUserResponse;
   name: string;
@@ -8,4 +8,10 @@ export interface IShopResponse {
   status: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+interface IShopRegisterRequest {
+  name: string;
+  description: string;
+  logo?: File;
 }

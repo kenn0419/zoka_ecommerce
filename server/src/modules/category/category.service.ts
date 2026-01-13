@@ -10,7 +10,7 @@ import { buildCategorySort } from 'src/common/utils/category-sort.util';
 import { CategorySort } from 'src/common/enums/category-sort.enum';
 import { Prisma } from 'generated/prisma';
 import { buildSearchOr } from 'src/common/utils/build-search-or.util';
-import { paginatedQuery } from 'src/common/utils/pagninated-query.util';
+import { paginatedResult } from 'src/common/utils/pagninated-result.util';
 
 @Injectable()
 export class CategoryService {
@@ -51,7 +51,7 @@ export class CategoryService {
       }),
     };
 
-    return paginatedQuery(
+    return paginatedResult(
       {
         where,
         page,
@@ -75,7 +75,7 @@ export class CategoryService {
       }),
     };
 
-    return paginatedQuery(
+    return paginatedResult(
       {
         where,
         page,

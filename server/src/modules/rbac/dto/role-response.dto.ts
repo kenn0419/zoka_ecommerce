@@ -1,16 +1,9 @@
-import { Expose } from 'class-transformer';
-import { PermissionResponseDto } from './permission-response.dto';
+import { Expose, Type } from 'class-transformer';
 
 export class RoleResponseDto {
-  @Expose()
-  id: string;
-
   @Expose()
   name: string;
 
   @Expose()
-  desription: string;
-
-  @Expose()
-  permissions: PermissionResponseDto[];
+  description: string;
 }

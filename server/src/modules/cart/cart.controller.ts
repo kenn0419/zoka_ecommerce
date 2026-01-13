@@ -25,7 +25,6 @@ export class CartController {
   @Serialize(CartResponseDto, 'Get cart successfully.')
   async getUserCart(@Req() req) {
     const cart = await this.cartService.getUserCart(req.user.userId);
-    console.log(cart);
 
     return cart;
   }

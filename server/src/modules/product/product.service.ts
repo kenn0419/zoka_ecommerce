@@ -21,7 +21,8 @@ import { ProductStatus } from 'src/common/enums/product-status.enum';
 import { ProductSort } from 'src/common/enums/product-sort.enum';
 import { buildProductSort } from 'src/common/utils/product-sort.util';
 import { buildSearchOr } from 'src/common/utils/build-search-or.util';
-import { paginatedQuery } from 'src/common/utils/pagninated-query.util';
+import { paginatedResult } from 'src/common/utils/pagninated-result.util';
+import { buildProductFilter } from 'src/common/utils/build-product-filter.util';
 
 @Injectable()
 export class ProductService {
@@ -35,73 +36,62 @@ export class ProductService {
     private shopRepo: ShopRepository,
     private categoryRepo: CategoryRepository,
   ) {}
+
   async create(
     userId: string,
     data: CreateProductDto,
     thumbnailFile: Express.Multer.File | null,
     variantFiles: Express.Multer.File[],
   ) {
-    const existShop = await this.shopRepo.getShopByOwner(userId);
-    if (!existShop || existShop.status !== ShopStatus.ACTIVE) {
-      throw new BadRequestException('Shop is not approved yet.');
+    if (!thumbnailFile) {
+      throw new BadRequestException('Thumbnail is required');
     }
 
-    const existCategory = await this.categoryRepo.findUnique({
-      id: data.categoryId,
-    });
-    if (!existCategory || existCategory.status !== CategoryStatus.ACTIVE) {
-      throw new BadRequestException('Category is not approved yet');
+    if (!data.variants?.length) {
+      throw new BadRequestException('Product must have at least 1 variant');
     }
 
-    if (!thumbnailFile) throw new BadRequestException('Thumbnail is required');
+    const shop = await this.validateShop(userId, data.shopId);
+    const category = await this.validateCategory(data.categoryId);
 
-    const thumbnailPromise = this.uploadService.uploadFile(
+    const { thumbnail, variantImages } = await this.uploadProductAssets(
       thumbnailFile,
-      this.configService.get<string>('SUPABASE_BUCKET_FOLDER_PRODUCT'),
+      variantFiles,
     );
-    const variantUploadPromises = variantFiles.map(
-      (file) => this.uploadService.uploadFile(file),
-      this.configService.get<string>('SUPABASE_BUCKET_FOLDER_PRODUCT'),
-    );
-
-    const [thumbnail, ...variantImages] = await Promise.all([
-      thumbnailPromise,
-      ...variantUploadPromises,
-    ]);
 
     const productId = crypto.randomUUID();
+
     const variantRows: Prisma.ProductVariantCreateManyInput[] = [];
     const variantImageRows: Prisma.VariantImageCreateManyInput[] = [];
 
     for (const variant of data.variants) {
       const variantId = crypto.randomUUID();
-
       variantRows.push({
         id: variantId,
         productId,
         name: variant.name,
         stock: variant.stock,
-        price: new Prisma.Decimal(variant.price || 0),
+        price: new Prisma.Decimal(variant.price),
       });
 
-      for (const i of variant.images || []) {
-        const imageUrl = variantImages[i].url;
-        if (!imageUrl) continue;
+      for (const index of variant.images ?? []) {
+        if (index < 0 || index >= variantImages.length) {
+          throw new BadRequestException('Invalid variant image index');
+        }
 
         variantImageRows.push({
           id: crypto.randomUUID(),
           variantId,
-          imageUrl,
+          imageUrl: variantImages[index].url,
         });
       }
     }
 
-    const result = await this.prisma.$transaction(async (tx) => {
-      // CREATE PRODUCT
+    await this.prisma.$transaction(async (tx) => {
       await this.productRepo.create(tx, {
         id: productId,
-        shop: { connect: { id: existShop.id } },
-        category: { connect: { id: existCategory.id } },
+        shop: { connect: { id: shop.id } },
+        category: { connect: { id: category.id } },
         name: data.name,
         slug: SlugifyUtil.createSlug(data.name),
         description: data.description,
@@ -109,20 +99,14 @@ export class ProductService {
         status: ProductStatus.PENDING,
       });
 
-      // CREATE MANY VARIANTS
-      if (variantRows.length) {
-        await this.productVariantRepo.createMany(tx, variantRows);
-      }
+      await this.productVariantRepo.createMany(tx, variantRows);
 
-      // CREATE MANY VARIANT IMAGES
       if (variantImageRows.length) {
         await this.variantImageRepo.createMany(tx, variantImageRows);
       }
-
-      return { id: productId };
     });
 
-    return result;
+    return { id: productId };
   }
 
   async findAllActiveProduct(
@@ -130,6 +114,9 @@ export class ProductService {
     page: number,
     limit: number,
     sort: ProductSort,
+    minPrice: number,
+    maxPrice: number,
+    rating: number,
   ) {
     const where: Prisma.ProductWhereInput = {
       status: ProductStatus.ACTIVE,
@@ -139,9 +126,14 @@ export class ProductService {
       ...(search && {
         OR: buildSearchOr(search, ['name', 'description']),
       }),
+      ...buildProductFilter({
+        minPrice,
+        maxPrice,
+        rating,
+      }),
     };
 
-    return paginatedQuery(
+    return paginatedResult(
       {
         where,
         page,
@@ -152,8 +144,8 @@ export class ProductService {
     );
   }
 
-  findSuggestProducts(keyword: string) {
-    if (!keyword || keyword.trim().length < 2) {
+  findSuggestProducts(search: string) {
+    if (!search || search.trim().length < 2) {
       return {
         items: [],
         meta: {
@@ -170,12 +162,12 @@ export class ProductService {
       category: {
         status: CategoryStatus.ACTIVE,
       },
-      ...(keyword && {
-        OR: buildSearchOr(keyword, ['name', 'description']),
+      ...(search && {
+        OR: buildSearchOr(search, ['name', 'description']),
       }),
     };
 
-    return paginatedQuery(
+    return paginatedResult(
       {
         where,
         page: 1,
@@ -191,14 +183,22 @@ export class ProductService {
     page: number,
     limit: number,
     sort: ProductSort,
+    minPrice: number,
+    maxPrice: number,
+    rating: number,
   ) {
     const where: Prisma.ProductWhereInput = {
       ...(search && {
         OR: buildSearchOr(search, ['name', 'description']),
       }),
+      ...buildProductFilter({
+        minPrice,
+        maxPrice,
+        rating,
+      }),
     };
 
-    return paginatedQuery(
+    return paginatedResult(
       {
         where,
         page,
@@ -215,6 +215,9 @@ export class ProductService {
     page: number,
     limit: number,
     sort: ProductSort,
+    minPrice: number,
+    maxPrice: number,
+    rating: number,
   ) {
     const existCategory = await this.categoryRepo.findUnique({
       slug: categorySlug,
@@ -228,9 +231,14 @@ export class ProductService {
       ...(search && {
         OR: buildSearchOr(search, ['name', 'description']),
       }),
+      ...buildProductFilter({
+        minPrice,
+        maxPrice,
+        rating,
+      }),
     };
 
-    return paginatedQuery(
+    return paginatedResult(
       {
         where,
         page,
@@ -241,20 +249,59 @@ export class ProductService {
     );
   }
 
-  async findOne(slug: string) {
+  async findProductsByShop(
+    shopId: string,
+    ownerId: string,
+    search: string,
+    page: number,
+    limit: number,
+    sort: ProductSort,
+  ) {
+    const existShop = await this.shopRepo.findOne({ id: shopId });
+    if (existShop?.ownerId !== ownerId) {
+      throw new BadRequestException(`You don't have permission to access`);
+    }
+
+    const where: Prisma.ProductWhereInput = {
+      shopId,
+      ...(search && {
+        OR: buildSearchOr(search, ['name', 'description']),
+      }),
+    };
+
+    return paginatedResult(
+      {
+        where,
+        page,
+        limit,
+        orderBy: buildProductSort(sort),
+      },
+      (args) => this.productRepo.listPaginatedForPublic(args),
+    );
+  }
+
+  async findBySlug(slug: string) {
     const product = await this.productRepo.findPublicDetail({ slug });
     if (!product) throw new NotFoundException('Product not found');
+
+    return product;
+  }
+
+  async findById(id: string) {
+    const product = await this.productRepo.findInternalDetail({ id });
+    if (!product) throw new NotFoundException('Product not found');
+
     return product;
   }
 
   update(
-    slug: string,
+    id: string,
     data: UpdateProductDto,
     thumbnailFile?: Express.Multer.File | null,
     variantFiles?: Express.Multer.File[],
   ) {
     return this.prisma.$transaction(async (tx) => {
-      const existProduct = await this.productRepo.findUnique({ slug });
+      const existProduct = await this.productRepo.findUnique({ id });
       let thumbnail = existProduct?.thumbnail;
 
       if (thumbnailFile) {
@@ -270,7 +317,7 @@ export class ProductService {
       if (!data.variants || data.variants.length === 0) {
         await this.productRepo.update(
           tx,
-          { slug },
+          { id },
           {
             name: data.name,
             description: data.description,
@@ -346,7 +393,7 @@ export class ProductService {
        * ======================= */
       await this.productRepo.update(
         tx,
-        { slug },
+        { id },
         {
           name: data.name,
           description: data.description,
@@ -365,5 +412,82 @@ export class ProductService {
     return this.prisma.$transaction(
       async (tx) => await this.productRepo.remove(tx, { slug }),
     );
+  }
+
+  private async validateShop(userId: string, shopId: string) {
+    const existShop = await this.shopRepo.findOne({ id: shopId });
+
+    if (!existShop) {
+      throw new NotFoundException('Shop not found.');
+    }
+
+    if (existShop.ownerId !== userId) {
+      throw new BadRequestException('You must be shop owner.');
+    }
+
+    if (existShop.status !== ShopStatus.ACTIVE) {
+      throw new BadRequestException('Shop is not approved yet.');
+    }
+
+    return existShop;
+  }
+
+  private async validateCategory(categoryId: string) {
+    const category = await this.categoryRepo.findUnique({ id: categoryId });
+
+    if (!category || category.status !== CategoryStatus.ACTIVE)
+      throw new BadRequestException('Category is not approved yet');
+
+    return category;
+  }
+
+  private async uploadProductAssets(
+    thumbnailFile: Express.Multer.File,
+    variantFiles: Express.Multer.File[],
+  ) {
+    const folder = this.configService.get<string>(
+      'SUPABASE_BUCKET_FOLDER_PRODUCT',
+    );
+
+    const [thumbnail, ...variantImages] = await Promise.all([
+      this.uploadService.uploadFile(thumbnailFile, folder),
+      ...variantFiles.map((f) => this.uploadService.uploadFile(f, folder)),
+    ]);
+
+    return { thumbnail, variantImages };
+  }
+
+  private buildVariantRows(
+    productId: string,
+    variants: CreateProductDto['variants'],
+    variantImages: { url: string }[],
+  ) {
+    const variantRows: Prisma.ProductVariantCreateManyInput[] = [];
+    const variantImageRows: Prisma.VariantImageCreateManyInput[] = [];
+
+    for (const variant of variants) {
+      const variantId = crypto.randomUUID();
+
+      variantRows.push({
+        id: variantId,
+        productId,
+        name: variant.name,
+        stock: variant.stock,
+        price: new Prisma.Decimal(variant.price),
+      });
+
+      for (const i of variant.images ?? []) {
+        const image = variantImages[i];
+        if (!image) continue;
+
+        variantImageRows.push({
+          id: crypto.randomUUID(),
+          variantId,
+          imageUrl: image.url,
+        });
+      }
+    }
+
+    return { variantRows, variantImageRows };
   }
 }

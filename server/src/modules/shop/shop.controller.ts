@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   UseInterceptors,
   UploadedFile,
   UseGuards,
@@ -20,6 +19,7 @@ import { RolesPermissionsGuard } from 'src/common/guards/rbac.guard';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { Serialize } from 'src/common/decorators/serialize.decorator';
+import { ShopResponseDto } from './dto/shop-response.dto';
 
 @Controller('shop')
 @UseGuards(JwtSessionGuard, RolesPermissionsGuard)
@@ -54,17 +54,29 @@ export class ShopController {
     return await this.shopService.adminUpdateShopStatus(shopId, dto);
   }
 
-  @Patch('/lock')
+  @Patch('/lock/:shopId')
   @Roles(Role.SHOP)
   @Serialize(null, 'Lock shop successfully!')
-  async lockShop(@Req() req) {
-    return await this.shopService.lockShop(req.user.userId);
+  async lockShop(@Req() req, @Param('shopId') shopId: string) {
+    return await this.shopService.lockShop(req.user.userId, shopId);
   }
 
-  @Patch('/active')
+  @Patch('/active/:shopId')
   @Roles(Role.SHOP)
   @Serialize(null, 'Active shop successfully!')
-  async activeShop(@Req() req) {
-    return await this.shopService.activeShop(req.user.useId);
+  async activeShop(@Req() req, @Param('shopId') shopId: string) {
+    return await this.shopService.activeShop(req.user.useId, shopId);
+  }
+
+  @Get()
+  @Serialize(null, 'Get all shops successfully!')
+  getAllShops(@Req() req) {
+    return this.shopService.getAllShops();
+  }
+
+  @Get('/me')
+  @Serialize(ShopResponseDto, 'Get all my shops successfully!')
+  getAllMyShops(@Req() req) {
+    return this.shopService.getAllMyShops(req.user.userId);
   }
 }

@@ -1,4 +1,4 @@
-export interface IPaginatedResponse<T> {
+interface IPaginatedResponse<T> {
   items: T[];
   meta: {
     totalItems: number;
@@ -7,7 +7,7 @@ export interface IPaginatedResponse<T> {
   };
 }
 
-export interface IPaginationQueries {
+interface IPaginationQueries {
   page?: number;
   limit?: number;
   search?: string;

@@ -1,63 +1,58 @@
-import { Row, Col } from "antd";
+import { Row, Col, Pagination } from "antd";
 import { useSearchParams } from "react-router-dom";
-import ProductFilter from "../../../components/product/ProductFilter";
+import type { IProductFilterRequest } from "../../../types/product.type";
+import {
+  useActiveProductsByCategoryQuery,
+  useActiveProductsQuery,
+} from "../../../queries/product.query";
 import ProductSort from "../../../components/product/ProductSort";
 import ProductList from "../../../components/product/ProductList";
-import styles from "./ProductList.module.scss";
-import {
-  useActiveProductsQuery,
-  useProductsByCategoryQuery,
-} from "../../../queries/product.query";
+import ProductFilter from "../../../components/product/ProductFilter";
+import parseNumberParam from "../../../helper/parseNumber.helper";
 
 const ProductListPage = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const category = searchParams.get("category");
-  const keyword = searchParams.get("keyword");
-  const sort = searchParams.get("sort") ?? "id_desc";
-  const page = Number(searchParams.get("page") || 1);
-  const limit = Number(searchParams.get("limit") || 20);
+  const filter: IProductFilterRequest = {
+    search: searchParams.get("search") ?? undefined,
+    category: searchParams.get("category") ?? undefined,
+    page: Number(searchParams.get("page") ?? 1),
+    limit: 20,
+    sort: searchParams.get("sort") ?? undefined,
+    minPrice: parseNumberParam(searchParams.get("minPrice")),
+    maxPrice: parseNumberParam(searchParams.get("maxPrice")),
+    rating: parseNumberParam(searchParams.get("rating")),
+  };
 
-  const isSearch = Boolean(keyword);
-  const isCategory = Boolean(category && !keyword);
+  const isSearch = Boolean(filter.search);
 
-  const activeProductsQuery = useActiveProductsQuery(
-    {
-      page,
-      limit,
-      search: keyword ?? undefined,
-      sort,
-    },
-    {
-      enabled: isSearch || !category,
-    }
-  );
-
-  const categoryProductsQuery = useProductsByCategoryQuery(
-    category ?? "",
-    { page, limit, sort },
-    {
-      enabled: isCategory,
-    }
-  );
-
-  const query = isCategory ? categoryProductsQuery : activeProductsQuery;
+  const query = isSearch
+    ? useActiveProductsQuery(filter)
+    : useActiveProductsByCategoryQuery(filter.category ?? "", filter);
 
   return (
-    <div className={styles.wrapper}>
-      <Row gutter={16}>
-        <Col span={5}>
-          <ProductFilter />
-        </Col>
-        <Col span={19}>
-          <ProductSort />
-          <ProductList
-            products={query.data?.items ?? []}
-            loading={query.isLoading}
-          />
-        </Col>
-      </Row>
-    </div>
+    <Row gutter={16}>
+      <Col span={5}>
+        <ProductFilter />
+      </Col>
+
+      <Col span={19}>
+        <ProductSort />
+
+        <ProductList
+          products={query.data?.items ?? []}
+          loading={query.isLoading}
+        />
+
+        <Pagination
+          current={filter.page}
+          pageSize={filter.limit}
+          total={query.data?.meta.totalItems ?? 0}
+          // onChange={(page) => setFilter({ page })}
+          style={{ marginTop: 16, textAlign: "right" }}
+        />
+      </Col>
+    </Row>
   );
 };
 

@@ -104,12 +104,50 @@ export class ProductRepository {
     return { items, totalItems };
   }
 
+  async findInternalDetail(where: Prisma.ProductWhereUniqueInput) {
+    return this.prisma.product.findUnique({
+      where,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        avgRating: true,
+        minPrice: true,
+        maxPrice: true,
+        hasStock: true,
+        status: true,
+        variants: {
+          where: { stock: { gt: 0 } },
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            stock: true,
+            images: { select: { imageUrl: true } },
+          },
+        },
+        category: { select: { id: true, name: true, slug: true } },
+        shop: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            logoUrl: true,
+            owner: true,
+          },
+        },
+      },
+    });
+  }
+
   async findPublicDetail(where: Prisma.ProductWhereUniqueInput) {
     return this.prisma.product.findUnique({
       where,
       select: {
         id: true,
         name: true,
+        slug: true,
+        thumbnail: true,
         description: true,
         avgRating: true,
         minPrice: true,
@@ -126,7 +164,14 @@ export class ProductRepository {
           },
         },
         category: { select: { id: true, name: true, slug: true } },
-        shop: { select: { id: true, name: true, slug: true, logoUrl: true } },
+        shop: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            logoUrl: true,
+          },
+        },
       },
     });
   }

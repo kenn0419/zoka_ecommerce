@@ -1,24 +1,27 @@
 import { Select } from "antd";
 import { useSearchParams } from "react-router-dom";
-import styles from "./ProductSort.module.scss";
 
 export default function ProductSort() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const sort = searchParams.get("sort") || "popular";
+
+  const updateSort = (sort: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("sort", sort);
+    params.set("page", "1");
+    setSearchParams(params);
+  };
 
   return (
-    <div className={styles.sort}>
-      <Select
-        value={sort}
-        options={[
-          { label: "Phổ biến", value: "popular" },
-          { label: "Giá thấp → cao", value: "price_asc" },
-          { label: "Giá cao → thấp", value: "price_desc" },
-        ]}
-        onChange={(value) =>
-          setSearchParams({ ...Object.fromEntries(searchParams), sort: value })
-        }
-      />
-    </div>
+    <Select
+      value={searchParams.get("sort") ?? "newest"}
+      onChange={updateSort}
+      options={[
+        { label: "Mới nhất", value: "newest" },
+        { label: "Cũ nhất", value: "oldest" },
+        { label: "Giá tăng dần", value: "price_asc" },
+        { label: "Giá giảm dần", value: "price_desc" },
+        { label: "Đánh giá cao", value: "rating_desc" },
+      ]}
+    />
   );
 }

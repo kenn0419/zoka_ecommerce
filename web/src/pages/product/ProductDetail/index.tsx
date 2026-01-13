@@ -10,13 +10,12 @@ import ProductDescription from "../../../components/product/ProductDescription";
 import RelatedProducts from "../../../components/product/RelatedProducts";
 import VariantSelector from "../../../components/product/VariantSelector";
 import QuantitySelector from "../../../components/product/QuantitySelector";
-
-import { useProductDetailQuery } from "../../../queries/product.query";
+import { useProductDetailBySlugQuery } from "../../../queries/product.query";
 
 const ProductDetailPage = () => {
   const { productSlug } = useParams<{ productSlug: string }>();
 
-  const { data: product, isLoading } = useProductDetailQuery(productSlug);
+  const { data: product, isLoading } = useProductDetailBySlugQuery(productSlug);
 
   const [selectedVariant, setSelectedVariant] = useState(0);
   const [selectedQuantity, setSelectedQuantity] = useState(1);

@@ -13,8 +13,8 @@ export default function SearchBar() {
   const navigate = useNavigate();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const { keyword, setKeyword, clearKeyword } = useSearchStore();
-  const [debouncedKeyword] = useDebounce(keyword, 300);
+  const { search, setKeyword, clearKeyword } = useSearchStore();
+  const [debouncedKeyword] = useDebounce(search, 300);
 
   const { data, isFetching } = useSuggestProductsQuery(debouncedKeyword);
 
@@ -33,7 +33,7 @@ export default function SearchBar() {
 
   const handleSearch = (value: string) => {
     if (!value) return;
-    navigate(`/search?keyword=${value}`);
+    navigate(`/search?search=${value}`);
     clearKeyword();
   };
 
@@ -41,7 +41,7 @@ export default function SearchBar() {
     <div className={styles.searchWrapper} ref={wrapperRef}>
       <Search
         placeholder="Zoka bao ship 0Đ - Đăng ký ngay!"
-        value={keyword}
+        value={search}
         onChange={(e) => setKeyword(e.target.value)}
         onSearch={handleSearch}
         enterButton
@@ -49,7 +49,7 @@ export default function SearchBar() {
         className="searchInput"
       />
 
-      {keyword && (
+      {search && (
         <div className={styles.dropdown}>
           {isFetching && (
             <div className={styles.loading}>
@@ -81,7 +81,7 @@ export default function SearchBar() {
             <div
               className={styles.viewAll}
               onClick={() => {
-                navigate(`/${PATH.PRODUCTS}?keyword=${keyword}`);
+                navigate(`/${PATH.PRODUCTS}?search=${search}`);
                 clearKeyword();
               }}
             >

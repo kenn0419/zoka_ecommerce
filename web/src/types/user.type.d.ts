@@ -7,5 +7,19 @@ interface IUserResponse {
   address: string;
   avatarUrl: string;
   status: string;
-  roles: string[];
+  roles: IRoleResponse[];
+}
+
+interface IUserCreationRequest {
+  email: string;
+  fullName: string;
+  password: string;
+  slug: string;
+  phone: string;
+  address: string;
+  avatar?: File;
+}
+
+interface IUserUpdateRequest extends Partial<IUserCreationRequest> {
+  id: string;
 }

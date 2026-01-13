@@ -17,18 +17,18 @@ const queryClient = new QueryClient({
 });
 
 createRoot(document.getElementById("root")!).render(
-  <QueryClientProvider client={queryClient}>
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: "#1677ff",
-          borderRadius: 6,
-          fontFamily: "Inter, sans-serif",
-        },
-      }}
-      locale={enUS}
-    >
+  <ConfigProvider
+    theme={{
+      token: {
+        colorPrimary: "#1677ff",
+        borderRadius: 6,
+        fontFamily: "Inter, sans-serif",
+      },
+    }}
+    locale={enUS}
+  >
+    <QueryClientProvider client={queryClient}>
       <App />
-    </ConfigProvider>
-  </QueryClientProvider>
+    </QueryClientProvider>
+  </ConfigProvider>
 );

@@ -1,4 +1,5 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import { UserResponseDto } from 'src/modules/user/dto/user-response.dto';
 
 export class ShopResponseDto {
   @Expose()
@@ -15,4 +16,8 @@ export class ShopResponseDto {
 
   @Expose()
   logoUrl: string;
+
+  @Expose()
+  @Type(() => UserResponseDto)
+  owner: UserResponseDto;
 }

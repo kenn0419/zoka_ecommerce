@@ -11,23 +11,6 @@ export class UserRepository {
     return this.prisma.user.create({ data });
   }
 
-  findByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: { email },
-      include: {
-        roles: {
-          include: {
-            role: true,
-          },
-        },
-      },
-    });
-  }
-
-  findByPhone(phone: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { phone } });
-  }
-
   findUnique(where: Prisma.UserWhereUniqueInput): Promise<User | null> {
     return this.prisma.user.findUnique({
       where,
@@ -41,28 +24,26 @@ export class UserRepository {
     });
   }
 
-  findAllUsers(
-    search: string | null = null,
-    take: number = 10,
-    skip: number = 0,
-    sortBy: string[] = ['createdAt', 'desc'],
-  ): Promise<User[]> {
-    return this.prisma.user.findMany({
-      skip,
-      take,
-      orderBy: {
-        [sortBy[0]]: sortBy[1] === 'asc' ? 'asc' : 'desc',
-      },
-      ...(search
-        ? {
-            where: {
-              OR: ['id', 'email', 'fullName', 'phone'].map((key) => ({
-                [key]: { contains: search, mode: 'insensitive' },
-              })),
-            },
-          }
-        : {}),
-    });
+  async listPaginatedUsers(params: {
+    where: Prisma.UserWhereInput;
+    limit: number;
+    page: number;
+    orderBy?: Prisma.UserOrderByWithRelationInput;
+  }) {
+    const { where, limit, page, orderBy } = params;
+    const skip = (page - 1) * limit;
+
+    const [items, totalItems] = await this.prisma.$transaction([
+      this.prisma.user.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy,
+      }),
+      this.prisma.user.count({ where }),
+    ]);
+
+    return { items, totalItems };
   }
 
   updateUser(

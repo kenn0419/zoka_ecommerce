@@ -43,7 +43,7 @@ export class TransformPaginatedResponseInterceptor<T>
           statusCode,
           message: this.message,
           data: {
-            ...decimalConvertedData,
+            ...(decimalConvertedData.meta ?? {}),
             items: plainToInstance(this.itemDto, decimalConvertedData.items, {
               excludeExtraneousValues: true,
             }),

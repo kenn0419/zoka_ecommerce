@@ -1,18 +1,35 @@
 import { create } from "zustand";
+import type { IProductFilterRequest } from "../types/product.type";
 
 interface ProductFilterState {
-  category: string | null;
-  page: number;
-  sort: string;
-  setCategory: (c: string) => void;
-  setPage: (p: number) => void;
+  filter: IProductFilterRequest;
+
+  setFilter: (partial: Partial<IProductFilterRequest>) => void;
+  resetContext: () => void;
 }
 
 export const useProductFilterStore = create<ProductFilterState>((set) => ({
-  category: null,
-  page: 1,
-  sort: "price_asc",
+  filter: {
+    page: 1,
+    limit: 20,
+    sort: "oldest",
+  },
 
-  setCategory: (c) => set({ category: c, page: 1 }),
-  setPage: (p) => set({ page: p }),
+  setFilter: (partial) =>
+    set((state) => ({
+      filter: {
+        ...state.filter,
+        ...partial,
+        page: partial.page ?? 1,
+      },
+    })),
+
+  resetContext: () =>
+    set({
+      filter: {
+        page: 1,
+        limit: 20,
+        sort: "oldest",
+      },
+    }),
 }));
