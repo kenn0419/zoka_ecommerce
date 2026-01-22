@@ -1,0 +1,67 @@
+.wrapper {
+  display: flex;
+  background: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.left {
+  flex: 1;
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, #555, #777);
+  padding: 16px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.shopInfo {
+  margin-left: 16px;
+}
+
+.shopName {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.online {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.right {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  row-gap: 12px;
+  column-gap: 24px;
+  padding-left: 24px;
+}
+
+.stat {
+  font-size: 14px;
+
+  span {
+    color: #777;
+    margin-right: 4px;
+  }
+
+  b {
+    color: #ee4d2d;
+    font-weight: 500;
+  }
+}
+
+.highlight {
+  color: #ee4d2d;
+}

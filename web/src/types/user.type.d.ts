@@ -7,7 +7,7 @@ interface IUserResponse {
   address: string;
   avatarUrl: string;
   status: string;
-  roles: IRoleResponse[];
+  roles?: IRoleResponse[];
 }
 
 interface IUserCreationRequest {
@@ -23,3 +23,5 @@ interface IUserCreationRequest {
 interface IUserUpdateRequest extends Partial<IUserCreationRequest> {
   id: string;
 }
+
+type IUserSort = "OLDEST" | "NEWEST" | "NAME_ASC" | "NAME_DESC";

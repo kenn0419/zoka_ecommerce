@@ -1,6 +1,5 @@
 import { Input } from "antd";
 import { useState } from "react";
-import { UserSort } from "../../../constant/user-sort.constant";
 import { useAllUsersQuery } from "../../../queries/user.query";
 import { UserTable } from "./components/UserTable";
 import { UserCreateModal } from "./components/UserCreateModal";
@@ -9,7 +8,7 @@ const UserManagement = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<string>(UserSort.NEWEST);
+  const [sort, setSort] = useState<IUserSort>("OLDEST");
 
   const { data, isLoading } = useAllUsersQuery({
     page,

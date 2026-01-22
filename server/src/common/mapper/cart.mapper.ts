@@ -1,13 +1,13 @@
 export class CartMapper {
   static toCartResponse(cart: any) {
     const items = this.toCartItemResponses(cart);
-    const summary = this.toCartSummaryResponse(items);
+    // const summary = this.toCartSummaryResponse(items);
 
     return {
       id: cart.id,
       userId: cart.userId,
       items,
-      summary,
+      // summary,
       updatedAt: cart.updatedAt,
     };
   }

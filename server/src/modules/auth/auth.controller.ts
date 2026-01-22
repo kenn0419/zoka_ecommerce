@@ -100,7 +100,7 @@ export class AuthController {
   @UseGuards(JwtSessionGuard)
   @HttpCode(HttpStatus.OK)
   @Serialize(null, 'Logout successfully!')
-  async logout(@Req() req, @Res() res: Response) {
+  async logout(@Req() req, @Res({ passthrough: true }) res: Response) {
     await this.authService.logout(req.user.sessionId);
     res.clearCookie('accessToken', {
       secure: true,
@@ -113,7 +113,7 @@ export class AuthController {
       path: '/api/v1/auth/refresh',
     });
 
-    return res.json(null);
+    return null;
   }
 
   @Post('/refresh')

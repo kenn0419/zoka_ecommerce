@@ -1,12 +1,7 @@
-import type {
-  IAddCartRequest,
-  ICartResponse,
-  ICartSumary,
-} from "../types/cart.type";
 import instance from "./axios-customize";
 
 export const cartApi = {
-  getUserCartSummary: async (): Promise<IApiResponse<ICartSumary>> => {
+  getUserCartSummary: async (): Promise<IApiResponse<ICartSummaryResponse>> => {
     return await instance.get("/cart/summary");
   },
   getUserCart: async (): Promise<IApiResponse<ICartResponse>> => {

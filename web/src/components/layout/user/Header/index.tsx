@@ -1,5 +1,10 @@
 import { Layout, Badge, Dropdown, message } from "antd";
-import { UserOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  ShoppingCartOutlined,
+  ShopOutlined,
+  BellOutlined,
+} from "@ant-design/icons";
 import styles from "./Header.module.scss";
 import { useAuthStore } from "../../../../store/auth.store";
 import { useCartStore } from "../../../../store/cart.store";
@@ -11,7 +16,7 @@ import { useLogoutMutation } from "../../../../queries/auth.query";
 
 export default function Header() {
   const { user } = useAuthStore();
-  const { summary } = useCartStore();
+  const totalItems = useCartStore((s) => s.totalItems);
 
   const navigate = useNavigate();
   const logoutMutation = useLogoutMutation();
@@ -27,15 +32,19 @@ export default function Header() {
           message.error("Đăng xuất thất bại");
         },
       });
-    }
-
-    if (key === "profile") {
+    } else if (key === "profile") {
       navigate(`/${PATH.USER}/profile`);
+    } else {
+      navigate(`/${PATH.ADMIN}`);
     }
   };
 
   const items = [
     { key: "profile", label: "Tài khoản" },
+    ...(user?.roles?.some((item) => item.name === "admin")
+      ? [{ key: "admin", label: "Quản lý hệ thống" }]
+      : []),
+    { key: "orders", label: "Đơn hàng của tôi" },
     { key: "logout", label: "Đăng xuất" },
   ];
 
@@ -50,9 +59,17 @@ export default function Header() {
       <div className={styles.actions}>
         {user ? (
           <>
-            <Badge count={summary.totalItems || 0}>
+            <Badge count={totalItems}>
               <Link to={`/${PATH.CART}`}>
                 <ShoppingCartOutlined className={styles.icon} />
+              </Link>
+            </Badge>
+            <Link to={`/${PATH.SELLER}`}>
+              <ShopOutlined className={styles.icon} />
+            </Link>
+            <Badge count={1}>
+              <Link to={`/${PATH.CART}`}>
+                <BellOutlined className={styles.icon} />
               </Link>
             </Badge>
             <Dropdown

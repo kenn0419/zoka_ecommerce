@@ -1,5 +1,4 @@
-interface ICartSumary {
-  totalQuantity: number;
+interface ICartSummaryResponse {
   totalItems: number;
   subtotal: number;
 }
@@ -16,13 +15,14 @@ interface ICartItemResponse {
   stockSnapshot: number;
   subtotal: number;
   isAvailable: boolean;
+
+  checked?: boolean;
 }
 
 interface ICartResponse {
   id: string;
   userId: string;
   items: ICartItemResponse[];
-  summary: ICartSumary;
 }
 
 interface IAddCartRequest {

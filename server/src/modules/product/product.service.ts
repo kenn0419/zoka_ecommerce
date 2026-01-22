@@ -257,13 +257,47 @@ export class ProductService {
     limit: number,
     sort: ProductSort,
   ) {
-    const existShop = await this.shopRepo.findOne({ id: shopId });
+    const existShop = await this.shopRepo.findUnique({ id: shopId });
+    if (!existShop) {
+      throw new NotFoundException(`Shop not found`);
+    }
     if (existShop?.ownerId !== ownerId) {
       throw new BadRequestException(`You don't have permission to access`);
     }
 
     const where: Prisma.ProductWhereInput = {
       shopId,
+      ...(search && {
+        OR: buildSearchOr(search, ['name', 'description']),
+      }),
+    };
+
+    return paginatedResult(
+      {
+        where,
+        page,
+        limit,
+        orderBy: buildProductSort(sort),
+      },
+      (args) => this.productRepo.listPaginatedForPublic(args),
+    );
+  }
+
+  async findActiveShopProducts(
+    shopSlug: string,
+    search: string,
+    page: number,
+    limit: number,
+    sort: ProductSort,
+  ) {
+    const existShop = await this.shopRepo.findUnique({ slug: shopSlug });
+    if (!existShop) {
+      throw new NotFoundException(`Shop not found`);
+    }
+
+    const where: Prisma.ProductWhereInput = {
+      shopId: existShop.id,
+      status: ProductStatus.ACTIVE,
       ...(search && {
         OR: buildSearchOr(search, ['name', 'description']),
       }),
@@ -415,7 +449,7 @@ export class ProductService {
   }
 
   private async validateShop(userId: string, shopId: string) {
-    const existShop = await this.shopRepo.findOne({ id: shopId });
+    const existShop = await this.shopRepo.findUnique({ id: shopId });
 
     if (!existShop) {
       throw new NotFoundException('Shop not found.');

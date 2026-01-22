@@ -6,7 +6,7 @@ type UserUpdateDrawerProps = {
   user: IUserResponse;
 };
 
-export const UserUpdateDrawer = ({ user }: UserUpdateDrawerProps) => {
+export default function UserUpdateDrawer({ user }: UserUpdateDrawerProps) {
   const updateUser = useUserUpdateQuery();
 
   return (
@@ -29,4 +29,4 @@ export const UserUpdateDrawer = ({ user }: UserUpdateDrawerProps) => {
       <ProFormText name="email" label="Email" required />
     </DrawerForm>
   );
-};
+}

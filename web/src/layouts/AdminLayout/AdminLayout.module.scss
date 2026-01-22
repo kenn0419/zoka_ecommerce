@@ -2,29 +2,6 @@
   min-height: 100vh;
 }
 
-/* ===== HEADER ===== */
-.header {
-  background: #ffffff;
-  padding: 0 24px;
-  height: 56px;
-
-  display: flex;
-  align-items: center;
-
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  z-index: 10;
-}
-
-.backBtn {
-  font-weight: 500;
-  color: #fa541c;
-
-  &:hover {
-    color: #d4380d;
-    background: rgba(250, 84, 28, 0.08);
-  }
-}
-
 /* ===== CONTENT ===== */
 .content {
   padding: 24px;

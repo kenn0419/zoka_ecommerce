@@ -2,7 +2,7 @@ import { productApi } from "../apis/product.api";
 
 export const productService = {
   async fetchActiveProducts(
-    params: IProductFilterRequest
+    params: IProductFilterQueries,
   ): Promise<IPaginatedResponse<IProductListItemResponse>> {
     const res = await productApi.fetchActiveProducts({ ...params });
 
@@ -11,7 +11,7 @@ export const productService = {
 
   async fetchActiveProductsByCategory(
     categorySlug: string,
-    params: IProductFilterRequest
+    params: IProductFilterQueries,
   ): Promise<IPaginatedResponse<IProductListItemResponse>> {
     const res = await productApi.fetchProductsByCategory({
       categorySlug,
@@ -22,21 +22,21 @@ export const productService = {
   },
 
   async fetchProductDetailBySlug(
-    productSlug: string
+    productSlug: string,
   ): Promise<IProductDetailResponse> {
     const res = await productApi.fetchProductDetailBySlug(productSlug);
     return res.data;
   },
 
   async fetchProductDetailById(
-    productId: string
+    productId: string,
   ): Promise<IProductDetailResponse> {
     const res = await productApi.fetchProductDetailById(productId);
     return res.data;
   },
 
   async fetchRelatedProducts(
-    categorySlug: string
+    categorySlug: string,
   ): Promise<IPaginatedResponse<IProductListItemResponse>> {
     const res = await productApi.fetchProductsByCategory({
       categorySlug,
@@ -48,7 +48,7 @@ export const productService = {
   },
 
   async suggestProducts(
-    search: string
+    search: string,
   ): Promise<IPaginatedResponse<IProductListItemResponse>> {
     const res = await productApi.fetchSuggestProducts(search);
     return res.data;
@@ -56,7 +56,7 @@ export const productService = {
 
   async fetchProductsByShop(
     shopId: string,
-    params: IProductFilterRequest
+    params: IProductFilterQueries,
   ): Promise<IPaginatedResponse<IProductListItemResponse>> {
     const res = await productApi.fetchProductsByShop({
       shopId,
@@ -66,8 +66,19 @@ export const productService = {
     return res.data;
   },
 
+  async fetchActiveShopProducts(
+    shopSlug: string,
+    params: IProductFilterQueries,
+  ) {
+    const res = await productApi.fetchActiveShopProducts({
+      shopSlug,
+      ...params,
+    });
+    return res.data;
+  },
+
   async createProduct(
-    data: IProductCreationRequest
+    data: IProductCreationRequest,
   ): Promise<IProductListItemResponse> {
     const formData = new FormData();
 

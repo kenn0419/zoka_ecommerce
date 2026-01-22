@@ -1,10 +1,10 @@
 import { create } from "zustand";
-import type { IProductFilterRequest } from "../types/product.type";
+import type { IProductFilterQueries } from "../types/product.type";
 
 interface ProductFilterState {
-  filter: IProductFilterRequest;
+  filter: IProductFilterQueries;
 
-  setFilter: (partial: Partial<IProductFilterRequest>) => void;
+  setFilter: (partial: Partial<IProductFilterQueries>) => void;
   resetContext: () => void;
 }
 

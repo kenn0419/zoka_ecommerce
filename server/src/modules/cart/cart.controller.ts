@@ -23,10 +23,8 @@ export class CartController {
 
   @Get()
   @Serialize(CartResponseDto, 'Get cart successfully.')
-  async getUserCart(@Req() req) {
-    const cart = await this.cartService.getUserCart(req.user.userId);
-
-    return cart;
+  getUserCart(@Req() req) {
+    return this.cartService.getUserCart(req.user.userId);
   }
 
   @Get('/summary')

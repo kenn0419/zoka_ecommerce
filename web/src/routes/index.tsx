@@ -7,10 +7,12 @@ import { ErrorRoutes } from "./ErrorRouter";
 import { ProductRoutes } from "./ProductRouter";
 import { ShopRoutes } from "./ShopRouter";
 import { SellerRoutes } from "./SellerRouter";
+import { PublicShopRoutes } from "./PublicShopRouter";
 
 export const router = createBrowserRouter([
   ProductRoutes,
   UserRoutes,
+  PublicShopRoutes,
   ShopRoutes,
   SellerRoutes,
   AdminRoutes,

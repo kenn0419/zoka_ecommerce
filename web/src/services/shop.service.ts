@@ -18,8 +18,30 @@ export const shopService = {
     return res.data;
   },
 
-  async getAllMyShops(): Promise<IShopResponse[]> {
-    const res = await shopApi.getAllMyShops();
+  async fetchAllMyShops(): Promise<IShopResponse[]> {
+    const res = await shopApi.fetchAllMyShops();
+    return res.data;
+  },
+
+  async fetchAllShops(
+    query: IPaginationQueries,
+  ): Promise<IPaginatedResponse<IShopResponse>> {
+    const res = await shopApi.fetchAllShops(query);
+
+    return res.data;
+  },
+
+  async changeShopStatus(
+    data: IShopChangeStatusRequest,
+  ): Promise<IShopResponse> {
+    const res = await shopApi.updateShopStatus(data);
+
+    return res.data;
+  },
+
+  async fetchDetailShopBySlug(slug: string): Promise<IShopResponse> {
+    const res = await shopApi.fetchDetailShopBySlug(slug);
+
     return res.data;
   },
 };

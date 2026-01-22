@@ -20,11 +20,37 @@ export class ShopRepository {
       include: { owner: true },
     });
   }
-  findOne(where: Prisma.ShopWhereUniqueInput) {
-    return this.prisma.shop.findUnique({ where });
+
+  findUnique(where: Prisma.ShopWhereUniqueInput, select?: Prisma.ShopSelect) {
+    return this.prisma.shop.findUnique({ where, select });
   }
 
   update(where: Prisma.ShopWhereUniqueInput, data: Prisma.ShopUpdateInput) {
     return this.prisma.shop.update({ where, data });
+  }
+
+  async listPaginatedShops(params: {
+    where: Prisma.ShopWhereInput;
+    limit: number;
+    page: number;
+    orderBy?: Prisma.ShopOrderByWithRelationInput;
+  }) {
+    const { where, limit, page, orderBy } = params;
+    const skip = (page - 1) * limit;
+
+    const [items, totalItems] = await this.prisma.$transaction([
+      this.prisma.shop.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          owner: true,
+        },
+        orderBy,
+      }),
+      this.prisma.shop.count({ where }),
+    ]);
+
+    return { items, totalItems };
   }
 }

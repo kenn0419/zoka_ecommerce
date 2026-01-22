@@ -9,6 +9,7 @@ import {
   UploadedFile,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { CreateShopDto } from './dto/create-shop.dto';
@@ -18,10 +19,15 @@ import { JwtSessionGuard } from 'src/common/guards/jwt-session.guard';
 import { RolesPermissionsGuard } from 'src/common/guards/rbac.guard';
 import { Roles } from 'src/common/decorators/role.decorator';
 import { Role } from 'src/common/enums/role.enum';
-import { Serialize } from 'src/common/decorators/serialize.decorator';
+import {
+  Serialize,
+  SerializePaginated,
+} from 'src/common/decorators/serialize.decorator';
 import { ShopResponseDto } from './dto/shop-response.dto';
+import { PaginatedQueryDto } from 'src/common/dto/paginated-query.dto';
+import { ShopQueryDto } from './dto/shop-query.dto';
 
-@Controller('shop')
+@Controller('shops')
 @UseGuards(JwtSessionGuard, RolesPermissionsGuard)
 export class ShopController {
   constructor(private readonly shopService: ShopService) {}
@@ -69,14 +75,26 @@ export class ShopController {
   }
 
   @Get()
-  @Serialize(null, 'Get all shops successfully!')
-  getAllShops(@Req() req) {
-    return this.shopService.getAllShops();
+  @Roles(Role.ADMIN)
+  @SerializePaginated(ShopResponseDto, 'Get all shops successfully!')
+  getAllShops(@Query() query: ShopQueryDto) {
+    return this.shopService.findAllShops(
+      query.search,
+      query.page,
+      query.limit,
+      query.sort,
+    );
   }
 
   @Get('/me')
   @Serialize(ShopResponseDto, 'Get all my shops successfully!')
-  getAllMyShops(@Req() req) {
-    return this.shopService.getAllMyShops(req.user.userId);
+  fetchAllMyShops(@Req() req) {
+    return this.shopService.findAllMyShops(req.user.userId);
+  }
+
+  @Get('/public/:slug')
+  @Serialize(ShopResponseDto, 'Get detail shop successfully!')
+  fetchDetailShopBySlug(@Param('slug') shopSlug: string) {
+    return this.shopService.findDetailShopBySlug(shopSlug);
   }
 }

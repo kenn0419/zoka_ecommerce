@@ -1,13 +1,13 @@
 import { Outlet } from "react-router-dom";
-import styles from "./MainLayout.module.scss";
+import styles from "./UserLayout.module.scss";
 import Footer from "../../components/layout/user/Footer";
 import { Content } from "antd/es/layout/layout";
 import Header from "../../components/layout/user/Header";
 import { Layout } from "antd";
-import { useInitCart } from "../../hooks/useInitCart";
+import { useInitCartSummary } from "../../hooks/useInitCartSummary";
 
-const MainLayout = () => {
-  useInitCart();
+export default function UserLayout() {
+  useInitCartSummary();
   return (
     <Layout className={styles.layout}>
       <Header />
@@ -17,6 +17,4 @@ const MainLayout = () => {
       <Footer />
     </Layout>
   );
-};
-
-export default MainLayout;
+}

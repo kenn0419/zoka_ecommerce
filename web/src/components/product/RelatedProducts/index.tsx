@@ -1,6 +1,6 @@
 import styles from "./RelatedProducts.module.scss";
-import ProductList from "../ProductList";
 import { useRelatedProductsQuery } from "../../../queries/product.query";
+import ProductGrid from "../ProductGrid";
 
 export default function RelatedProducts({
   categorySlug,
@@ -14,7 +14,7 @@ export default function RelatedProducts({
   return (
     <div className={styles.related}>
       <h3>Sản phẩm liên quan</h3>
-      <ProductList products={data?.items ?? []} />
+      <ProductGrid products={data?.items ?? []} />
     </div>
   );
 }

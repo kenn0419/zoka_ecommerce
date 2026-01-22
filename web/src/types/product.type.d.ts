@@ -7,6 +7,7 @@ interface IProductListItemResponse {
   minPrice: number;
   maxPrice: number;
   hasStock: boolean;
+  status?: string;
 }
 
 interface IProductDetailResponse {
@@ -24,7 +25,7 @@ interface IProductDetailResponse {
   shop: IShopResponse;
 }
 
-interface IProductFilterRequest extends IPaginationQueries {
+interface IProductFilterQueries extends IPaginationQueries {
   category?: string;
   minPrice?: number;
   maxPrice?: number;

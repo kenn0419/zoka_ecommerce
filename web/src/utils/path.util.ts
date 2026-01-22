@@ -11,6 +11,7 @@ export const PATH = {
   MANAGE_FINANCE: "manage-finances",
   MANAGE_SHOP: "manage-shops",
   MANAGE_REVIEW: "manage-reviews",
+  MANAGE_DISCOUNT: "manage-discounts",
   AUTH: "auth",
   SIGNIN: "signin",
   SIGNUP: "signup",

@@ -14,6 +14,11 @@ import { UploadService } from 'src/infrastructure/upload/upload.service';
 import { ConfigService } from '@nestjs/config';
 import { Role } from 'src/common/enums/role.enum';
 import { SlugifyUtil } from 'src/common/utils/slugify.util';
+import { Prisma } from 'generated/prisma';
+import { buildSearchOr } from 'src/common/utils/build-search-or.util';
+import { paginatedResult } from 'src/common/utils/pagninated-result.util';
+import { buildShopSort } from 'src/common/utils/shop-sort.util';
+import { ShopSort } from 'src/common/enums/shop-sort.enum';
 
 @Injectable()
 export class ShopService {
@@ -76,7 +81,7 @@ export class ShopService {
   }
 
   async lockShop(ownerId: string, shopId: string) {
-    const existShop = await this.shopRepo.findOne({ id: shopId });
+    const existShop = await this.findOne({ id: shopId });
     if (!existShop) {
       throw new NotFoundException('Shop not found.');
     }
@@ -98,7 +103,7 @@ export class ShopService {
   }
 
   async activeShop(ownerId: string, shopId: string) {
-    const existShop = await this.shopRepo.findOne({ id: shopId });
+    const existShop = await this.findOne({ id: shopId });
     if (!existShop) {
       throw new NotFoundException('Shop not found');
     }
@@ -119,11 +124,59 @@ export class ShopService {
     );
   }
 
-  async getAllShops() {
-    return [];
+  async findAllShops(
+    search: string,
+    page: number,
+    limit: number,
+    sort: ShopSort,
+  ) {
+    const where: Prisma.ShopWhereInput = {
+      ...(search && {
+        OR: buildSearchOr(search, ['name', 'id']),
+      }),
+    };
+
+    return paginatedResult(
+      {
+        where,
+        page,
+        limit,
+        orderBy: buildShopSort(sort),
+      },
+      (args) => this.shopRepo.listPaginatedShops(args),
+    );
   }
 
-  async getAllMyShops(ownerId: string) {
+  async findAllMyShops(ownerId: string) {
     return await this.shopRepo.findShopsByOwner(ownerId);
+  }
+
+  async findOne(
+    where: Prisma.ShopWhereUniqueInput,
+    select?: Prisma.ShopSelect,
+  ) {
+    const existShop = await this.shopRepo.findUnique(where, select);
+
+    if (!existShop || existShop.status !== ShopStatus.ACTIVE) {
+      console.log(existShop);
+      throw new BadRequestException('Shop is approved yet.');
+    }
+
+    return existShop;
+  }
+
+  async findDetailShopBySlug(slug: string) {
+    return this.findOne(
+      { slug },
+      {
+        name: true,
+        slug: true,
+        description: true,
+        status: true,
+        logoUrl: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    );
   }
 }

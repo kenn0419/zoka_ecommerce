@@ -22,7 +22,6 @@ const Sidebar = () => {
   const location = useLocation();
   const [openKeys, setOpenKeys] = useState<string[]>([]);
 
-  /* ===== AUTO OPEN THE RIGHT SUBMENU ===== */
   useEffect(() => {
     const path = location.pathname;
 
@@ -44,7 +43,6 @@ const Sidebar = () => {
     setOpenKeys([]);
   }, [location.pathname]);
 
-  /* ===== SELECTED MENU ITEM ===== */
   const selectedKeys = (() => {
     const path = location.pathname;
 
@@ -58,12 +56,10 @@ const Sidebar = () => {
     return ["dashboard"];
   })();
 
-  /* ===== TOGGLE SUBMENU BY ARROW ONLY ===== */
   const toggleSubMenu = (key: string) => {
     setOpenKeys((prev) => (prev.includes(key) ? [] : [key]));
   };
 
-  /* ===== CUSTOM TITLE WITH ARROW ===== */
   const renderSubMenuTitle = (title: string, key: string) => (
     <div
       className={styles.submenuTitle}
@@ -123,6 +119,14 @@ const Sidebar = () => {
           key: "orders",
           label: (
             <Link to={`/${PATH.ADMIN}/${PATH.MANAGE_ORDER}`}>Đơn hàng</Link>
+          ),
+        },
+        {
+          key: "discounts",
+          label: (
+            <Link to={`/${PATH.ADMIN}/${PATH.MANAGE_DISCOUNT}`}>
+              Mã giảm giá
+            </Link>
           ),
         },
         {

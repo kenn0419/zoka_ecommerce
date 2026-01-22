@@ -1,4 +1,5 @@
 import { Expose } from 'class-transformer';
+import { ProductStatus } from 'src/common/enums/product-status.enum';
 
 export class ProductListResponseDto {
   @Expose()
@@ -24,4 +25,7 @@ export class ProductListResponseDto {
 
   @Expose()
   hasStock: boolean;
+
+  @Expose()
+  status?: ProductStatus;
 }

@@ -1,0 +1,49 @@
+.card {
+  min-width: 260px;
+  height: 120px;
+  background: linear-gradient(135deg, #ff7337, #ff4d4f);
+  border-radius: 8px;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.discount {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.desc {
+  font-size: 13px;
+  line-height: 1.4;
+  max-width: 160px;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+
+  button {
+    background: #fff;
+    color: #ff4d4f;
+    font-weight: 600;
+    border-radius: 16px;
+    border: none;
+    padding: 4px 16px;
+
+    &:hover {
+      background: #fff;
+      opacity: 0.9;
+      color: #ff4d4f;
+    }
+  }
+}

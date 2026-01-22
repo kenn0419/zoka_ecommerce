@@ -28,6 +28,7 @@ model User {
   sessions              UserSession[]
   roles                 UserRole[]
   shops                 Shop[]
+  coupons               UserCoupon[]
   orders                Order[]         @relation("UserOrders")
   reviews               ProductReview[]
   conversationsAsBuyer  Conversation[]  @relation("BuyerConversations")
@@ -116,6 +117,7 @@ model Shop {
   categories ShopCategory[]
   flashSales FlashSale[]
   orders     Order[]
+  coupons    Coupon[]
 }
 
 model ShopCategory {
@@ -126,7 +128,8 @@ model ShopCategory {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  shop Shop @relation(fields: [shopId], references: [id])
+  products Product[]
+  shop     Shop      @relation(fields: [shopId], references: [id])
 }
 
 // ===================== PRODUCT =====================
@@ -142,34 +145,38 @@ model Category {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  parent   Category?  @relation("CategoryParent", fields: [parentId], references: [id])
-  children Category[] @relation("CategoryParent")
+  parent   Category?        @relation("CategoryParent", fields: [parentId], references: [id])
+  children Category[]       @relation("CategoryParent")
   products Product[]
+  coupons  CouponCategory[]
 }
 
 model Product {
-  id          String   @id @default(uuid())
-  shopId      String
-  categoryId  String
-  name        String
-  slug        String   @unique
-  description String?
-  status      String   @default("PENDING")
-  thumbnail   String
-  minPrice    Decimal?
-  maxPrice    Decimal?
-  avgRating   Float?   @default(0)
-  hasStock    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(uuid())
+  shopId         String
+  categoryId     String
+  shopCategoryId String?
+  name           String
+  slug           String   @unique
+  description    String?
+  status         String   @default("PENDING")
+  thumbnail      String
+  minPrice       Decimal?
+  maxPrice       Decimal?
+  avgRating      Float?   @default(0)
+  hasStock       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   shop           Shop             @relation(fields: [shopId], references: [id])
   category       Category         @relation(fields: [categoryId], references: [id])
+  shopCategory   ShopCategory?    @relation(fields: [shopCategoryId], references: [id])
   variants       ProductVariant[]
   orderItems     OrderItem[]
   flashSaleItems FlashSaleItem[]
   reviews        ProductReview[]
   cartItems      CartItem[]
+  couponProducts CouponProduct[]
 }
 
 model ProductVariant {
@@ -263,18 +270,64 @@ model Coupon {
   id          String    @id @default(uuid())
   code        String    @unique
   description String?
-  discount    Decimal // số tiền giảm hoặc % giảm tùy type
-  type        String // "FIXED" | "PERCENTAGE"
-  usageLimit  Int? // số lần sử dụng tối đa
+  discount    Decimal
+  type        String
+  usageLimit  Int?
   usedCount   Int       @default(0)
-  minOrder    Decimal? // giá trị tối thiểu để áp dụng
+  minOrder    Decimal?
+  maxDiscount Decimal?
+  scope       String    @default("GLOBAL")
   startAt     DateTime?
   endAt       DateTime?
-  status      String    @default("ACTIVE") // ACTIVE | EXPIRED | INACTIVE
+  status      String    @default("INACTIVE")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  orders Order[] // liên kết với các order đã dùng coupon
+  shopId String?
+  shop   Shop?   @relation(fields: [shopId], references: [id])
+
+  orders           Order[]
+  userCoupons      UserCoupon[]
+  counponProducts  CouponProduct[]
+  couponCategories CouponCategory[]
+}
+
+model UserCoupon {
+  userId    String
+  couponId  String
+  used      Boolean  @default(false)
+  usedAt    DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  coupon Coupon @relation(fields: [couponId], references: [id])
+
+  @@id([userId, couponId])
+}
+
+model CouponCategory {
+  couponId   String
+  categoryId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  coupon   Coupon   @relation(fields: [couponId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@id([couponId, categoryId])
+}
+
+model CouponProduct {
+  couponId  String
+  productId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coupon  Coupon  @relation(fields: [couponId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@id([couponId, productId])
 }
 
 // ===================== ORDER =====================
@@ -291,8 +344,8 @@ model Order {
   buyer    User        @relation("UserOrders", fields: [buyerId], references: [id])
   shop     Shop        @relation(fields: [shopId], references: [id])
   items    OrderItem[]
-  coupon   Coupon?     @relation(fields: [couponId], references: [id])
   couponId String?
+  coupon   Coupon?     @relation(fields: [couponId], references: [id])
 }
 
 model OrderItem {

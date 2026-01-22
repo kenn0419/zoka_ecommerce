@@ -104,4 +104,8 @@ export class CategoryRepository {
       include: { children: true },
     });
   }
+
+  count(where: Prisma.CategoryWhereInput): Promise<number> {
+    return this.prisma.category.count({ where });
+  }
 }

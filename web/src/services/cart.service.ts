@@ -1,13 +1,12 @@
 import { cartApi } from "../apis/cart.api";
-import type { IAddCartRequest } from "../types/cart.type";
 
 export const cartService = {
-  async getUserCartSummary() {
+  async getUserCartSummary(): Promise<ICartSummaryResponse> {
     const res = await cartApi.getUserCartSummary();
 
     return res.data;
   },
-  async getUserCart() {
+  async getUserCart(): Promise<ICartResponse> {
     const res = await cartApi.getUserCart();
 
     return res.data;

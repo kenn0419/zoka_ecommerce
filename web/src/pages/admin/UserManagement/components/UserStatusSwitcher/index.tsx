@@ -8,7 +8,7 @@ type Props = {
   user: IUserResponse;
 };
 
-export const UserStatusSwitch = ({ user }: Props) => {
+export default function UserStatusSwitcher({ user }: Props) {
   const activeUser = useUserActiveQuery();
   const deActiveUser = useUserDeActiveQuery();
 
@@ -32,4 +32,4 @@ export const UserStatusSwitch = ({ user }: Props) => {
       }}
     />
   );
-};
+}

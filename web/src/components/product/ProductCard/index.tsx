@@ -1,6 +1,5 @@
 import { Card } from "antd";
 import styles from "./ProductCard.module.scss";
-import type { IProductListItemResponse } from "../../../types/product.type";
 
 interface ProductCardProps {
   product: IProductListItemResponse;

@@ -1,9 +1,9 @@
 import { ProTable, type ProColumns } from "@ant-design/pro-components";
 import { Popconfirm } from "antd";
 import { useUserDeleteQuery } from "../../../../../queries/user.query";
-import { UserStatusSwitch } from "../UserSwitchStatus";
-import { UserUpdateDrawer } from "../UserUpdateDrawer";
-import { UserSort } from "../../../../../constant/user-sort.constant";
+import { UserSort } from "../../../../../constant/user.constant";
+import UserStatusSwitcher from "../UserStatusSwitcher";
+import UserUpdateDrawer from "../UserUpdateDrawer";
 
 type Props = {
   data: IUserResponse[];
@@ -12,7 +12,7 @@ type Props = {
   limit: number;
   total?: number;
   onPageChange: (page: number, limit: number) => void;
-  onSortChange: (sort: string) => void;
+  onSortChange: (sort: IUserSort) => void;
   onSearch: (value: string) => void;
   toolbar: React.ReactNode[];
 };
@@ -35,7 +35,7 @@ export const UserTable = ({
     { title: "Email", dataIndex: "email" },
     {
       title: "Status",
-      render: (_, record) => <UserStatusSwitch user={record} />,
+      render: (_, record) => <UserStatusSwitcher user={record} />,
     },
     {
       title: "Actions",

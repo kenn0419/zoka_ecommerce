@@ -1,15 +1,5 @@
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { productService } from "../services/product.service";
-import {
-  type IProductCreationRequest,
-  type IProductDetailResponse,
-  type IProductFilterRequest,
-  type IProductListItemResponse,
-} from "../types/product.type";
-import type {
-  IPaginatedResponse,
-  IPaginationQueries,
-} from "../types/pagination.type";
 
 export const useSuggestProductsQuery = (search: string) => {
   return useQuery({
@@ -21,8 +11,8 @@ export const useSuggestProductsQuery = (search: string) => {
 };
 
 export const useActiveProductsQuery = (
-  params: IProductFilterRequest,
-  options?: any
+  params: IProductFilterQueries,
+  options?: any,
 ) => {
   return useQuery<IPaginatedResponse<IProductListItemResponse>>({
     queryKey: ["products", "active", params],
@@ -60,8 +50,8 @@ export const useRelatedProductsQuery = (categorySlug: string) => {
 
 export const useActiveProductsByCategoryQuery = (
   categorySlug: string,
-  params: IProductFilterRequest,
-  options?: any
+  params: IProductFilterQueries,
+  options?: any,
 ) => {
   return useQuery<IPaginatedResponse<IProductListItemResponse>>({
     queryKey: ["products", "active", "category", categorySlug],
@@ -74,11 +64,27 @@ export const useActiveProductsByCategoryQuery = (
 
 export const useProductsByShop = (
   shopId: string,
-  params: IPaginationQueries
+  params: IPaginationQueries,
+  options?: any,
 ) => {
   return useQuery<IPaginatedResponse<IProductListItemResponse>>({
     queryKey: ["products", "shop", shopId],
     queryFn: () => productService.fetchProductsByShop(shopId, params),
+    placeholderData: keepPreviousData,
+    ...options,
+  });
+};
+
+export const useActiveShopProducts = (
+  shopSlug: string,
+  params: IPaginationQueries,
+  options?: any,
+) => {
+  return useQuery<IPaginatedResponse<IProductListItemResponse>>({
+    queryKey: ["active", "products", "shop", shopSlug],
+    queryFn: () => productService.fetchActiveShopProducts(shopSlug, params),
+    placeholderData: keepPreviousData,
+    ...options,
   });
 };
 

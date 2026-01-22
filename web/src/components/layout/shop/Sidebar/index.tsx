@@ -5,6 +5,7 @@ import {
   ShoppingCartOutlined,
   DollarOutlined,
   BarChartOutlined,
+  GiftOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./Sidebar.module.scss";
@@ -31,6 +32,11 @@ export default function Sidebar() {
       key: `/${PATH.SELLER}/${currentShopId}/${PATH.MANAGE_ORDER}`,
       icon: <ShoppingCartOutlined />,
       label: "Đơn hàng",
+    },
+    {
+      key: `/${PATH.SELLER}/${currentShopId}/${PATH.MANAGE_DISCOUNT}`,
+      icon: <GiftOutlined />,
+      label: "Khuyến mãi",
     },
     {
       key: `/${PATH.SELLER}/${currentShopId}/${PATH.MANAGE_FINANCE}`,

@@ -7,12 +7,15 @@ import AppLayout from "../components/layout/app/AppLayout";
 
 const DashboardPage = lazy(() => import("../pages/shop/Dashboard"));
 const ProductManagementPage = lazy(
-  () => import("../pages/shop/ProductManagement")
+  () => import("../pages/shop/ProductManagement"),
 );
 const ProductCreationPage = lazy(() => import("../pages/shop/ProductCreation"));
 const OrderManagementPage = lazy(() => import("../pages/shop/OrderManagement"));
 const FinanceManagementPage = lazy(
-  () => import("../pages/shop/FinanceManagement")
+  () => import("../pages/shop/FinanceManagement"),
+);
+const DiscountManagementPage = lazy(
+  () => import("../pages/shop/DiscountManagement"),
 );
 
 export const ShopRoutes: RouteObject = {
@@ -20,22 +23,18 @@ export const ShopRoutes: RouteObject = {
   element: <AppLayout />,
   children: [
     {
-      element: <AppLayout />,
+      element: (
+        <ProtectedRoute role="shop">
+          <ShopLayout />
+        </ProtectedRoute>
+      ),
       children: [
-        {
-          element: (
-            <ProtectedRoute role="shop">
-              <ShopLayout />
-            </ProtectedRoute>
-          ),
-          children: [
-            { index: true, element: <DashboardPage /> },
-            { path: PATH.MANAGE_PRODUCT, element: <ProductManagementPage /> },
-            { path: PATH.MANAGE_ORDER, element: <OrderManagementPage /> },
-            { path: PATH.MANAGE_FINANCE, element: <FinanceManagementPage /> },
-            { path: PATH.CREATE_PRODUCT, element: <ProductCreationPage /> },
-          ],
-        },
+        { index: true, element: <DashboardPage /> },
+        { path: PATH.MANAGE_PRODUCT, element: <ProductManagementPage /> },
+        { path: PATH.MANAGE_ORDER, element: <OrderManagementPage /> },
+        { path: PATH.MANAGE_FINANCE, element: <FinanceManagementPage /> },
+        { path: PATH.CREATE_PRODUCT, element: <ProductCreationPage /> },
+        { path: PATH.MANAGE_DISCOUNT, element: <DiscountManagementPage /> },
       ],
     },
   ],

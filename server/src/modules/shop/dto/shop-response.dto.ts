@@ -3,21 +3,30 @@ import { UserResponseDto } from 'src/modules/user/dto/user-response.dto';
 
 export class ShopResponseDto {
   @Expose()
-  id: string;
+  id?: string;
 
   @Expose()
   name: string;
 
   @Expose()
+  slug: string;
+
+  @Expose()
   description: string;
 
   @Expose()
-  status: string;
+  status?: string;
 
   @Expose()
   logoUrl: string;
 
   @Expose()
   @Type(() => UserResponseDto)
-  owner: UserResponseDto;
+  owner?: UserResponseDto;
+
+  @Expose()
+  createdAt: Date;
+
+  @Expose()
+  updatedAt: Date;
 }

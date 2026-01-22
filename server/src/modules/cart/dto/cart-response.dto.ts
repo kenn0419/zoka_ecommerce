@@ -13,9 +13,9 @@ export class CartResponseDto {
   @Type(() => CartItemResponseDto)
   items: CartItemResponseDto[];
 
-  @Expose()
-  @Type(() => CartSummaryResponseDto)
-  summary: CartSummaryResponseDto;
+  // @Expose()
+  // @Type(() => CartSummaryResponseDto)
+  // summary: CartSummaryResponseDto;
 
   @Expose()
   updatedAt: Date;

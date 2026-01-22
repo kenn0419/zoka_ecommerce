@@ -1,16 +1,13 @@
 import { Layout } from "antd";
-import { Outlet, useParams } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import styles from "./ShopLayout.module.scss";
 
 import Sidebar from "../../components/layout/shop/Sidebar";
 import Header from "../../components/layout/shop/Header";
-import Breadcrumb from "../../components/layout/shop/Breadcrumb";
 
 const { Sider, Content } = Layout;
 
 export default function ShopLayout() {
-  const { shopId } = useParams();
-
   return (
     <Layout className={styles.root}>
       <Header />
@@ -21,7 +18,6 @@ export default function ShopLayout() {
         </Sider>
 
         <Layout className={styles.main}>
-          {/* <Breadcrumb /> */}
           <Content className={styles.content}>
             <div className={styles.pageContainer}>
               <Outlet />

@@ -8,9 +8,7 @@ export const userService = {
     return res.data;
   },
 
-  async createUser(
-    data: IUserCreationRequest
-  ): Promise<IPaginatedResponse<IUserResponse>> {
+  async createUser(data: IUserCreationRequest): Promise<IUserResponse> {
     const formData = new FormData();
 
     formData.append("fullName", data.fullName);

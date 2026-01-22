@@ -1,7 +1,7 @@
 import { Table, Tag, Image, Spin, Button, Rate } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import type { IProductListItemResponse } from "../../../types/product.type";
 import { EditOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { ProductStatus } from "../../../constant/product.constant";
 
 interface ProductTableProps {
   data: IProductListItemResponse[];
@@ -52,8 +52,26 @@ export default function ProductTable({
     {
       title: "Trạng thái",
       dataIndex: "status",
-      render: (s) =>
-        s ? <Tag color="green">Còn hàng</Tag> : <Tag color="red">Hết hàng</Tag>,
+      render: (_, r) => {
+        if (r.status) {
+          switch (r?.status) {
+            case ProductStatus.ACTIVE:
+              return <Tag color="green">Đang bán</Tag>;
+
+            case ProductStatus.INACTIVE:
+              return <Tag color="processing">Ngừng bán</Tag>;
+
+            case ProductStatus.PENDING:
+              return <Tag color="default">Đang duyệt</Tag>;
+
+            case ProductStatus.REJECTED:
+              return <Tag color="error">Bị từ chối</Tag>;
+
+            default:
+              return <Tag color="default">Không xác định</Tag>;
+          }
+        }
+      },
     },
     {
       title: "Hành động",

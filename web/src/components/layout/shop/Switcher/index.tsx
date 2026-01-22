@@ -1,18 +1,30 @@
-import { Select } from "antd";
+import { Select, Spin } from "antd";
 import styles from "./Switcher.module.scss";
+import { useGetAllMyShopsQuery } from "../../../../queries/shop.query";
+import { useNavigate } from "react-router-dom";
+import { PATH } from "../../../../utils/path.util";
+import { useSellerStore } from "../../../../store/seller.store";
 
 export default function Switcher() {
-  // fake data, sau này lấy từ store / query
-  const shops = [
-    { id: "1", name: "Shop A" },
-    { id: "2", name: "Shop B" },
-  ];
+  const navigate = useNavigate();
+  const { data, isLoading } = useGetAllMyShopsQuery();
+  const setCurrentId = useSellerStore((state) => state.setCurrentShopId);
+
+  if (isLoading) {
+    return <Spin />;
+  }
+
+  const handleChange = (value: string) => {
+    navigate(`/${PATH.SELLER}/${value}`);
+    setCurrentId(value);
+  };
 
   return (
     <Select
       className={styles.switcher}
-      value={shops[0].id}
-      options={shops.map((s) => ({
+      value={data?.[0]?.id}
+      onChange={handleChange}
+      options={data?.map((s) => ({
         value: s.id,
         label: s.name,
       }))}

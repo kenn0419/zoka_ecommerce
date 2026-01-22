@@ -96,6 +96,7 @@ export class ProductRepository {
           minPrice: true,
           maxPrice: true,
           hasStock: true,
+          status: true,
         },
       }),
       this.prisma.product.count({ where }),
@@ -187,5 +188,9 @@ export class ProductRepository {
         status: ProductStatus.INACTIVE,
       },
     });
+  }
+
+  count(where: Prisma.ProductWhereInput) {
+    return this.prisma.product.count({ where });
   }
 }

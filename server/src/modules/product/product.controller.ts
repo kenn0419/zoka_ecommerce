@@ -199,6 +199,26 @@ export class ProductController {
     );
   }
 
+  @Get('/active/shop/:shopSlug')
+  @SerializePaginated(
+    ProductListResponseDto,
+    'Get products by shop successfully.',
+  )
+  @HttpCode(HttpStatus.OK)
+  findActiveShopProducts(
+    @Param('shopSlug') shopId,
+    @Query()
+    { search, page, limit, sort }: ProductListQueryDto,
+  ) {
+    return this.productService.findActiveShopProducts(
+      shopId,
+      search,
+      page,
+      limit,
+      sort,
+    );
+  }
+
   @Get('/public/detail/:slug')
   @Serialize(ProductDetailResponseDto, 'Get product detail successfully.')
   @HttpCode(HttpStatus.OK)
@@ -214,7 +234,6 @@ export class ProductController {
   async findProductDetailById(@Req() req, @Param('id') id: string) {
     const product = await this.productService.findById(id);
     const userId = req.user.userId;
-    console.log(product.shop.owner);
     const isAccess =
       req.user.roles.includes(Role.SHOP) && product.shop.owner.id === userId;
 

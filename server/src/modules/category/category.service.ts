@@ -43,8 +43,6 @@ export class CategoryService {
     limit: number,
     sort: CategorySort,
   ) {
-    const orderBy = buildCategorySort(sort);
-
     const where: Prisma.CategoryWhereInput = {
       ...(search && {
         OR: buildSearchOr(search, ['id', 'name', 'description']),

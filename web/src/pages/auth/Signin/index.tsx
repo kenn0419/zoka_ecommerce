@@ -2,12 +2,13 @@ import { Form, Input, Button, Typography } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { PATH } from "../../../utils/path.util";
 import { useAuthStore } from "../../../store/auth.store";
-import { Role } from "../../../utils/role.util";
+import { Role } from "../../../constant/role.constant";
 import AuthCard from "../../../components/auth/AuthCard";
 import PageHeader from "../../../components/auth/PageHeader";
 import layout from "./../../../layouts/AuthLayout/AuthLayout.module.scss";
 import { useSigninMutation } from "../../../queries/auth.query";
 import { useEffect } from "react";
+import { includeRole } from "../../../utils/checkRole.util";
 
 const { Text } = Typography;
 
@@ -15,10 +16,6 @@ export default function Signin() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const signinMutation = useSigninMutation();
-
-  const handleNavigate = (role: string) => {
-    return user?.roles.some((item: any) => item.name === role);
-  };
 
   const onFinish = async (values: any) => {
     signinMutation.mutate({
@@ -29,9 +26,10 @@ export default function Signin() {
 
   useEffect(() => {
     if (!user) return;
-    if (handleNavigate(Role.ADMIN)) {
+
+    if (includeRole(user, Role.ADMIN)) {
       navigate(`/${PATH.ADMIN}`, { replace: true });
-    } else if (handleNavigate(Role.SHOP)) {
+    } else if (includeRole(user, Role.SHOP)) {
       navigate(`/${PATH.SELLER}`, { replace: true });
     } else {
       navigate(`/${PATH.USER}`, { replace: true });

@@ -4,7 +4,7 @@ import LoadingFallback from "../../common/LoadingFallback";
 import { PATH } from "../../../utils/path.util";
 
 export default function AppLayout() {
-  const { isLoading, isError } = useMeQuery();
+  const { isLoading, isError, isSuccess } = useMeQuery();
 
   if (isLoading) return <LoadingFallback />;
 
@@ -12,5 +12,7 @@ export default function AppLayout() {
     return <Navigate to={`/${PATH.AUTH}/${PATH.SIGNIN}`} replace />;
   }
 
-  return <Outlet />;
+  if (isSuccess) {
+    return <Outlet />;
+  }
 }
