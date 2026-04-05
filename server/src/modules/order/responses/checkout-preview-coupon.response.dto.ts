@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { CouponScope, CouponType } from 'generated/prisma';
+import { CouponScope, CouponType } from '@prisma/client';
 import { CouponDisabledReason } from 'src/common/enums/coupon.enum';
 
 export class CheckoutPreviewCouponResponseDto {

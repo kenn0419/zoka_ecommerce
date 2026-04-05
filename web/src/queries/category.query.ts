@@ -1,6 +1,5 @@
 import { keepPreviousData, useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { categoryService } from "../services/category.service";
-import type { ICategoryCreationRequest, ICategoryUpdateRequest } from "../types/category.type";
 
 export const useActiveCategoriesQuery = (
   params: IPaginationQueries,

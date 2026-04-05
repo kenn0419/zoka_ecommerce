@@ -1,4 +1,5 @@
-import { PrismaClient } from '../../generated/prisma';
+import { faker } from '@faker-js/faker';
+import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 
@@ -42,7 +43,8 @@ async function seedToDb(productData: any, shopData: any) {
         fullName: shopName,
         phone: `09${Math.floor(10000000 + Math.random() * 90000000)}`,
         slug: slugOwner,
-        status: 'ACTIVE'
+        status: 'ACTIVE',
+        birthday: faker.date.birthdate()
       }
     });
 

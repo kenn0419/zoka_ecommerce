@@ -1,18 +1,6 @@
 import instance from "./axios-customize";
 
-export interface IRevenueData {
-  date: string;
-  revenue: number;
-  cumulativeRevenue: number;
-  previousRevenue: number | null;
-  growthPercentage: number | null;
-}
 
-export interface IRevenueQueries {
-  period?: "day" | "month" | "year";
-  startDate?: string;
-  endDate?: string;
-}
 
 export const statisticsApi = {
   fetchAdminRevenue: (params: IRevenueQueries) => {

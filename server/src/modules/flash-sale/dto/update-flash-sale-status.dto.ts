@@ -1,5 +1,5 @@
 import { IsEnum } from 'class-validator';
-import { FlashSaleStatus } from 'generated/prisma';
+import { FlashSaleStatus } from '@prisma/client';
 
 export class UpdateFlashSaleStatusDto {
   @IsEnum(FlashSaleStatus)

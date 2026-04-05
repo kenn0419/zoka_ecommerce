@@ -5,7 +5,7 @@ import {
   IsPhoneNumber,
   IsString,
 } from 'class-validator';
-import { UserGender } from 'generated/prisma';
+import { UserGender } from '@prisma/client';
 
 export class UpdateProfileDto {
   @IsOptional()

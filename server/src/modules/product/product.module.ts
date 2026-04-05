@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ProductService } from './product.service';
+import { ProductService } from './services/product.service';
 import { ProductController } from './product.controller';
+import { ProductUploadService } from './services/product-upload.service';
 import { UploadModule } from 'src/infrastructure/upload/upload.module';
 import { CategoryModule } from '../category/category.module';
 import { ProductRepository } from './repositories/product.repository';
@@ -24,6 +25,7 @@ import { OrderModule } from '../order/order.module';
   controllers: [ProductController],
   providers: [
     ProductService,
+    ProductUploadService,
     ProductRepository,
     ProductVariantRepository,
     VariantImageRepository,

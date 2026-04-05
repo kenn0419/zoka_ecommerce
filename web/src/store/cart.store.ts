@@ -2,8 +2,10 @@ import { create } from "zustand";
 
 interface CartState {
   checkedMap: Record<string, boolean>;
-
+totalItems: number;
   init: (items: { id: string; isSelected: boolean }[]) => void;
+  setTotalItems: (count: number) => void;
+
   toggleItem: (id: string) => void;
   toggleAll: (ids: string[], checked: boolean) => void;
   getSelectedIds: () => string[];
@@ -11,8 +13,9 @@ interface CartState {
 }
 
 export const useCartStore = create<CartState>((set, get) => ({
+  totalItems: 0,
   checkedMap: {},
-
+  setTotalItems: (count) => set({ totalItems: count }),
   init: (items) =>
     set({
       checkedMap: Object.fromEntries(items.map((i) => [i.id, i.isSelected])),

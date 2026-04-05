@@ -7,7 +7,7 @@ import {
   IsPhoneNumber,
   MinLength,
 } from 'class-validator';
-import { UserGender } from 'generated/prisma';
+import { UserGender } from '@prisma/client';
 
 export class UpdateUserDto {
   @IsNotEmpty()

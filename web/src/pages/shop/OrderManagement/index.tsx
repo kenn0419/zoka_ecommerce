@@ -56,6 +56,7 @@ export default function ShopOrderManagement() {
           />,
           <Select
             key="status"
+            value={status}
             placeholder="Lọc trạng thái"
             allowClear
             style={{ width: 200 }}

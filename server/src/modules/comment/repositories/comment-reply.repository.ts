@@ -3,7 +3,7 @@ import {
   Prisma,
   ProductReviewReplyStatus,
   ProductReviewStatus,
-} from 'generated/prisma';
+} from '@prisma/client';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 
 @Injectable()

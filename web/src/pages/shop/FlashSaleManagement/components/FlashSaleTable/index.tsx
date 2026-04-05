@@ -1,7 +1,6 @@
 import { ProTable, type ProColumns } from "@ant-design/pro-components";
 import { Badge } from "antd";
 import dayjs from "dayjs";
-import type { IFlashSaleResponse } from "../../../../types/flash-sale.type";
 
 type Props = {
   data: IFlashSaleResponse[];

@@ -42,7 +42,7 @@ const FlashSalePage = () => {
           <Empty description="Không có sản phẩm Flash Sale nào đang diễn ra" />
         ) : (
           <Row gutter={[16, 16]}>
-            {activeFlashSale.items.map((item) => (
+            {activeFlashSale.items.map((item: IFlashSaleItemResponse) => (
               <Col key={item.id} xs={12} sm={8} md={6} lg={4}>
                 <div
                   className={styles.productCard}

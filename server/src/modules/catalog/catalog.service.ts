@@ -7,7 +7,7 @@ import { CreateCatalogDto } from './dto/create-catalog.dto';
 import { UpdateCatalogDto } from './dto/update-catalog.dto';
 import { ShopRepository } from '../shop/shop.repository';
 import { ProductRepository } from '../product/repositories/product.repository';
-import { ShopStatus } from 'generated/prisma';
+import { ShopStatus } from '@prisma/client';
 
 @Injectable()
 export class CatalogService {

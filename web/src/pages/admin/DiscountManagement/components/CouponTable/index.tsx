@@ -1,5 +1,5 @@
 import { ProTable, type ProColumns } from "@ant-design/pro-components";
-import { Popconfirm, Tag } from "antd";
+import { Tag } from "antd";
 import CouponStatusSwitcher from "../CouponStatusSwitcher";
 import CouponUpdateDrawer from "../CouponUpdateDrawer";
 import dayjs from "dayjs";

@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { flashSaleService } from "../services/flash-sale.service";
-import type { IFlashSaleFilterQueries } from "../types/flash-sale.type";
 
 export const useActiveFlashSalesQuery = (query: IFlashSaleFilterQueries) => {
   return useQuery({

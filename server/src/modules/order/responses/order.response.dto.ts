@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { PaymentMethod, PaymentStatus } from 'generated/prisma';
+import { PaymentMethod, PaymentStatus } from '@prisma/client';
 import { OrderStatus } from 'src/common/enums/order.enum';
 import { ShopResponseDto } from 'src/modules/shop/dto/shop-response.dto';
 import { UserResponseDto } from 'src/modules/user/dto/user-response.dto';

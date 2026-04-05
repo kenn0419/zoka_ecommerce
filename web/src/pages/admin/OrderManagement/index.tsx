@@ -53,6 +53,7 @@ export default function OrderManagement() {
             allowClear
           />,
           <Select
+          value={status}
             key="status"
             placeholder="Lọc trạng thái"
             allowClear

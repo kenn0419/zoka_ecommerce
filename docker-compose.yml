@@ -1,57 +1,65 @@
 services:
-  db:
+  # --- Database ---
+  postgres:
     image: postgres:15-alpine
     container_name: zoka-db
-    restart: always
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-      POSTGRES_DB: ${DB_NAME:-zoka_ecommerce}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-root}
+      - POSTGRES_DB=${POSTGRES_DB:-zoka_ecommerce}
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - zoka-network
-    ports:
-      - "5432:5432"
 
+  # --- Cache ---
   redis:
     image: redis:alpine
     container_name: zoka-redis
     restart: always
+    command: redis-server --requirepass ${REDIS_PASSWORD:-123123az}
     networks:
       - zoka-network
-    ports:
-      - "6379:6379"
+    expose:
+      - "6379"
 
-  server:
+  # --- Backend ---
+  backend:
     build:
       context: ./server
-      dockerfile: Dockerfile
     container_name: zoka-server
     restart: always
+    env_file:
+      - ./server/.env
     environment:
-      DATABASE_URL: postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@db:5432/${DB_NAME:-zoka_ecommerce}?schema=public
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      # Add other mandatory env vars from .env-example here or use a .env file
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-root}@postgres:5432/${POSTGRES_DB:-zoka_ecommerce}?schema=public
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-123123az}
+      - FE_URL=http://localhost
     depends_on:
-      - db
+      - postgres
       - redis
     networks:
       - zoka-network
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
 
+  # --- Frontend + Reverse Proxy ---
   web:
     build:
       context: ./web
-      dockerfile: Dockerfile
     container_name: zoka-web
     restart: always
     environment:
-      VITE_API_URL: http://localhost:3000/api/v1
+      # Use relative path to proxy through Nginx (port 80)
+      - VITE_API_URL=/api/v1
     depends_on:
-      - server
+      - backend
     networks:
       - zoka-network
     ports:
@@ -59,7 +67,6 @@ services:
 
 networks:
   zoka-network:
-    driver: bridge
 
 volumes:
   postgres_data:

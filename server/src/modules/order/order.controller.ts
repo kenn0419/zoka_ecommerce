@@ -12,7 +12,7 @@ import {
   HttpStatus,
   Query,
 } from '@nestjs/common';
-import { OrderService } from './order.service';
+import { OrderService } from './services/order.service';
 import { JwtSessionGuard } from 'src/common/guards/jwt-session.guard';
 import {
   Serialize,

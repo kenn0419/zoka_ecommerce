@@ -1,6 +1,4 @@
 import { categoryApi } from "../apis/category.api";
-import type { ICategoryResponse, ICategoryCreationRequest, ICategoryUpdateRequest } from "../types/category.type";
-import type { IPaginatedResponse } from "../types/pagination.type";
 
 export const categoryService = {
   getAdminCategories: async ({

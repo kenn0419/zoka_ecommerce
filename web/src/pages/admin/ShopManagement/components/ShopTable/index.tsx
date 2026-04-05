@@ -27,7 +27,6 @@ export const ShopTable: React.FC<ShopTableProps> = ({
   limit,
   total,
   onPageChange,
-  onSortChange,
   onEdit,
   toolbar,
 }) => {
@@ -111,7 +110,7 @@ export const ShopTable: React.FC<ShopTableProps> = ({
         reload: true,
         density: true,
       }}
-      rowClassName={(record, index) =>
+      rowClassName={(_record, index) =>
         index % 2 === 0 ? "bg-white" : "bg-gray-50"
       }
     />

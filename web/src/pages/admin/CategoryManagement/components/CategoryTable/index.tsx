@@ -1,10 +1,8 @@
 import { ProTable, type ProColumns } from "@ant-design/pro-components";
-import { Popconfirm, Tag, Image } from "antd";
+import { Popconfirm, Image } from "antd";
 import { useCategoryDeleteQuery } from "../../../../../queries/category.query";
 import CategoryStatusSwitcher from "../CategoryStatusSwitcher";
 import CategoryUpdateDrawer from "../CategoryUpdateDrawer";
-import CategoryCreateModal from "../CategoryCreateModal";
-import type { ICategoryResponse } from "../../../../../types/category.type";
 
 type Props = {
   data: ICategoryResponse[];
@@ -26,7 +24,6 @@ export const CategoryTable = ({
   total,
   onPageChange,
   onSortChange,
-  onSearch,
   toolbar,
 }: Props) => {
   const deleteCategory = useCategoryDeleteQuery();

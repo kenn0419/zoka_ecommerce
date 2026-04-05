@@ -8,15 +8,17 @@ import { Mutex } from "async-mutex";
 const NO_RETRY_HEADER = "x-no-retry";
 const mutex = new Mutex();
 
+const BASE_URL = (import.meta.env.VITE_API_URL as string) || "REPLACE_ME_VITE_API_URL";
+
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: BASE_URL,
   withCredentials: true,
 });
 
 const handleRefreshToken = async () => {
   return await mutex.runExclusive(async () => {
     try {
-      const urlRequest = import.meta.env.VITE_API_URL + "/auth/refresh";
+      const urlRequest = BASE_URL + "/auth/refresh";
       const res = await axios.post(urlRequest, {}, { withCredentials: true });
       const isSuccess = res.status;
 

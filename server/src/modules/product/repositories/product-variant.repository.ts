@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from 'generated/prisma';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 
 @Injectable()
@@ -23,11 +23,14 @@ export class ProductVariantRepository {
   }
 
   findMany(
-    tx: Prisma.TransactionClient | null = this.prisma,
     where: Prisma.ProductVariantWhereInput,
+    tx: Prisma.TransactionClient | null = this.prisma,
   ) {
     tx = tx !== null ? tx : this.prisma;
-    return tx.productVariant.deleteMany({ where });
+    return tx.productVariant.findMany({
+      where,
+      include: { product: true, images: true },
+    });
   }
 
   deleteByProductId(tx: Prisma.TransactionClient | null, productId: string) {

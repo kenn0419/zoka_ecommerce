@@ -1,4 +1,4 @@
-import { ProductStatus } from 'generated/prisma';
+import { ProductStatus } from '@prisma/client';
 
 export class CartMapper {
   static toCartResponse(cart: any) {

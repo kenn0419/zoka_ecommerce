@@ -100,7 +100,7 @@ export default function OrderTable({
         reload: true,
         density: true,
       }}
-      rowClassName={(record, index) =>
+      rowClassName={(_record, index) =>
         index % 2 === 0 ? "bg-white" : "bg-gray-50"
       }
     />

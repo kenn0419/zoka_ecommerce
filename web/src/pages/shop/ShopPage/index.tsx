@@ -14,7 +14,7 @@ import { useAuthStore } from "../../../store/auth.store";
 export default function ShopPage() {
   const user = useAuthStore((state) => state.user);
   const { slug } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const filter: IProductFilterQueries = {
     search: searchParams.get("search") ?? undefined,

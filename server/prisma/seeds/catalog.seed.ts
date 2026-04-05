@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { SlugifyUtil } from '../../src/common/utils/slugify.util';
 import { faker } from '@faker-js/faker';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '@prisma/client';
 
 export async function seedCatalog(prisma: PrismaClient) {
   console.log('🌱 Seeding Categories/Shops/Products...');

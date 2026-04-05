@@ -1,7 +1,7 @@
 import { ROLE_PERMISSIONS } from '../../src/common/rbac/role-permissions';
 import { Role } from '../../src/common/enums/role.enum';
 import { Permission } from '../../src/common/enums/permission.enum';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '@prisma/client';
 
 export async function seedRBAC(prisma: PrismaClient) {
   console.log('→ Seeding RBAC...');

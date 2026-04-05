@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { OrderService } from './order.service';
+import { OrderService } from './services/order.service';
 
 @Injectable()
 export class OrderPaymentListener {

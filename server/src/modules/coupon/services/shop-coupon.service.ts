@@ -7,7 +7,7 @@ import {
   CouponScope,
   CouponStatus,
   CouponType,
-} from 'generated/prisma';
+} from '@prisma/client';
 import { buildSearchOr } from 'src/common/utils/build-search-or.util';
 import { UpdateCouponDto } from '../dto/update-coupon.dto';
 import { buildCouponSort } from 'src/common/utils/coupon-sort.util';

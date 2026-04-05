@@ -20,7 +20,7 @@ import { VerifyEmailDto } from '../dto/verify-email.dto';
 import { SlugifyUtil } from 'src/common/utils/slugify.util';
 import { UserMapper } from 'src/common/mappers/user.mapper';
 import { AddressRepository } from 'src/modules/address/address.repository';
-import { UserGender, UserStatus } from 'generated/prisma';
+import { UserGender, UserStatus } from '@prisma/client';
 import { Role } from 'src/common/enums/role.enum';
 
 @Injectable()

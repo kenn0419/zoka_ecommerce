@@ -3,7 +3,6 @@ import {
   useCategoryActivateQuery,
   useCategoryDeactivateQuery,
 } from "../../../../../queries/category.query";
-import type { ICategoryResponse } from "../../../../../types/category.type";
 
 type Props = {
   category: ICategoryResponse;

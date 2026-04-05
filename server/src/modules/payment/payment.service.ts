@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PaymentFactory } from './payment.factory';
-import { PaymentMethod } from 'generated/prisma';
+import { PaymentMethod } from '@prisma/client';
 
 @Injectable()
 export class PaymentService {

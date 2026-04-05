@@ -15,7 +15,7 @@ import {
   HttpStatus,
   BadRequestException,
 } from '@nestjs/common';
-import { ProductService } from './product.service';
+import { ProductService } from './services/product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { JwtSessionGuard } from 'src/common/guards/jwt-session.guard';
@@ -30,7 +30,6 @@ import { RolesPermissionsGuard } from 'src/common/guards/rbac.guard';
 import { ProductListQueryDto } from './dto/product-query.dto';
 import { ProductListResponseDto } from './responses/product-list-item.response.dto';
 import { ProductDetailResponseDto } from './responses/product-detail.response.dto';
-import { ParseJsonPipe } from 'src/common/pipes/parse-json.pipe';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
 

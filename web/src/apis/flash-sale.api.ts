@@ -1,5 +1,4 @@
 import instance from "./axios-customize";
-import type { IFlashSaleFilterQueries, IFlashSaleResponse } from "../types/flash-sale.type";
 
 export const flashSaleApi = {
   fetchActiveFlashSales: async (

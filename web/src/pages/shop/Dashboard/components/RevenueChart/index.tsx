@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, Spin } from 'antd';
 import { Line } from '@ant-design/charts';
 import { Link } from 'react-router-dom';
@@ -9,10 +8,7 @@ import dayjs from 'dayjs';
 
 const RevenueChart = () => {
   const { currentShopId } = useSellerStore();
-  const { data, isLoading } = useShopRevenueQuery({ 
-    shopId: currentShopId || '',
-    period: 'day' 
-  });
+  const { data, isLoading } = useShopRevenueQuery(currentShopId!, { period: 'day' });
 
   const chartData = data?.map((item) => ({
     date: dayjs(item.date).format('DD/MM'),

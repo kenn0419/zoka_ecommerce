@@ -7,7 +7,7 @@ import ProductList from "../../../components/product/ProductList";
 import parseNumberParam from "../../../helper/parseNumber.helper";
 
 const ProductListPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const filter: IProductFilterQueries = {
     search: searchParams.get("search") ?? undefined,

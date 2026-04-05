@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Category, CategoryStatus, Prisma } from 'generated/prisma';
+import { Category, CategoryStatus, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 
 @Injectable()
@@ -93,7 +93,13 @@ export class CategoryRepository {
   findRootCategories() {
     return this.prisma.category.findMany({
       where: { parentId: null, status: 'ACTIVE' },
-      include: { children: true },
+      include: {
+        children: {
+          include: {
+            children: true,
+          },
+        },
+      },
     });
   }
 

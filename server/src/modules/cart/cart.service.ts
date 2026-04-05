@@ -9,7 +9,7 @@ import { ProductVariantRepository } from '../product/repositories/product-varian
 import { CartItemRepository } from './repositories/cart-item.repository';
 import { CartMapper } from 'src/common/mappers/cart.mapper';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { FlashSaleStatus, Prisma } from 'generated/prisma';
+import { FlashSaleStatus, Prisma } from '@prisma/client';
 
 @Injectable()
 export class CartService {
@@ -31,7 +31,7 @@ export class CartService {
     );
 
     if (itemsToUpdate.length > 0) {
-      await Promise.all(
+      await this.prisma.$transaction(
         itemsToUpdate.map((item) =>
           this.cartItemRepo.updateCartItem(
             { id: item.id },
@@ -39,6 +39,7 @@ export class CartService {
               priceSnapshot: new Prisma.Decimal(item.displayPrice),
               stockSnapshot: item.availableStock,
             },
+            undefined, // Transaction will be handled by $transaction
           ),
         ),
       );
@@ -98,7 +99,7 @@ export class CartService {
 
       await this.cartItemRepo.updateQuantity(existItem.id, {
         quantity: newQuantity,
-        priceSnapshot: Prisma.Decimal(price),
+        priceSnapshot: new Prisma.Decimal(price),
         stockSnapshot: availableStock,
       });
     } else {
@@ -109,7 +110,7 @@ export class CartService {
         productName: existVariant.product.name,
         variantName: existVariant.name,
         imageUrl: existVariant.images?.[0]?.imageUrl ?? null,
-        priceSnapshot: Prisma.Decimal(price),
+        priceSnapshot: new Prisma.Decimal(price),
         quantity: data.quantity,
         stockSnapshot: availableStock,
       });
@@ -143,7 +144,7 @@ export class CartService {
       { id: cartItemId },
       {
         quantity: finalQty,
-        priceSnapshot: Prisma.Decimal(syncedItem.displayPrice),
+        priceSnapshot: new Prisma.Decimal(syncedItem.displayPrice),
         stockSnapshot: syncedItem.availableStock,
       },
     );

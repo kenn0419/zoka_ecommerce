@@ -7,7 +7,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
-import { CouponScope, CouponType } from 'generated/prisma';
+import { CouponScope, CouponType } from '@prisma/client';
 export class CreateCouponDto {
   @IsOptional()
   @IsString()

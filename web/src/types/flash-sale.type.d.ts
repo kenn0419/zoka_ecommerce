@@ -1,4 +1,4 @@
-export interface IFlashSaleItemResponse {
+interface IFlashSaleItemResponse {
   id: string;
   variantId: string;
   salePrice: number;
@@ -7,7 +7,7 @@ export interface IFlashSaleItemResponse {
   product?: IProductListItemResponse;
 }
 
-export interface IFlashSaleResponse {
+interface IFlashSaleResponse {
   id: string;
   name: string;
   startTime: string;
@@ -18,7 +18,7 @@ export interface IFlashSaleResponse {
   createdAt: string;
 }
 
-export interface IFlashSaleFilterQueries extends IPaginationQueries {
+interface IFlashSaleFilterQueries extends IPaginationQueries {
   search?: string;
   sort?: string;
 }

@@ -1,4 +1,4 @@
-import { PaymentMethod, PaymentProvider } from 'generated/prisma';
+import { PaymentMethod, PaymentProvider } from '@prisma/client';
 
 export function mapMethodToProvider(
   method: PaymentMethod,

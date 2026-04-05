@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from 'generated/prisma';
+import { Prisma } from '@prisma/client';
 import { CouponDisabledReason } from 'src/common/enums/coupon.enum';
-import { CouponScope, CouponStatus, CouponType } from 'generated/prisma';
+import { CouponScope, CouponStatus, CouponType } from '@prisma/client';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { CartItemWithProduct } from 'src/modules/order/types/cart-item-with-product.type';
 

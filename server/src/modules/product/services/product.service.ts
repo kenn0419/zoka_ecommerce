@@ -3,22 +3,23 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { ProductRepository } from './repositories/product.repository';
-import { CategoryRepository } from '../category/category.repository';
-import { ShopRepository } from '../shop/shop.repository';
+import { CreateProductDto } from '../dto/create-product.dto';
+import { UpdateProductDto } from '../dto/update-product.dto';
+import { ProductRepository } from '../repositories/product.repository';
+import { CategoryRepository } from '../../category/category.repository';
+import { ShopRepository } from '../../shop/shop.repository';
 import { ConfigService } from '@nestjs/config';
 import { UploadService } from 'src/infrastructure/upload/upload.service';
+import { ProductUploadService } from './product-upload.service';
 import {
   Prisma,
   ShopStatus,
   ProductStatus,
   CategoryStatus,
   FlashSaleStatus,
-} from 'generated/prisma';
-import { VariantImageRepository } from './repositories/variant-image.repository';
-import { ProductVariantRepository } from './repositories/product-variant.repository';
+} from '@prisma/client';
+import { VariantImageRepository } from '../repositories/variant-image.repository';
+import { ProductVariantRepository } from '../repositories/product-variant.repository';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { SlugifyUtil } from 'src/common/utils/slugify.util';
 import { buildProductSort } from 'src/common/utils/product-sort.util';
@@ -40,6 +41,7 @@ export class ProductService {
     private shopRepo: ShopRepository,
     private categoryRepo: CategoryRepository,
     private redisService: RedisService,
+    private productUploadService: ProductUploadService,
   ) {}
 
   async create(
@@ -59,7 +61,7 @@ export class ProductService {
     const shop = await this.validateShop(userId, data.shopId);
     const category = await this.validateCategory(data.categoryId);
 
-    const { thumbnail, variantImages } = await this.uploadProductAssets(
+    const { thumbnail, variantImages } = await this.productUploadService.uploadProductAssets(
       thumbnailFile,
       variantFiles,
     );
@@ -440,10 +442,7 @@ export class ProductService {
 
       if (thumbnailFile) {
         thumbnail = (
-          await this.uploadService.uploadFile(
-            thumbnailFile,
-            this.configService.get('SUPABASE_BUCKET_FOLDER_PRODUCT'),
-          )
+          await this.productUploadService.uploadSingleFile(thumbnailFile)
         ).url;
       }
 
@@ -502,10 +501,7 @@ export class ProductService {
             const file = variantFiles[index];
             if (!file) continue;
 
-            const { url } = await this.uploadService.uploadFile(
-              file,
-              this.configService.get('SUPABASE_BUCKET_FOLDER_PRODUCT'),
-            );
+            const { url } = await this.productUploadService.uploadSingleFile(file);
 
             variantImageRows.push({
               id: crypto.randomUUID(),
@@ -576,22 +572,6 @@ export class ProductService {
       throw new BadRequestException('Category is not approved yet');
 
     return category;
-  }
-
-  private async uploadProductAssets(
-    thumbnailFile: Express.Multer.File,
-    variantFiles: Express.Multer.File[],
-  ) {
-    const folder = this.configService.get<string>(
-      'SUPABASE_BUCKET_FOLDER_PRODUCT',
-    );
-
-    const [thumbnail, ...variantImages] = await Promise.all([
-      this.uploadService.uploadFile(thumbnailFile, folder),
-      ...variantFiles.map((f) => this.uploadService.uploadFile(f, folder)),
-    ]);
-
-    return { thumbnail, variantImages };
   }
 
   private buildVariantRows(

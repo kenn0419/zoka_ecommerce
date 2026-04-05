@@ -10,7 +10,7 @@ import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { ShopRepository } from '../shop/shop.repository';
 import { ProductVariantRepository } from '../product/repositories/product-variant.repository';
 import { FlashSaleSort } from 'src/common/enums/flash-sale.enum';
-import { FlashSaleStatus, Prisma } from 'generated/prisma';
+import { FlashSaleStatus, Prisma } from '@prisma/client';
 import { paginatedResult } from 'src/common/utils/pagninated-result.util';
 import { buildFlashSaleSort } from 'src/common/utils/flash-sale-sort.util';
 import { buildSearchOr } from 'src/common/utils/build-search-or.util';
@@ -57,6 +57,13 @@ export class FlashSaleService {
         variantSet.add(item.variantId);
       }
 
+      const variantIds = data.items.map((item) => item.variantId);
+      const variants = await this.productVariantRepo.findMany(
+        { id: { in: variantIds } },
+        tx,
+      );
+      const variantMap = new Map(variants.map((v) => [v.id, v]));
+
       for (const item of data.items) {
         if (item.salePrice >= item.originalPrice) {
           throw new BadRequestException(
@@ -64,10 +71,7 @@ export class FlashSaleService {
           );
         }
 
-        const variant = await this.productVariantRepo.findUnique(
-          { id: item.variantId },
-          tx,
-        );
+        const variant = variantMap.get(item.variantId);
         if (!variant) {
           throw new NotFoundException(
             `Product variant with ID ${item.variantId} is not available for flash sale.`,

@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import * as bcrypt from 'bcrypt';
 import { SlugifyUtil } from '../../src/common/utils/slugify.util';
-import { PrismaClient, UserGender, UserStatus } from '../../generated/prisma';
+import { PrismaClient, UserGender, UserStatus } from '@prisma/client';
 
 export async function seedUsers(prisma: PrismaClient) {
   console.log('→ Seeding users...');

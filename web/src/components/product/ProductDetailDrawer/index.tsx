@@ -92,7 +92,7 @@ export default function ProductDetailDrawer({
                 <Space align="start" size={16} style={{ width: "100%" }}>
                   <Space direction="vertical" size={4} style={{ flex: 1 }}>
                     <Text strong>{v.name}</Text>
-                    <Text>Giá: {v.price.toLocaleString()} đ</Text>
+                    <Text>Giá: {v.displayPrice.toLocaleString()} đ</Text>
                     <Text>Kho: {v.stock}</Text>
                   </Space>
 

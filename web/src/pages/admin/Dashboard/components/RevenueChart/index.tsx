@@ -1,9 +1,8 @@
-import { Card, Space, Spin } from "antd";
+import { Card, Spin } from "antd";
 import { Line } from "@ant-design/charts";
 import { useAdminRevenueQuery } from "../../../../../queries/statistics.query";
 import dayjs from "dayjs";
 import { PATH } from "../../../../../utils/path.util";
-import { Link } from "react-router-dom";
 
 const RevenueChart = () => {
   const { data, isLoading } = useAdminRevenueQuery({ period: 'day' });

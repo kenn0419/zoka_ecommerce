@@ -1,5 +1,5 @@
 import { Layout, Dropdown, message } from "antd";
-import styles from "./header.module.scss";
+import styles from "./Header.module.scss";
 import Switcher from "../Switcher";
 import { UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";

@@ -186,7 +186,7 @@ const VariantSelectorSection = ({
           value: v.id,
         }))}
         fieldProps={{
-          onChange: (val, option: any) => {},
+          onChange: (_val, _option: any) => {},
         }}
       />
       <ProFormDependency name={["variantId"]}>

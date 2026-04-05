@@ -37,7 +37,7 @@ export default function SelectShopPage() {
                   <Tag color="blue">{shop.status}</Tag>
                 </div>
 
-                <Button type="primary" onClick={() => handleSelect(shop.id)}>
+                <Button type="primary" onClick={() => handleSelect(shop?.id!)}>
                   Vào shop
                 </Button>
               </div>

@@ -7,7 +7,7 @@ import {
   PaymentMethod,
   PaymentStatus,
   Prisma,
-} from 'generated/prisma';
+} from '@prisma/client';
 import {
   BadRequestException,
   ForbiddenException,
@@ -17,28 +17,29 @@ import {
 import ms from 'ms';
 
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { PaymentService } from '../payment/payment.service';
-import { PaymentRepository } from '../payment/payment.repository';
-import { OrderRepository } from './repositories/order.repository';
-import { CartItemRepository } from '../cart/repositories/cart-item.repository';
-import { AddressRepository } from '../address/address.repository';
-import { CouponRepository } from '../coupon/repositories/coupon.repository';
+import { PaymentService } from '../../payment/payment.service';
+import { PaymentRepository } from '../../payment/payment.repository';
+import { OrderRepository } from '../repositories/order.repository';
+import { CartItemRepository } from '../../cart/repositories/cart-item.repository';
+import { AddressRepository } from '../../address/address.repository';
+import { CouponRepository } from '../../coupon/repositories/coupon.repository';
 
 import { OrderSort, OrderStatus } from 'src/common/enums/order.enum';
-import { CouponScope, CouponStatus, CouponType } from 'generated/prisma';
+import { CouponScope, CouponStatus, CouponType } from '@prisma/client';
 
 import { mapMethodToProvider } from 'src/common/mappers/map-method-to-provider';
 import { groupByMap } from 'src/common/utils/group-by.util';
 
-import { CheckoutPreviewDto } from './dto/checkout-preview.dto';
-import { CheckoutConfirmDto } from './dto/checkout-confirm.dto';
-import { CartItemWithProduct } from './types/cart-item-with-product.type';
-import { CalculatedShopOrder } from './types/calculated-shop-order.type';
-import { OrderQueryDto } from './dto/order-query.dto';
+import { CheckoutPreviewDto } from '../dto/checkout-preview.dto';
+import { CheckoutConfirmDto } from '../dto/checkout-confirm.dto';
+import { OrderQueryDto } from '../dto/order-query.dto';
 import { paginatedResult } from 'src/common/utils/pagninated-result.util';
 import { buildOrderSort } from 'src/common/utils/order-sort.util';
-import { ShopRepository } from '../shop/shop.repository';
+import { ShopRepository } from '../../shop/shop.repository';
 import { generateOrderCode } from 'src/common/utils/generate-order-code.util';
+import { OrderCheckoutService } from './order-checkout.service';
+import { CartItemWithProduct } from '../types/cart-item-with-product.type';
+import { CalculatedShopOrder } from '../types/calculated-shop-order.type';
 
 @Injectable()
 export class OrderService {
@@ -51,6 +52,7 @@ export class OrderService {
     private readonly couponRepo: CouponRepository,
     private readonly addressRepo: AddressRepository,
     private readonly shopRepo: ShopRepository,
+    private readonly orderCheckoutService: OrderCheckoutService,
   ) {}
 
   async preview(userId: string, dto: CheckoutPreviewDto) {
@@ -72,9 +74,9 @@ export class OrderService {
       );
     }
 
-    const shopOrders = this.calculateShopOrders(cartItems, appliedCoupon);
+    const shopOrders = this.orderCheckoutService.calculateShopOrders(cartItems, appliedCoupon);
 
-    const summary = this.calculateSummary(shopOrders);
+    const summary = this.orderCheckoutService.calculateSummary(shopOrders);
 
     return {
       shops: shopOrders,
@@ -100,7 +102,7 @@ export class OrderService {
       ? await this.validateCouponAvailability(userId, dto.couponCode)
       : null;
 
-    const shopOrders = this.calculateShopOrders(cartItems, coupon);
+    const shopOrders = this.orderCheckoutService.calculateShopOrders(cartItems, coupon);
     const totalAmount = shopOrders.reduce((s, i) => s + i.total, 0);
 
     let payment: Payment | null = null;
@@ -408,93 +410,6 @@ export class OrderService {
     }
 
     return coupon;
-  }
-
-  private calculateDiscount(coupon: Coupon, subtotal: number) {
-    let discount =
-      coupon.type === CouponType.PERCENTAGE
-        ? (subtotal * Number(coupon.discount)) / 100
-        : Number(coupon.discount);
-
-    if (coupon.maxDiscount) {
-      discount = Math.min(discount, Number(coupon.maxDiscount));
-    }
-
-    return Math.max(0, discount);
-  }
-
-  private calculateShopOrders(
-    cartItems: CartItemWithProduct[],
-    coupon: Coupon | null,
-  ): CalculatedShopOrder[] {
-    const shopMap = groupByMap(cartItems, (i) => i.product.shopId);
-    const result: CalculatedShopOrder[] = [];
-
-    const totalSubtotal = cartItems.reduce(
-      (s, i) => s + Number(i.priceSnapshot) * i.quantity,
-      0,
-    );
-
-    let remainingGlobalDiscount = 0;
-
-    if (coupon?.scope === CouponScope.GLOBAL) {
-      if (coupon.minOrder && totalSubtotal < Number(coupon.minOrder)) {
-        throw new BadRequestException('Order not eligible for coupon');
-      }
-      remainingGlobalDiscount = this.calculateDiscount(coupon, totalSubtotal);
-    }
-
-    for (const [shopId, items] of shopMap.entries()) {
-      console.log(items[0]);
-      const subtotal = items.reduce(
-        (s, i) => s + Number(i.priceSnapshot) * i.quantity,
-        0,
-      );
-
-      let discount = 0;
-
-      if (coupon?.scope === CouponScope.SHOP && coupon.shopId === shopId) {
-        if (coupon.minOrder && subtotal < Number(coupon.minOrder)) {
-          throw new BadRequestException('Order not eligible for coupon');
-        }
-        discount = this.calculateDiscount(coupon, subtotal);
-      }
-
-      if (coupon?.scope === CouponScope.GLOBAL && remainingGlobalDiscount > 0) {
-        const maxDiscountForShop = this.calculateDiscount(coupon, subtotal);
-
-        discount = Math.min(
-          subtotal,
-          maxDiscountForShop,
-          remainingGlobalDiscount,
-        );
-        remainingGlobalDiscount -= discount;
-      }
-
-      const shippingFee = subtotal > 500_000 ? 0 : 30_000;
-      const total = subtotal + shippingFee - discount;
-
-      result.push({
-        shopId,
-        shopName: items[0].product.shop.name,
-        items,
-        subtotal,
-        shippingFee,
-        discount,
-        total,
-      });
-    }
-
-    return result;
-  }
-
-  private calculateSummary(shops: CalculatedShopOrder[]) {
-    return {
-      subtotal: shops.reduce((s, i) => s + i.subtotal, 0),
-      shippingFee: shops.reduce((s, i) => s + i.shippingFee, 0),
-      discount: shops.reduce((s, i) => s + i.discount, 0),
-      total: shops.reduce((s, i) => s + i.total, 0),
-    };
   }
 
   private async decrementStock(

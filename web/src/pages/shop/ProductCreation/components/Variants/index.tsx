@@ -8,7 +8,7 @@ export default function Variants() {
       title="Phân loại hàng"
       extra={
         <Form.List name="variants">
-          {(fields, { add }) => (
+          {(_fields, { add }) => (
             <Button
               icon={<PlusOutlined />}
               onClick={() =>

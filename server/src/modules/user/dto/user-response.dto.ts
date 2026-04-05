@@ -1,5 +1,5 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { UserGender } from 'generated/prisma';
+import { UserGender } from '@prisma/client';
 import { RoleResponseDto } from 'src/modules/rbac/dto/role-response.dto';
 
 export class UserResponseDto {

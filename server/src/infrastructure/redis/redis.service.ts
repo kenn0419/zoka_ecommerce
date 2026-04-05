@@ -21,7 +21,6 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     const host = this.config.get('REDIS_HOST') || '127.0.0.1';
     const port = this.config.get('REDIS_PORT') || '6379';
     const password = this.config.get('REDIS_PASSWORD');
-
     const url = password
       ? `redis://:${password}@${host}:${port}`
       : `redis://${host}:${port}`;
@@ -61,7 +60,11 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     return await this.client.sMembers(key);
   }
 
-  async getOrSet<T>(key: string, fetchFn: () => Promise<T>, ttl?: number): Promise<T> {
+  async getOrSet<T>(
+    key: string,
+    fetchFn: () => Promise<T>,
+    ttl?: number,
+  ): Promise<T> {
     const cachedData = await this.client.get(key);
     if (cachedData) {
       try {
@@ -72,7 +75,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     }
 
     const data = await fetchFn();
-    
+
     if (data !== undefined && data !== null) {
       try {
         const stringified = JSON.stringify(data);
@@ -82,10 +85,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
           await this.client.set(key, stringified);
         }
       } catch (e) {
-         this.logger.error(`Error stringifying data for cache key ${key}`, e);
+        this.logger.error(`Error stringifying data for cache key ${key}`, e);
       }
     }
-    
+
     return data;
   }
 
@@ -94,7 +97,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       const keys = await this.client.keys(pattern);
       if (keys.length > 0) {
         await this.client.del(keys);
-        this.logger.debug(`Deleted ${keys.length} keys matching pattern: ${pattern}`);
+        this.logger.debug(
+          `Deleted ${keys.length} keys matching pattern: ${pattern}`,
+        );
       }
     } catch (e) {
       this.logger.error(`Error deleting keys by pattern ${pattern}`, e);

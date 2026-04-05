@@ -25,7 +25,6 @@ export const UserTable = ({
   total,
   onPageChange,
   onSortChange,
-  onSearch,
   toolbar,
 }: Props) => {
   const deleteUser = useUserDeleteQuery();

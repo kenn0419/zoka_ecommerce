@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 
 export async function seedOrders(prisma: PrismaClient) {

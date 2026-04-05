@@ -1,13 +1,7 @@
 import {
   DashboardOutlined,
   UserOutlined,
-  ShopOutlined,
-  ShoppingOutlined,
-  AppstoreOutlined,
-  OrderedListOutlined,
-  StarOutlined,
-  RightOutlined,
-  DownOutlined,
+  ShoppingOutlined
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import type { MenuProps } from "antd";

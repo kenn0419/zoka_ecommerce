@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { statisticsApi, IRevenueQueries } from "../apis/statistics.api";
+import { statisticsApi } from "../apis/statistics.api";
 
 export const useAdminRevenueQuery = (params: IRevenueQueries) => {
   return useQuery({

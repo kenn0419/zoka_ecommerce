@@ -1,8 +1,3 @@
-import type { ICategoryResponse, ICategoryCreationRequest, ICategoryUpdateRequest } from "../types/category.type";
-import type {
-  IPaginatedResponse,
-  IPaginationQueries,
-} from "../types/pagination.type";
 import instance from "./axios-customize";
 
 export const categoryApi = {

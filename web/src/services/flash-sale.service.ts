@@ -1,5 +1,4 @@
 import { flashSaleApi } from "../apis/flash-sale.api";
-import type { IFlashSaleFilterQueries, IFlashSaleResponse } from "../types/flash-sale.type";
 
 export const flashSaleService = {
   async fetchActiveFlashSales(

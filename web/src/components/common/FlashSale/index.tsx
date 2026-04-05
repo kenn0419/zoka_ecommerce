@@ -59,7 +59,7 @@ const FlashSale = () => {
       </div>
 
       <div className={styles.scrollContainer}>
-        {activeFlashSale.items.map((item) => (
+        {activeFlashSale.items.map((item: IFlashSaleItemResponse) => (
           <div 
             key={item.id} 
             className={styles.item}

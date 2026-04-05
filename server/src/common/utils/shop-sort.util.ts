@@ -1,4 +1,4 @@
-import { Prisma } from 'generated/prisma';
+import { Prisma } from '@prisma/client';
 import { buildSort } from './build-sort.util';
 import { ShopSort } from '../enums/shop.enum';
 

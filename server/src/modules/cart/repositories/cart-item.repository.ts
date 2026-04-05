@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { CreateCartItemDto } from '../dto/create-cart-item.dto';
-import { Prisma } from 'generated/prisma';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CartItemRepository {
@@ -23,8 +23,13 @@ export class CartItemRepository {
     });
   }
 
-  updateQuantity(cartItemId: string, data: Prisma.CartItemUpdateInput) {
-    return this.prisma.cartItem.update({
+  updateQuantity(
+    cartItemId: string,
+    data: Prisma.CartItemUpdateInput,
+    tx?: Prisma.TransactionClient,
+  ) {
+    const client = tx ?? this.prisma;
+    return client.cartItem.update({
       where: { id: cartItemId },
       data,
     });
@@ -79,8 +84,10 @@ export class CartItemRepository {
   async updateCartItem(
     where: Prisma.CartItemWhereUniqueInput,
     data: Prisma.CartItemUpdateInput,
+    tx?: Prisma.TransactionClient,
   ) {
-    return this.prisma.cartItem.update({ where, data });
+    const client = tx ?? this.prisma;
+    return client.cartItem.update({ where, data });
   }
 
   async updateCartItems(

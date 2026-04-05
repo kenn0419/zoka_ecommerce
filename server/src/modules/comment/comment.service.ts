@@ -11,7 +11,7 @@ import { OrderItemRepository } from '../order/repositories/order-item.repository
 import { OrderStatus } from 'src/common/enums/order.enum';
 import { UploadService } from 'src/infrastructure/upload/upload.service';
 import { ConfigService } from '@nestjs/config/dist/config.service';
-import { Prisma, ProductReviewStatus } from 'generated/prisma';
+import { Prisma, ProductReviewStatus } from '@prisma/client';
 import { ProductRepository } from '../product/repositories/product.repository';
 import { ShopRepository } from '../shop/shop.repository';
 import { CommentQueryDto } from './dto/comment-query.dto';

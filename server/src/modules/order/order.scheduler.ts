@@ -3,7 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { OrderStatus } from 'src/common/enums/order.enum';
 import { CouponRepository } from '../coupon/repositories/coupon.repository';
-import { PaymentStatus } from 'generated/prisma';
+import { PaymentStatus } from '@prisma/client';
 
 @Injectable()
 export class OrderScheduler {

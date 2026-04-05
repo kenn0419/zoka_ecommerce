@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { OrderStatus } from 'src/common/enums/order.enum';
-import { PaymentStatus } from 'generated/prisma';
+import { PaymentStatus } from '@prisma/client';
 import { FlashSaleRepository } from './flash-sale.repository';
 
 @Injectable()

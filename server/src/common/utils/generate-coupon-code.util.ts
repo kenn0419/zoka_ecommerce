@@ -1,4 +1,4 @@
-import { CouponScope, CouponType } from 'generated/prisma';
+import { CouponScope, CouponType } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
 
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';

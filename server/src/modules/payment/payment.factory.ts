@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MomoPaymentService } from './momo/momo.service';
 import { VnpayPaymentService } from './vnpay/vnpay.service';
 import { PaymentStrategy } from 'src/common/interfaces/payment.interface';
-import { PaymentMethod } from 'generated/prisma';
+import { PaymentMethod } from '@prisma/client';
 
 @Injectable()
 export class PaymentFactory {

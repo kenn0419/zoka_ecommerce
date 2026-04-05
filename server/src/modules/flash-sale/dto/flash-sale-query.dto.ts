@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { FlashSaleStatus } from 'generated/prisma';
+import { FlashSaleStatus } from '@prisma/client';
 import { PaginatedQueryDto } from 'src/common/dto/paginated-query.dto';
 import { FlashSaleSort } from 'src/common/enums/flash-sale.enum';
 

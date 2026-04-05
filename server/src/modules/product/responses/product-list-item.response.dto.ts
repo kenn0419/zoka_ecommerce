@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { ProductStatus } from 'generated/prisma';
+import { ProductStatus } from '@prisma/client';
 
 export class ProductListResponseDto {
   @Expose()

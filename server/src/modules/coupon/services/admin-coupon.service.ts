@@ -9,7 +9,7 @@ import {
   Prisma,
   CouponScope,
   CouponStatus,
-} from 'generated/prisma';
+} from '@prisma/client';
 import { buildSearchOr } from 'src/common/utils/build-search-or.util';
 import { paginatedResult } from 'src/common/utils/pagninated-result.util';
 import { buildCouponSort } from 'src/common/utils/coupon-sort.util';

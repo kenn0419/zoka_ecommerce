@@ -7,7 +7,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { CheckoutConfirmNoteDto } from './checkout-confirm-note.dto';
-import { PaymentMethod } from 'generated/prisma';
+import { PaymentMethod } from '@prisma/client';
 
 export class CheckoutConfirmDto {
   @IsEnum(PaymentMethod)

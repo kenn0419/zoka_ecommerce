@@ -1,4 +1,4 @@
-import { PrismaClient } from '../generated/prisma';
+import { PrismaClient } from '@prisma/client';
 import { seedCatalog } from './seeds/catalog.seed';
 import { seedOrders } from './seeds/order.seed';
 import { seedProductReviews, updateProductRating } from './seeds/product-review.seed';

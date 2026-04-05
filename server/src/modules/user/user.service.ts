@@ -10,7 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import slugify from 'slugify';
 import { UploadService } from 'src/infrastructure/upload/upload.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Prisma, UserGender, UserStatus } from 'generated/prisma';
+import { Prisma, UserGender, UserStatus } from '@prisma/client';
 import { buildSearchOr } from 'src/common/utils/build-search-or.util';
 import { paginatedResult } from 'src/common/utils/pagninated-result.util';
 import { buildUserSort } from 'src/common/utils/user-sort.util';

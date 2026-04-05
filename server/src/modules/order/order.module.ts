@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
-import { OrderService } from './order.service';
+import { OrderService } from './services/order.service';
+import { OrderCheckoutService } from './services/order-checkout.service';
 import { OrderController } from './order.controller';
 import { PaymentModule } from 'src/modules/payment/payment.module';
 import { OrderRepository } from './repositories/order.repository';
@@ -16,6 +17,7 @@ import { OrderScheduler } from './order.scheduler';
   controllers: [OrderController],
   providers: [
     OrderService,
+    OrderCheckoutService,
     OrderRepository,
     OrderItemRepository,
     OrderPaymentListener,

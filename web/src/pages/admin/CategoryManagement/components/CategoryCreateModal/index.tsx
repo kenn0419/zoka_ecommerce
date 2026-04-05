@@ -8,7 +8,6 @@ import {
 import { Button, message } from "antd";
 import { useCategoryCreationQuery, useAdminCategoriesQuery } from "../../../../../queries/category.query";
 import { UploadOutlined } from "@ant-design/icons";
-import type { ICategoryCreationRequest } from "../../../../../types/category.type";
 
 type CategoryCreateFormValues = ICategoryCreationRequest;
 
@@ -23,10 +22,11 @@ export default function CategoryCreateModal() {
       modalProps={{ destroyOnHidden: true }}
       onFinish={async (values) => {
         try {
-          // Check if thumbnail is uploaded and format correctly since it's a file
           const payload = {
             ...values,
-            thumbnail: values.thumbnail && values.thumbnail.length > 0 ? values.thumbnail[0].originFileObj : undefined,
+            thumbnail: values.thumbnail && (values.thumbnail as unknown as any[]).length > 0
+              ? (values.thumbnail as unknown as any[])[0].originFileObj
+              : undefined,
           };
           await createCategory.mutateAsync(payload);
           message.success("Created category successfully");

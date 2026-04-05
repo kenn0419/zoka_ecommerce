@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CouponRepository } from '../repositories/coupon.repository';
-import { Coupon, Prisma, CouponStatus, ShopStatus } from 'generated/prisma';
+import { Coupon, Prisma, CouponStatus, ShopStatus } from '@prisma/client';
 import { CouponQueryDto } from '../dto/coupon-query.dto';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { paginatedResult } from 'src/common/utils/pagninated-result.util';

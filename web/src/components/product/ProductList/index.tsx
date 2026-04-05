@@ -30,7 +30,7 @@ export default function ProductList({
         <ProductGrid
           title={title}
           products={products ?? []}
-          loading={isLoading}
+          isLoading={isLoading}
         />
 
         <Pagination

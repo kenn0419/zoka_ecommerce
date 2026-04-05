@@ -9,7 +9,7 @@ import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
 import { aiTools } from './ai-tools';
 import { CHAT_AI_AGENT_ID, CHAT_AI_AGENT_NAME, CHAT_AI_AGENT_EMAIL, CHAT_AI_AGENT_AVATAR } from '../../common/constants/ai-agent.constant';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { UserStatus, UserGender } from 'generated/prisma';
+import { UserStatus, UserGender } from '@prisma/client';
 
 @Injectable()
 export class AiAgentService implements OnModuleInit {

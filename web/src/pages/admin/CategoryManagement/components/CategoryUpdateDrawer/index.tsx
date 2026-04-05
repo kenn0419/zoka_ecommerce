@@ -2,7 +2,6 @@ import { DrawerForm, ProFormText, ProFormTextArea, ProFormUploadButton, ProFormS
 import { message } from "antd";
 import { useCategoryUpdateQuery, useAdminCategoriesQuery } from "../../../../../queries/category.query";
 import { UploadOutlined } from "@ant-design/icons";
-import type { ICategoryResponse } from "../../../../../types/category.type";
 
 type CategoryUpdateDrawerProps = {
   category: ICategoryResponse;

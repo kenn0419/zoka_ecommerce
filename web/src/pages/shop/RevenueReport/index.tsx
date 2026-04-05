@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 import { Card, DatePicker, Button, Table, Space, Typography, Tag } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
-import { useShopRevenueQuery } from '../../../../queries/statistics.query';
-import { statisticsApi } from '../../../../apis/statistics.api';
-import { useAuthStore } from '../../../../store/auth.store';
+import { useShopRevenueQuery } from '../../../queries/statistics.query';
+import { statisticsApi } from '../../../apis/statistics.api';
 import dayjs from 'dayjs';
 import { Area } from '@ant-design/charts';
+import { useSellerStore } from '../../../store/seller.store';
 
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
 
 const ShopRevenueReport: React.FC = () => {
-  const { user } = useAuthStore();
-  const shopId = user?.shop?.id;
+  const shopId = useSellerStore(s => s.currentShopId);
   
   const [dates, setDates] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>([
     dayjs().subtract(1, 'month'),

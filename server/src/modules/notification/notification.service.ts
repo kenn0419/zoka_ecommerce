@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { NotificationRepository } from './notification.repository';
-import { NotificationType } from 'generated/prisma';
+import { NotificationType } from '@prisma/client';
 import { ShopFollowerRepository } from '../shop-follower/shop-follower.repository';
 
 @Injectable()

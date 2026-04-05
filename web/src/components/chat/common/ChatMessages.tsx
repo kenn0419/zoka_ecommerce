@@ -110,7 +110,7 @@ export default function ChatMessages({
       <div style={{ flex: 1 }} />
 
       {messages.map((m: IMessageResponse) => {
-        const isMe = m.sender?.id === currentUser?.id || m.senderId === currentUser?.id;
+        const isMe = m.sender?.id === currentUser?.id;
 
         return (
           <div
